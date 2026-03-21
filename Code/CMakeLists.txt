@@ -41,7 +41,7 @@ target_include_directories(mosaic_tiler PRIVATE
     Utils/Random
 
     ../Test
-
+    ${OpenCV_INCLUDE_DIRS}
 
     
 )

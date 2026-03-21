@@ -1,16 +1,19 @@
 # --- Artifacts --- #
 
+# Build
+/Build/**
+
 # Images
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.bmp
-*.svgs
+**/*.png
+# **/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.bmp
+**/*.svgs
 
 # Executables
-*.out
-*.o
+**/*.out
+**/*.o
 
 # --- Developer --- #
 
