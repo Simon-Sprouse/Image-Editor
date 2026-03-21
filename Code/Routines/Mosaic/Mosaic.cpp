@@ -74,14 +74,14 @@ Size Mosaic::size() {
 
 
 void Mosaic::loadImageFromBuffer(const uint8_t *data, size_t size) { 
-    original = image::fromEncodedBuffer(data, size);
+    original = image::io::fromEncodedBuffer(data, size);
     image::process::resize(original, resized, params.resize_factor);
 
     // cout << "inside Mosaic: resized.size(): " << resized.size() << endl;
 }
 
 void Mosaic::loadImageFromVector(const std::vector<uint8_t>& buffer){
-    original = image::fromEncodedBuffer(buffer.data(), buffer.size());
+    original = image::io::fromEncodedBuffer(buffer.data(), buffer.size());
     image::process::resize(original, resized, params.resize_factor);
 
 }

@@ -2,14 +2,18 @@
 
 #include "Image.hpp"
 
+
+
 #include <string>
 
+using std::string;
+using image::Image;
 
 // TODO make this part of image namespace
 namespace image::io {
 
-    image::Image loadImageFileSystem(const std::string& path);
-    void saveImageFileSystem(const image::Image& img, const std::string& save_path);
-
+    Image fromEncodedBuffer(const uint8_t* data, size_t size);
+    Image loadImageFileSystem(const string& path);
+    void saveImageFileSystem(const Image& img, const string& save_path);
 
 }
