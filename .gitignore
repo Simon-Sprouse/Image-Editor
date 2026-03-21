@@ -4,7 +4,7 @@
 todos.txt
 
 # Build
-/Build/**
+/build/**
 
 # Images
 **/*.png

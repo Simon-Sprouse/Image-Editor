@@ -31,15 +31,15 @@ done
 ### --- Build Project --- ###
 
 if [ "$bool_clean_build" = true ] ; then
-    echo "Removing Build directory "
-    rm -rf Build
+    echo "Removing build directory "
+    rm -rf build
 fi
 
-mkdir -p Build
+mkdir -p build
 
-cd Build
+cd build
 
-cmake ../Code
+cmake ../src
 
 make
 
