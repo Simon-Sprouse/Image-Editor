@@ -1,11 +1,8 @@
-#include <opencv2/opencv.hpp>
+
 
 #include "geometryTest.hpp"
 
-#include "../../../Code/Utils/Geometry/geometry.hpp"
-#include "../../../Code/Utils/Image/Image.hpp"
-#include "../../../Code/Utils/Image/io.hpp"
-#include "../../../Code/Utils/Random/random.hpp"
+
 
 
 namespace Geometry::test { 

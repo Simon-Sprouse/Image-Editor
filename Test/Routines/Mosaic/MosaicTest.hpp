@@ -1,8 +1,17 @@
 #pragma once
 
 #include "../../BaseTest.hpp"
-#include "../../../Code/Utils/Image/Image.hpp"
-#include "../../../Code/Modules/Mosaic/Mosaic.hpp"
+#include "../../../Code/Data/Image/Image.hpp"
+#include "../../../Code/Routines/Mosaic/Mosaic.hpp"
+
+#include "../../../Code/Utils/Graphics/graphics.hpp"
+#include "../../../Code/Data/Image/io.hpp"
+#include "../../../Code/Utils/Random/random.hpp"
+
+#include "geometry.hpp"
+#include "imageProcess.hpp"
+
+#include <opencv2/imgproc.hpp>
 
 #include <string>
 #include <iostream>

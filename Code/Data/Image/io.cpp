@@ -13,9 +13,6 @@ using namespace std;
 
 namespace image::io { 
 
-   
-
-
     Image loadImageFileSystem(const std::string& path) { 
         std::ifstream f(path, std::ios::binary);
         auto data = std::vector<uint8_t>((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());

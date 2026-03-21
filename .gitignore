@@ -1,11 +1,14 @@
 # --- Artifacts --- #
 
+# Dev
+todos.txt
+
 # Build
 /Build/**
 
 # Images
 **/*.png
-# **/*.jpg
+**/*.jpg
 **/*.jpeg
 **/*.gif
 **/*.bmp

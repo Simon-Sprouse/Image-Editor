@@ -1,7 +1,11 @@
 #pragma once
 
 #include "../../BaseTest.hpp"
-#include "../../../Code/Utils/Image/Image.hpp"
+#include "../../../Code/Data/Image/Image.hpp"
+
+#include "../../../Code/Utils/Graphics/graphics.hpp"
+#include "../../../Code/Data/Image/io.hpp"
+#include "../../../Code/Utils/Random/random.hpp"
 
 #include <string>
 #include <iostream>

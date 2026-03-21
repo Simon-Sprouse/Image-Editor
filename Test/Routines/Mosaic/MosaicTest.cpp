@@ -1,11 +1,6 @@
 #include "MosaicTest.hpp"
 
-#include "../../../Code/Utils/Graphics/graphics.hpp"
-#include "../../../Code/Utils/Image/io.hpp"
-#include "../../../Code/Utils/Random/random.hpp"
-#include "geometry.hpp"
-#include "imageProcess.hpp"
-#include <opencv2/imgproc.hpp>
+
 
 namespace mosaic_gen::test { 
 

@@ -1,7 +1,6 @@
 #include "ImageProcessTest.hpp"
 
-#include "../../../Code/Utils/Image/io.hpp"
-#include "../../../Code/Utils/ImageProcess/imageProcess.hpp"
+
 
 namespace image::process::test { 
 

@@ -11,16 +11,17 @@ find_package(OpenCV REQUIRED)
 # Collect all source files
 add_executable(mosaic_tiler
     
-    Modules/Mosaic/Mosaic.cpp
+    Data/Image/Image.cpp
+    Data/Image/io.cpp
+
+    Routines/Mosaic/Mosaic.cpp
 
     Utils/Geometry/geometry.cpp
     Utils/Graphics/graphics.cpp
-    Utils/Image/Image.cpp
-    Utils/Image/io.cpp
     Utils/ImageProcess/ImageProcess.cpp
     Utils/Random/random.cpp
 
-    ../Test/Modules/Mosaic/MosaicTest.cpp
+    ../Test/Routines/Mosaic/MosaicTest.cpp
     ../Test/Utils/Geometry/geometryTest.cpp
     ../Test/Utils/Graphics/graphicsTest.cpp
     ../Test/Utils/ImageProcess/ImageProcessTest.cpp
@@ -32,11 +33,12 @@ add_executable(mosaic_tiler
 # Add includes
 target_include_directories(mosaic_tiler PRIVATE
 
-    Modules/Mosiac
+    Data/Image
+
+    Routines/Mosiac
 
     Utils/Geometry
     Utils/Graphics
-    Utils/Image
     Utils/ImageProcess
     Utils/Random
 

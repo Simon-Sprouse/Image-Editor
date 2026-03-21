@@ -1,8 +1,6 @@
 #include "graphicsTest.hpp"
 
-#include "../../../Code/Utils/Graphics/graphics.hpp"
-#include "../../../Code/Utils/Image/io.hpp"
-#include "../../../Code/Utils/Random/random.hpp"
+
 
 namespace Graphics::test { 
 

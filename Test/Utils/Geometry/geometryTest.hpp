@@ -2,9 +2,16 @@
 
 #include "../../BaseTest.hpp"
 
+#include "../../../Code/Utils/Geometry/geometry.hpp"
+#include "../../../Code/Data/Image/Image.hpp"
+#include "../../../Code/Data/Image/io.hpp"
+#include "../../../Code/Utils/Random/random.hpp"
+
 #include <string>
 #include <iostream>
 #include <iomanip>
+
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "../../BaseTest.hpp"
-#include "../../../Code/Utils/Image/Image.hpp"
+#include "../../../Code/Data/Image/Image.hpp"
+
+#include "../../../Code/Data/Image/io.hpp"
+#include "../../../Code/Utils/ImageProcess/imageProcess.hpp"
 
 namespace image::process::test { 
 

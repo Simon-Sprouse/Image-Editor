@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Utils/Image/Image.hpp"
+#include "../../Data/Image/Image.hpp"
 
 #include <queue>
 #include <stack>
