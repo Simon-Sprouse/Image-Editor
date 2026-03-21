@@ -1,0 +1,21 @@
+# --- Artifacts --- #
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svgs
+
+# Executables
+*.out
+*.o
+
+# --- Developer --- #
+
+# Mac 
+.DS_Store
+
+# IDE
+.vscode/
