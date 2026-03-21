@@ -10,6 +10,8 @@ find_package(OpenCV REQUIRED)
 
 # Collect all source files
 add_executable(mosaic_tiler
+
+    App/run_Mosaic.cpp
     
     Data/Image/Image.cpp
     Data/Image/io.cpp
@@ -32,6 +34,8 @@ add_executable(mosaic_tiler
 
 # Add includes
 target_include_directories(mosaic_tiler PRIVATE
+
+    App
 
     Data/Image
 
