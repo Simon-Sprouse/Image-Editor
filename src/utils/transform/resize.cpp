@@ -2,7 +2,7 @@
 
 using image::Size, image::Image;
 
-namespace resize {
+namespace transform::resize {
 
     Size resizeImage(Image& src, Image& dest, int w, int h) {
         if (w <= 0 || h <= 0) {

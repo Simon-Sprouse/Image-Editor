@@ -4,7 +4,7 @@
 
 using image::Size, image::Image;
 
-namespace resize { 
+namespace transform::resize { 
 
     // nearest neighbor sampling - TODO more elegant sampling
     Size resizeImage(Image& src, Image& dest, int w, int h);

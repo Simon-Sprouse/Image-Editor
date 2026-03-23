@@ -446,7 +446,7 @@ namespace image::process {
 
 
 
-        // TODO move image processing pipeline to new class
+    // TODO move image processing pipeline to new class
     int  divideIntoStrokes(const std::vector<std::vector<Point>>& cv_contours, 
                             std::vector<std::vector<Point>>& segment_points, 
                             Size image_size, 
