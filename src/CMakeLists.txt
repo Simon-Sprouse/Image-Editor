@@ -22,6 +22,7 @@ add_executable(mosaic_tiler
     utils/graphics/graphics.cpp
     utils/image_process/ImageProcess.cpp
     utils/random/random.cpp
+    utils/transform/resize.cpp
 
     ../test/routines/mosaic/mosaic_test.cpp
     ../test/utils/geometry/geometry_test.cpp
@@ -45,6 +46,7 @@ target_include_directories(mosaic_tiler PRIVATE
     utils/graphics
     utils/image_process
     utils/random
+    utils/transform
 
     ../test
     ${OpenCV_INCLUDE_DIRS}

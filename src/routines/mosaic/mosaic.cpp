@@ -4,6 +4,7 @@
 #include "../../utils/geometry/geometry.hpp"
 #include "../../utils/random/random.hpp"
 #include "../../utils/image_process/imageProcess.hpp"
+#include "../../utils/transform/resize.hpp"
 
 // #include "gif.h" TODO add this later
 
@@ -75,20 +76,20 @@ Size Mosaic::size() {
 
 void Mosaic::loadImageFromBuffer(const uint8_t *data, size_t size) { 
     original = image::io::fromEncodedBuffer(data, size);
-    image::process::resize(original, resized, params.resize_factor);
+    resize::resizeImage(original, resized, params.resize_factor);
 
     // cout << "inside Mosaic: resized.size(): " << resized.size() << endl;
 }
 
 void Mosaic::loadImageFromVector(const std::vector<uint8_t>& buffer){
     original = image::io::fromEncodedBuffer(buffer.data(), buffer.size());
-    image::process::resize(original, resized, params.resize_factor);
+    resize::resizeImage(original, resized, params.resize_factor);
 
 }
 
 void Mosaic::loadExistingImage(const Image& img) { 
     original = img.clone();
-    image::process::resize(original, resized, params.resize_factor);
+    resize::resizeImage(original, resized, params.resize_factor);
 }
 
 
@@ -106,11 +107,11 @@ void Mosaic::contourPipeline() {
     std::vector<std::vector<Point>> contours;
 
     // original = io::loadImage(params.image_path); // done from standalone function now
-    // image::process::resize(original, resized, params.resize_factor);
+    // resize::resizeImage(original, resized, params.resize_factor);
 
     Size target_size = original.size() * params.resize_factor;
     if (resized.size() != target_size) { 
-        image::process::resize(original, resized, target_size);
+        resize::resizeImage(original, resized, target_size);
         // cout << "resized image to: " << resized.size() << endl;
     }
     image::process::grayscale(resized, gray);
@@ -121,9 +122,9 @@ void Mosaic::contourPipeline() {
     double reverse_canny_resize_factor = 1 / params.canny_resize_factor;
     Image resized_for_canny;
     Image canny_downsampled;
-    image::process::resize(blurred, resized_for_canny, params.canny_resize_factor);
+    resize::resizeImage(blurred, resized_for_canny, params.canny_resize_factor);
     image::process::cannyFilter(resized_for_canny, canny_downsampled, params.canny_threshold_1, params.canny_threshold_2);
-    image::process::resize(canny_downsampled, canny, reverse_canny_resize_factor);
+    resize::resizeImage(canny_downsampled, canny, reverse_canny_resize_factor);
 
     image::process::findContours(canny, contours);
     image::process::divideIntoStrokes(contours, strokes, canny.size(), params.segment_angle_window, params.max_segment_angle_rad, params.min_segment_length);
@@ -1103,7 +1104,7 @@ void Mosaic::clearData() {
 void Mosaic::resizeOriginal() {
     Size target_size = original.size() * params.resize_factor;
     if (resized.size() != target_size) { 
-        image::process::resize(original, resized, target_size);
+        resize::resizeImage(original, resized, target_size);
         // cout << "resized image to: " << resized.size() << endl;
     }
 }

@@ -5,10 +5,7 @@ namespace image::process {
 
 
 
-    // nearest neighbor sampling - TODO more elegant sampling
-    Size resize(Image& src, Image& dest, int w, int h);
-    Size resize(Image& src, Image& dest, Size size);
-    Size resize(Image& src, Image& dest, double ratio);
+    
 
     void grayscale(const Image& src, Image& dest);
 
