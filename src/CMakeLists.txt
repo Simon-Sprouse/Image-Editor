@@ -18,16 +18,18 @@ add_executable(mosaic_tiler
 
     routines/mosaic/mosaic.cpp
 
-    utils/geometry/geometry.cpp
+    utils/math/geometry.cpp
+    utils/math/kernel.cpp
     utils/graphics/graphics.cpp
-    utils/image_process/ImageProcess.cpp
     utils/random/random.cpp
     utils/transform/resize.cpp
+    utils/filter/color.cpp
+    utils/filter/blur.cpp
+    utils/filter/edge.cpp
 
     ../test/routines/mosaic/mosaic_test.cpp
-    ../test/utils/geometry/geometry_test.cpp
-    ../test/utils/graphics/graphics_test.cpp
-    ../test/utils/image_process/image_process_test.cpp
+
+
 
 
     main.cpp
@@ -42,11 +44,11 @@ target_include_directories(mosaic_tiler PRIVATE
 
     routines/mosiac
 
-    utils/geometry
+    utils/math
     utils/graphics
-    utils/image_process
     utils/random
     utils/transform
+    utils/filter
 
     ../test
     ${OpenCV_INCLUDE_DIRS}

@@ -1,10 +1,12 @@
 #include "mosaic.hpp"
 
 #include "../../utils/graphics/graphics.hpp"
-#include "../../utils/geometry/geometry.hpp"
+#include "../../utils/math/geometry.hpp"
 #include "../../utils/random/random.hpp"
-#include "../../utils/image_process/imageProcess.hpp"
+#include "../../utils/filter/edge.hpp"
 #include "../../utils/transform/resize.hpp"
+#include "../../utils/filter/color.hpp"
+#include "../../utils/filter/blur.hpp"
 
 // #include "gif.h" TODO add this later
 
@@ -114,8 +116,8 @@ void Mosaic::contourPipeline() {
         transform::resize::resizeImage(original, resized, target_size);
         // cout << "resized image to: " << resized.size() << endl;
     }
-    image::process::grayscale(resized, gray);
-    image::process::gaussianBlur(gray, blurred, params.blur_kernel_size, params.blur_sigma);
+    filter::color::toGrayscale(resized, gray);
+    filter::blur::gaussianBlur(gray, blurred, params.blur_kernel_size, params.blur_sigma);
 
 
     // double canny_resize_factor = 0.25;
@@ -123,11 +125,11 @@ void Mosaic::contourPipeline() {
     Image resized_for_canny;
     Image canny_downsampled;
     transform::resize::resizeImage(blurred, resized_for_canny, params.canny_resize_factor);
-    image::process::cannyFilter(resized_for_canny, canny_downsampled, params.canny_threshold_1, params.canny_threshold_2);
+    filter::edge::cannyFilter(resized_for_canny, canny_downsampled, params.canny_threshold_1, params.canny_threshold_2);
     transform::resize::resizeImage(canny_downsampled, canny, reverse_canny_resize_factor);
 
-    image::process::findContours(canny, contours);
-    image::process::divideIntoStrokes(contours, strokes, canny.size(), params.segment_angle_window, params.max_segment_angle_rad, params.min_segment_length);
+    filter::edge::findContours(canny, contours);
+    filter::edge::divideIntoStrokes(contours, strokes, canny.size(), params.segment_angle_window, params.max_segment_angle_rad, params.min_segment_length);
     Geometry::sortStrokesPCALength(strokes);
 
     strokes_image = Image(resized.size());
@@ -584,9 +586,9 @@ void Mosaic::placeTilesAllStrokes() {
 
 void Mosaic::computeDistanceField() { 
     
-    std::vector<float> distance_field = image::process::computeDistanceField(canny);
+    std::vector<float> distance_field = filter::edge::computeDistanceField(canny);
     
-    image::process::computeSobelGradients(distance_field, canny.size(), grad_x, grad_y);
+    filter::edge::computeSobelGradients(distance_field, canny.size(), grad_x, grad_y);
 
 }
 

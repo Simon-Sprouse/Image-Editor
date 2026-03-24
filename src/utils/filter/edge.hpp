@@ -1,18 +1,12 @@
-#pragma once
+#pragma once 
+
+#include <vector>
+
 #include "../../data/image/image.hpp"
 
-namespace image::process { 
+using image::Image, image::Size, image::Point;
 
-
-
-    
-
-    void grayscale(const Image& src, Image& dest);
-
-    void gaussianBlur(Image& src, Image& dest, Size kernel_size, double blur_sigma);
-    void gaussianBlur(Image& src, Image& dest, int kernel_size, double blur_sigma);
-    std::vector<double> generateGaussianKernel1D(int radius, double sigma);
-
+namespace filter::edge { 
     void sobelFilter(const Image& src, Image& dest_grad_x, Image& dest_grad_y);
     void visualizeSobel(const Image& src_grad_x, const Image& src_grad_y, Image& dest);
 

@@ -8,8 +8,8 @@
 #include "../../../src/data/image/io.hpp"
 #include "../../../src/utils/random/random.hpp"
 
-#include "../../../src/utils/geometry/geometry.hpp"
-#include "../../../src/utils/image_process/imageProcess.hpp"
+#include "../../../src/utils/math/geometry.hpp"
+
 
 #include <opencv2/imgproc.hpp>
 
