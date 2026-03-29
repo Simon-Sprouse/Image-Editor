@@ -2,6 +2,7 @@
 
 # Dev
 todos.txt
+_prompts/**
 
 # Build
 /build/**

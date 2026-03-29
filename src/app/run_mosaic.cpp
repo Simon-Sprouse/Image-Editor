@@ -10,7 +10,7 @@ using std::cout, std::string, std::endl;
 using mosaic_gen::Mosaic, mosaic_gen::Parameters;
 
 namespace app {
-    void runMosaic(string image_path, string save_dir) { 
+    ImageResult runMosaic(const Image& image) { 
 
             Parameters params;
             params.resize_factor = 0.5;
@@ -39,31 +39,19 @@ namespace app {
             int squeeb = 42;
 
 
-            Image img = image::io::loadImageFileSystem(image_path);
-            cout << "Loaded image from: " << image_path << endl;
-            cout << "Original Dimensions: " << img.size() << endl;
+        
 
-            // Mosaic my_mosaic(params);
-            // my_mosaic.loadExistingImage(img);
-            // my_mosaic.runAll();
-
-            // cout << "Results Dimensions: " << my_mosaic.getCanvas().size() << endl;
-            // string save_path = save_dir + "result.jpg";
-            // image::io::saveImageFileSystem(my_mosaic.getCanvas(), save_path);
+            Mosaic my_mosaic(params);
+            my_mosaic.loadExistingImage(image);
+            my_mosaic.runAll();
 
 
 
+            ImageResult output;
+            output.label = "Mosaic";
+            output.image = my_mosaic.getCanvas();
 
-
-            cv::Mat image_mat = image::io::imageToCvMat(img);
-            cout << "image_mat.size()" << image_mat.size() << endl;
-
-
-
-            cv::namedWindow("test_window");
-            cv::imshow("test_window", image_mat);
-            cv::waitKey(0);
-            cv::destroyAllWindows();
+            return output;
 
 
 

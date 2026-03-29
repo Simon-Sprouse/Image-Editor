@@ -5,7 +5,7 @@
 
 #include "../test/routines/mosaic/mosaic_test.hpp"
 
-#include "app/run_mosaic.hpp"
+#include "app/app.hpp"
 
 
 
@@ -36,7 +36,7 @@ int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
 
-    app::runMosaic(file_system_image_path, file_system_save_dir);
+    app::mainLoop(file_system_image_path, file_system_save_dir);
 
    
 

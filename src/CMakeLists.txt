@@ -12,11 +12,14 @@ find_package(OpenCV REQUIRED)
 add_executable(mosaic_tiler
 
     app/run_mosaic.cpp
+    app/run_pop_art.cpp
+    app/app.cpp
     
     data/image/image.cpp
     data/image/io.cpp
 
     routines/mosaic/mosaic.cpp
+    routines/pop_art/pop_art.cpp
 
     utils/math/geometry.cpp
     utils/math/kernel.cpp
@@ -43,6 +46,7 @@ target_include_directories(mosaic_tiler PRIVATE
     data/image
 
     routines/mosiac
+    routines/pop_art
 
     utils/math
     utils/graphics

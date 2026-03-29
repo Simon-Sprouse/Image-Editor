@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "app.hpp"
+
 namespace app { 
-    void runMosaic(std::string image_path, std::string save_dir);
+    ImageResult runMosaic(const Image& image);
 }
