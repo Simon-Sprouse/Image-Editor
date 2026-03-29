@@ -121,12 +121,12 @@ const uint8_t* Image::rawData() const {
     return reinterpret_cast<const uint8_t*>(data_.data());
 }
 
-size_t Image::rawDataSize() { 
-    return data_.size();
+size_t Image::rawDataBytesSize() { 
+    return data_.size() * sizeof(Color);
 }
 
-const size_t Image::rawDataSize() const { 
-    return data_.size();
+const size_t Image::rawDataBytesSize() const { 
+    return data_.size() * sizeof (Color);
 }
 
 

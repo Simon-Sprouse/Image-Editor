@@ -5,8 +5,6 @@
 #include "../data/image/io.hpp"
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-
 
 using std::cout, std::string, std::endl;
 using mosaic_gen::Mosaic, mosaic_gen::Parameters;
@@ -45,13 +43,13 @@ namespace app {
             cout << "Loaded image from: " << image_path << endl;
             cout << "Original Dimensions: " << img.size() << endl;
 
-            Mosaic my_mosaic(params);
-            my_mosaic.loadExistingImage(img);
-            my_mosaic.runAll();
+            // Mosaic my_mosaic(params);
+            // my_mosaic.loadExistingImage(img);
+            // my_mosaic.runAll();
 
-            cout << "Results Dimensions: " << my_mosaic.getCanvas().size() << endl;
-            string save_path = save_dir + "result.jpg";
-            image::io::saveImageFileSystem(my_mosaic.getCanvas(), save_path);
+            // cout << "Results Dimensions: " << my_mosaic.getCanvas().size() << endl;
+            // string save_path = save_dir + "result.jpg";
+            // image::io::saveImageFileSystem(my_mosaic.getCanvas(), save_path);
 
 
 
@@ -62,7 +60,7 @@ namespace app {
 
 
 
-            cv::namedWindow("test_window", cv::WINDOW_AUTOSIZE);
+            cv::namedWindow("test_window");
             cv::imshow("test_window", image_mat);
             cv::waitKey(0);
             cv::destroyAllWindows();

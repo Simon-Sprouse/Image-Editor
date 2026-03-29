@@ -11,6 +11,7 @@
 #include "io.hpp"
 #include "image.hpp"
 
+#include <opencv2/imgproc.hpp>
 
 
 using namespace std;
@@ -78,9 +79,9 @@ namespace image::io {
     
 
     cv::Mat imageToCvMat(const Image& source_image) { 
-        cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC3);
-        int num_channels = 3;
-        std::memcpy(dest_mat.data, source_image.rawData(), source_image.rawDataSize() * num_channels);
+        cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC4);
+        std::memcpy(dest_mat.data, source_image.rawData(), source_image.rawDataBytesSize());
+        cv::cvtColor(dest_mat, dest_mat, cv::COLOR_RGB2BGR);
         return dest_mat;
     }
 

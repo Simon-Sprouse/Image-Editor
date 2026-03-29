@@ -206,8 +206,8 @@ class Image {
     int getWidth() const;
     uint8_t* rawData();
     const uint8_t* rawData() const;
-    size_t rawDataSize();
-    const size_t rawDataSize() const;
+    size_t rawDataBytesSize();
+    const size_t rawDataBytesSize() const;
     void setPixel(int x, int y, const Color& color);
     bool empty() const;
     void fill(const Color& color);
