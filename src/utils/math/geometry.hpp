@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <array>
-// #include <opencv2/core.hpp>
 
 
 namespace Geometry { 

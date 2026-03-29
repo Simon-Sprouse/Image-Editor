@@ -4,9 +4,11 @@
 #include "../routines/mosaic/mosaic.hpp"
 #include "../data/image/io.hpp"
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 
 
-using std::cout, std::string;
+using std::cout, std::string, std::endl;
 using mosaic_gen::Mosaic, mosaic_gen::Parameters;
 
 namespace app {
@@ -50,6 +52,22 @@ namespace app {
             cout << "Results Dimensions: " << my_mosaic.getCanvas().size() << endl;
             string save_path = save_dir + "result.jpg";
             image::io::saveImageFileSystem(my_mosaic.getCanvas(), save_path);
+
+
+
+
+
+            cv::Mat image_mat = image::io::imageToCvMat(img);
+            cout << "image_mat.size()" << image_mat.size() << endl;
+
+
+
+            cv::namedWindow("test_window", cv::WINDOW_AUTOSIZE);
+            cv::imshow("test_window", image_mat);
+            cv::waitKey(0);
+            cv::destroyAllWindows();
+
+
 
     }
 }

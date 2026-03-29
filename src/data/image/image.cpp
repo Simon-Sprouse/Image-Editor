@@ -121,6 +121,14 @@ const uint8_t* Image::rawData() const {
     return reinterpret_cast<const uint8_t*>(data_.data());
 }
 
+size_t Image::rawDataSize() { 
+    return data_.size();
+}
+
+const size_t Image::rawDataSize() const { 
+    return data_.size();
+}
+
 
 void Image::setPixel(int x, int y, const Color& color) {
     data_.at(getLinearIndex_(x, y)) = color;

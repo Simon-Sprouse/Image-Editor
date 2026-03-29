@@ -12,6 +12,7 @@
 #include "image.hpp"
 
 
+
 using namespace std;
 
 
@@ -75,6 +76,13 @@ namespace image::io {
         }
     }
     
+
+    cv::Mat imageToCvMat(const Image& source_image) { 
+        cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC3);
+        int num_channels = 3;
+        std::memcpy(dest_mat.data, source_image.rawData(), source_image.rawDataSize() * num_channels);
+        return dest_mat;
+    }
 
 
 }

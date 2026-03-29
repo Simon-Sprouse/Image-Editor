@@ -2,7 +2,7 @@
 
 #include "image.hpp"
 
-
+#include <opencv2/core.hpp>
 
 #include <string>
 
@@ -15,5 +15,6 @@ namespace image::io {
     Image fromEncodedBuffer(const uint8_t* data, size_t size);
     Image loadImageFileSystem(const string& path);
     void saveImageFileSystem(const Image& img, const string& save_path);
+    cv::Mat imageToCvMat(const Image& source_image);
 
 }
