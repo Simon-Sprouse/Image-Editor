@@ -16,6 +16,7 @@ namespace random_gen {
 
     double randomDouble(double min_val, double max_val); // TODO template this
     Color randomColor();
+    std::vector<Color> randomColors(int num_colors);
 
     Point randomPoint(int w, int h);
     Point randomPoint(Size size);

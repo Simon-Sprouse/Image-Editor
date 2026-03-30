@@ -73,11 +73,28 @@ namespace app {
     ImageResult runPopArt(const Image& image) { 
 
         pop_art::Parameters params;
-        params.num_splits = 3;
+        params.num_splits = 4;
 
         pop_art::PopArt my_pop_art(params);
         my_pop_art.loadExistingImage(image);
         my_pop_art.run();
+
+        ImageResult output;
+        output.label = "pop_art";
+        output.image = my_pop_art.getCanvas();
+
+        return output;
+
+    }
+
+    ImageResult runPopArtSlow(const Image& image) { 
+
+        pop_art::Parameters params;
+        params.num_splits = 4;
+
+        pop_art::PopArt my_pop_art(params);
+        my_pop_art.loadExistingImage(image);
+        my_pop_art.runSlow();
 
         ImageResult output;
         output.label = "pop_art";

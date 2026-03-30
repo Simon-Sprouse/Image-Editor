@@ -6,5 +6,6 @@ namespace app {
 
     ImageResult runMosaic(const Image& image);
     ImageResult runPopArt(const Image& image);
+    ImageResult runPopArtSlow(const Image& image);
 
 }

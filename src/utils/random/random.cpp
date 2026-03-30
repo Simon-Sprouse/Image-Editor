@@ -30,6 +30,15 @@ namespace random_gen {
         };
     }
 
+    std::vector<Color> randomColors(int num_colors) { 
+        std::vector<Color> colors;
+        colors.reserve(num_colors);
+        for (int i = 0; i < num_colors; i++) { 
+            colors.push_back(randomColor());
+        }   
+        return colors;
+    }
+
     
 
 

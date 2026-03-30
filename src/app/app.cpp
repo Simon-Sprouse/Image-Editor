@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 
 #include "app.hpp"
 #include "../data/image/io.hpp"
@@ -28,11 +29,14 @@ namespace app {
         cv::namedWindow(window_name, cv::WINDOW_NORMAL);
         cv::resizeWindow(window_name, cv::Size(100, 100));
 
-        ImageResult result;
+        
 
 
         while (running) { 
+            ImageResult result;
             key = cv::waitKey(30);
+            auto start = std::chrono::high_resolution_clock::now();
+
 
             if (key == 'q' || key == 27) { 
                 running = false;
@@ -47,10 +51,18 @@ namespace app {
             else if (key == '3') { 
                 result = runPopArt(image);
             }
+            else if (key == '4') { 
+                result = runPopArtSlow(image);
+            }
+
 
             if (!result.empty()) { 
                 cv::imshow(window_name, image::io::imageToCvMat(result.image));
                 cv::setWindowTitle(window_name, result.label);
+
+                auto end = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> elapsed = end - start;
+                cout << "Function execution time: " << elapsed.count() << " s" << endl;
             }
             
     

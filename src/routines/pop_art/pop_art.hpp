@@ -19,7 +19,10 @@ class PopArt {
 
         Image getCanvas();
 
+
+        void findBins_();
         void run();
+        void runPersistent();
         void runSlow();
 
     private: 
