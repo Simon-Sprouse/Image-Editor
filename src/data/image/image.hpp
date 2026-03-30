@@ -199,11 +199,14 @@ class Image {
     // Destructor
     ~Image();
 
+    Color& at(int index);
+    const Color& at(int index) const;
     Color& at(int x, int y);
     const Color& at(int x, int y) const;
     Color& at(Point pt);
     const Color& at(Point pt) const;
     Size size() const;
+    int getFlatSize() const;
     int getHeight() const;
     int getWidth() const;
     uint8_t* rawData();

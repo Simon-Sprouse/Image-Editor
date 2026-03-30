@@ -68,7 +68,12 @@ int Image::getLinearIndex(int x, int y) const {
     return y * width_ + x;
 }
 
-
+Color& Image::at(int index) { 
+    return data_[index];
+}
+const Color& Image::at(int index) const {
+    return data_[index];
+}
 Color& Image::at(int x, int y) {
     return data_[getLinearIndex(x, y)];
 }
@@ -80,6 +85,11 @@ Color& Image::at(Point pt) {
 }
 const Color& Image::at(Point pt) const {
     return data_[getLinearIndex(pt.x, pt.y)];
+}
+
+
+int Image::getFlatSize() const { 
+    return height_ * width_;
 }
 
 Size Image::size() const { 

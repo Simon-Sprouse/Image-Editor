@@ -20,8 +20,82 @@ Image PopArt::getCanvas() {
     return canvas.clone();
 }
 
+void PopArt::run() {
 
-void PopArt::run() { 
+
+    // grayscale image
+    // flatten image with loop and make histogram of pixels (store this?)
+    // run through historgram and add bin cutoff points to parallel array
+    // create color table mapped to bin ids
+    // flatten image and recolor
+
+    filter::color::toGrayscale(original, gray);
+
+
+    vector<int> value_counts_histogram(256, 0);
+    int num_pixels = original.getFlatSize();
+    for (int i = 0; i < num_pixels; i++) { 
+        value_counts_histogram[gray.at(i).r] += 1;
+    }
+
+
+    int pixels_per_bin = num_pixels / params.num_splits;
+    vector<int> bin_id_for_value(256, 0); // key: color value, value: bin_id eg: x[(244)] = id(5)
+    int num_pixels_current_bin = 0;
+    int current_bin_id = 0;
+    for (int value = 0; value < 256; value++) { 
+        if (num_pixels_current_bin <= pixels_per_bin) { 
+            bin_id_for_value[value] = current_bin_id;
+        }
+        else { 
+            num_pixels_current_bin = 0;
+            current_bin_id += 1;
+        }
+        num_pixels_current_bin += value_counts_histogram[value];
+    }
+
+    vector<Color> colors; // TODO random vector of colors from random library
+    colors.reserve(params.num_splits);
+    for (int i = 0; i < params.num_splits; i++) { 
+        colors.push_back(random_gen::randomColor());
+    }   
+
+    vector<Color> old_value_new_color; // (key) gray value : (value) new color
+    old_value_new_color.reserve(256);
+    for (int bin_id : bin_id_for_value) { 
+        old_value_new_color.push_back(colors[bin_id]);
+    }
+
+
+    canvas = Image(original.size());
+    for (int i = 0; i < num_pixels; i++) { 
+        canvas.setPixel(i, old_value_new_color[gray.at(i).r]);
+    }   
+
+
+
+
+
+
+
+
+    // note: should I create hist mapped color array to do lookup color -> new color? 
+    //       or should I do color -> bin_id -> new color? 
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+void PopArt::runSlow() { 
     canvas = original.clone();
     filter::color::toGrayscale(original, gray);
 

@@ -16,7 +16,7 @@ int main() {
     using mosaic_gen::Mosaic;
 
 
-    string file_system_image_path = "../images/flower.jpg";
+    string file_system_image_path = "../images/flower_2.jpg";
     string file_system_save_dir = "../results/";
 
 

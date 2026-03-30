@@ -20,6 +20,7 @@ class PopArt {
         Image getCanvas();
 
         void run();
+        void runSlow();
 
     private: 
         Parameters params;
