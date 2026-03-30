@@ -2,8 +2,7 @@
 
 #include "app.hpp"
 #include "../data/image/io.hpp"
-#include "run_mosaic.hpp"
-#include "run_pop_art.hpp"
+#include "run_routines.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -39,9 +38,13 @@ namespace app {
                 running = false;
             }
             else if (key == '1') { 
-                result = runMosaic(image);
+                result.image = image;
+                result.label = "original";
             }
             else if (key == '2') { 
+                result = runMosaic(image);
+            }
+            else if (key == '3') { 
                 result = runPopArt(image);
             }
 

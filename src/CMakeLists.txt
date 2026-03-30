@@ -11,8 +11,7 @@ find_package(OpenCV REQUIRED)
 # Collect all source files
 add_executable(mosaic_tiler
 
-    app/run_mosaic.cpp
-    app/run_pop_art.cpp
+    app/run_routines.cpp
     app/app.cpp
     
     data/image/image.cpp
