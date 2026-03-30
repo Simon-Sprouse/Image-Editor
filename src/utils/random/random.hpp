@@ -6,7 +6,7 @@
 
 #include "../../data/image/image.hpp"
 
-namespace Random { 
+namespace random_gen { 
 
     using image::Point;
     using image::Size;

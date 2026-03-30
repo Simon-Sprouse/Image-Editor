@@ -2,7 +2,7 @@
 
 
 
-namespace Random { 
+namespace random_gen { 
 
 
     

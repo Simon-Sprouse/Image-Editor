@@ -1,5 +1,6 @@
 #include "image.hpp"
 
+
 namespace image { 
 
 
@@ -63,22 +64,22 @@ Image::~Image() {}
 
 
 
-int Image::getLinearIndex_(int x, int y) const { 
+int Image::getLinearIndex(int x, int y) const { 
     return y * width_ + x;
 }
 
 
 Color& Image::at(int x, int y) {
-    return data_[getLinearIndex_(x, y)];
+    return data_[getLinearIndex(x, y)];
 }
 const Color& Image::at(int x, int y) const {
-    return data_[getLinearIndex_(x, y)];
+    return data_[getLinearIndex(x, y)];
 }
 Color& Image::at(Point pt) {
-    return data_[getLinearIndex_(pt.x, pt.y)];
+    return data_[getLinearIndex(pt.x, pt.y)];
 }
 const Color& Image::at(Point pt) const {
-    return data_[getLinearIndex_(pt.x, pt.y)];
+    return data_[getLinearIndex(pt.x, pt.y)];
 }
 
 Size Image::size() const { 
@@ -130,8 +131,16 @@ const size_t Image::rawDataBytesSize() const {
 }
 
 
+void Image::setPixel(int index, const Color& color) { 
+    data_.at(index) = color;
+}
+
 void Image::setPixel(int x, int y, const Color& color) {
-    data_.at(getLinearIndex_(x, y)) = color;
+    setPixel(getLinearIndex(x, y), color);
+}
+
+void Image::setPixel(const Point& pt, const Color& color) { 
+    setPixel(getLinearIndex(pt.x, pt.y), color);
 }
 
 

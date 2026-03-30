@@ -57,6 +57,8 @@ struct Color {
     bool operator!=(const Color& other) const {
         return !(*this == other);
     }
+
+
     
 
     private:
@@ -208,7 +210,9 @@ class Image {
     const uint8_t* rawData() const;
     size_t rawDataBytesSize();
     const size_t rawDataBytesSize() const;
+    void setPixel(int index, const Color& color);
     void setPixel(int x, int y, const Color& color);
+    void setPixel(const Point& pt, const Color& color);
     bool empty() const;
     void fill(const Color& color);
     Image clone() const;
@@ -217,12 +221,13 @@ class Image {
     bool operator==(const Image& other) const;
     bool operator!=(const Image& other) const;
 
+    int getLinearIndex(int x, int y) const;
     
 
 
     private:
 
-        int getLinearIndex_(int x, int y) const;
+        
 
 
         int width_;

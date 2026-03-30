@@ -247,7 +247,7 @@ namespace Graphics {
         for (std::vector<Point> stroke : strokes) { 
             Color color;
             do {
-                color = Random::randomColor();
+                color = random_gen::randomColor();
             } while (std::find(colors_used.begin(), colors_used.end(), color) != colors_used.end());
             
             colors_used.push_back(color);

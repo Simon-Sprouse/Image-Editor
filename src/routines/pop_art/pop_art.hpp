@@ -4,11 +4,11 @@
 
 namespace pop_art { 
 
-using image::Image;
+using image::Image, image::Color, image::Point;
 
 
 struct Parameters { 
-    int num_splits = 2;
+    int num_splits;
 };
 
 class PopArt { 
@@ -24,7 +24,9 @@ class PopArt {
     private: 
         Parameters params;
         Image original;
+        Image gray;
         Image canvas;
+        Image bin_map;
 };
 
 }

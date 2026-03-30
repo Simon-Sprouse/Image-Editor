@@ -64,10 +64,10 @@ void MosaicTest::testMask() {
     int size = mosaic.params.tile_size;
 
     int num_points = 500000;
-    std::vector<Point> points = Random::randomPointsVector(mosaic.resized.size(), num_points);
+    std::vector<Point> points = random_gen::randomPointsVector(mosaic.resized.size(), num_points);
 
     for (Point pt : points) { 
-        double theta_deg = Random::randomDouble(0, 90);
+        double theta_deg = random_gen::randomDouble(0, 90);
         if (mosaic.isValidTile(pt, size, theta_deg)) {
             mosaic.placeTile(pt, size, theta_deg);
         }
@@ -319,7 +319,7 @@ void MosaicTest::testSquareBorderPoints() {
     test_img.fill(Color()); // TODO make reset function
 
     int grid_size = 30;
-    std::vector<Point> center_points = Random::gridPointsVector(mosaic_size, grid_size); // TODO fix this to adjust top left positioning
+    std::vector<Point> center_points = random_gen::gridPointsVector(mosaic_size, grid_size); // TODO fix this to adjust top left positioning
     int num_border_points = 0;
 
     for (Point center : center_points) { 
@@ -332,7 +332,7 @@ void MosaicTest::testSquareBorderPoints() {
         Color tile_color(255);
         Graphics::drawSquare(test_img, center, size, theta_deg, tile_color, size);
 
-        Color point_color = Random::randomColor();
+        Color point_color = random_gen::randomColor();
         int point_size = 5;
         for (Point pt : border_points) { 
             Graphics::drawSquare(test_img, pt, point_size, theta_deg, point_color, point_size);
@@ -362,8 +362,8 @@ void MosaicTest::testVectorField() {
 
     int grid_size = 20;
     int max_step = 4;
-    std::vector<Point> points = Random::gridPointsVector(mosaic.resized.size(), grid_size);
-    std::vector<Point> jittered_points = Random::jitterPoints(points, max_step, mosaic.resized.size());
+    std::vector<Point> points = random_gen::gridPointsVector(mosaic.resized.size(), grid_size);
+    std::vector<Point> jittered_points = random_gen::jitterPoints(points, max_step, mosaic.resized.size());
 
     Image test_canvas = mosaic.canny.clone();
     for (Point pt : jittered_points) { 

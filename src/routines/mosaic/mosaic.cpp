@@ -328,7 +328,7 @@ Point Mosaic::getRandomPointOnStroke(int stroke_id) {
         throw std::runtime_error("No points in the selected segment");
     }
 
-    return Random::selectFromVector<Point>(stroke);
+    return random_gen::selectFromVector<Point>(stroke);
 }
 
 
@@ -656,7 +656,7 @@ void Mosaic::floodFill() {
             int num_points = params.flood_fill_neighbor_points;
             int max_step = getJitter(frontier);
             std::vector<Point> points = Geometry::samplePointsSquareBorder(tile.center, tile.theta_deg, distance_from_center, num_points);
-            std::vector<Point> jittered_points = Random::jitterPoints(points, max_step, mask.size());
+            std::vector<Point> jittered_points = random_gen::jitterPoints(points, max_step, mask.size());
             all_flood_points.insert(all_flood_points.end(), jittered_points.begin(), jittered_points.end());
         }
 
@@ -723,7 +723,7 @@ void Mosaic::gapFill() {
             } 
         }
     }
-    Random::shuffleVector(points);
+    random_gen::shuffleVector(points);
 
 
    for (const Point& point : points) {
@@ -1030,7 +1030,7 @@ bool Mosaic::stepOnce() {
                         } 
                     }
                 }
-                Random::shuffleVector(gapPointsVector);
+                random_gen::shuffleVector(gapPointsVector);
                 gaps_calculated = true;
                 continue;
             }
