@@ -2,6 +2,7 @@
 
 #include "../routines/mosaic/mosaic.hpp"
 #include "../routines/pop_art/pop_art.hpp"
+#include "../routines/grid/grid.hpp"
 
 #include <iostream>
 #include <string>
@@ -99,6 +100,22 @@ namespace app {
         ImageResult output;
         output.label = "pop_art";
         output.image = my_pop_art.getCanvas();
+
+        return output;
+
+    }
+
+    ImageResult runGrid(const Image& image) { 
+
+        grid::Parameters params;
+        params.rows = 10;
+        params.cols = 17;
+
+        grid::Grid my_grid(params);
+
+        ImageResult output;
+        output.label = "grid";
+        output.image = my_grid.getCanvas();
 
         return output;
 

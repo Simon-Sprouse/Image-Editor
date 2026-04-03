@@ -54,6 +54,9 @@ namespace app {
             else if (key == '4') { 
                 result = runPopArtSlow(image);
             }
+            else if (key == '5') { 
+                result = runGrid(image);
+            }
 
 
             if (!result.empty()) { 

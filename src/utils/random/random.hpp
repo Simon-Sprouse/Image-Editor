@@ -20,6 +20,8 @@ namespace random_gen {
 
     Point randomPoint(int w, int h);
     Point randomPoint(Size size);
+
+    // todo: separation of concerns between sequence library and this one
     std::vector<Point> randomPointsVector(int w, int h, int num_points);
     std::vector<Point> randomPointsVector(Size size, int num_points);
 

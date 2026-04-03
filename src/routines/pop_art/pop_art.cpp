@@ -24,20 +24,21 @@ Image PopArt::getCanvas() {
 // TODO: Downsample to find bin map? 
 
 void PopArt::run() { 
+
     // grayscale image
     filter::color::toGrayscale(original, gray);
 
-    // count number of pixels for each grayscale value
+    // create histogram of grayscale values O(n)
     vector<int> value_counts_histogram(256, 0);
     int num_pixels = original.getFlatSize();
     for (int i = 0; i < num_pixels; i++) { 
         value_counts_histogram[gray.at(i).r] += 1;
     }
 
-    // walk through grayscale values histogram and assign bin_id to each value
+    // walk through historgram and create bins O(256)
     int num_bins = params.num_splits;
     int pixels_per_bin = num_pixels / num_bins;
-    vector<int> bin_id_for_value(256, 0); // key: color value, value: bin_id eg: x[(244)] = id(5)
+    vector<int> bin_id_for_value(256, 0); // x[grayscale value] = bin_id
     int num_pixels_current_bin = 0;
     int current_bin_id = 0;
     for (int value = 0; value < 256; value++) { 
@@ -49,20 +50,19 @@ void PopArt::run() {
         num_pixels_current_bin += value_counts_histogram[value];
     }
 
-    // generate map from bin_id to color
+    // generate random colors
     vector<Color> colors = random_gen::randomColors(num_bins);
 
-    // map each old grayscale value to the new color it should be
-    vector<Color> old_value_new_color; 
-    old_value_new_color.reserve(256);
-    for (int bin_id : bin_id_for_value) { 
-        old_value_new_color.push_back(colors[bin_id]);
+    // map all possible grayscale values to new colors
+    vector<Color> new_color_for_value(256); 
+    for (int value = 0; value < 256; value++) { 
+        new_color_for_value[value] = colors[bin_id_for_value[value]];
     }
 
-    // recolor image using map from grayscale value -> new color
+    // recolor image using map O(n)
     canvas = Image(original.size());
     for (int i = 0; i < num_pixels; i++) { 
-        canvas.setPixel(i, old_value_new_color[gray.at(i).r]);
+        canvas.setPixel(i, new_color_for_value[gray.at(i).r]);
     }   
 
 

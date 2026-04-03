@@ -19,9 +19,11 @@ add_executable(mosaic_tiler
 
     routines/mosaic/mosaic.cpp
     routines/pop_art/pop_art.cpp
+    routines/grid/grid.cpp
 
     utils/math/geometry.cpp
     utils/math/kernel.cpp
+    utils/math/sequence.cpp
     utils/graphics/graphics.cpp
     utils/random/random.cpp
     utils/transform/resize.cpp
@@ -46,6 +48,7 @@ target_include_directories(mosaic_tiler PRIVATE
 
     routines/mosiac
     routines/pop_art
+    routines/grid
 
     utils/math
     utils/graphics
