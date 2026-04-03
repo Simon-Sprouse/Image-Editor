@@ -4,7 +4,7 @@
 
 namespace grid { 
 
-using image::Image;
+using image::Image, image::Color;
 
 struct Parameters { 
     int rows;
@@ -19,6 +19,7 @@ class Grid {
         Grid(Parameters p) : params(p) {};
 
         void loadExistingImage(const Image& image);
+        void run();
         Image getCanvas();
         
 

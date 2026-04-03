@@ -23,7 +23,7 @@ namespace {
         assert(max >= 0);
         assert(min >= 0);
         assert(num_elements >= 0);
-        assert(range >= num_elements)
+        assert(range >= num_elements);
 
         if (num_elements == 0 || min == max) { 
             return InputStatus::EMPTY;
@@ -40,7 +40,7 @@ namespace {
         assert(max >= 0);
         assert(min >= 0);
         assert(num_elements >= 0);
-        assert(range >= num_elements)
+        assert(range >= num_elements);
 
         if (num_elements <= 1 || min == max) { 
             return InputStatus::EMPTY;
@@ -72,6 +72,9 @@ namespace math::sequence {
         for (int i = 1; i < num_elements + 1; i++) { 
             output.push_back(static_cast<int>(std::round(min + i * interval_size)));
         }
+
+
+        cout << "output.size(): " << output.size() << endl;
 
         return output;
 
