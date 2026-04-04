@@ -11,6 +11,12 @@ namespace Geometry {
     using image::Point;
     using image::Vec2d;
 
+
+    inline bool inBoundsRect(const Point& pt, const Point& tl_corner, int dx, int dy) { 
+        Point n = pt - tl_corner; // normalized point
+        return n.x <= dx && n.y <= dy && n.x >= 0 && n.y >= 0;
+    }
+
    
     Point computeMean(const std::vector<Point>& points);
     std::vector<Point> centerData(const std::vector<Point>& points, const Point& mean);
@@ -36,6 +42,7 @@ namespace Geometry {
 
 
     std::vector<Point> getPointsInsideSquare(Point center, int size, double angle_deg);
+
 
 
 }

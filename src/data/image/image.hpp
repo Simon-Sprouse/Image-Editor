@@ -224,6 +224,7 @@ class Image {
     bool operator==(const Image& other) const;
     bool operator!=(const Image& other) const;
 
+    int getLinearIndex(Point pt) const;
     int getLinearIndex(int x, int y) const;
     
 

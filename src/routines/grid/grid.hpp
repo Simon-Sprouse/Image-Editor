@@ -4,7 +4,7 @@
 
 namespace grid { 
 
-using image::Image, image::Color;
+using image::Image, image::Color, image::Point;
 
 struct Parameters { 
     int rows;

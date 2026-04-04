@@ -18,20 +18,29 @@ namespace draw::line {
 
     void drawCol(Image& image, int col_index, const Color& color, int thickness) {
 
-        int start_col = std::max(0, col_index - thickness/2);
-
-        int linear_start = image.getLinearIndex(start_col, 0);
         int height = image.getHeight();
         int width = image.getWidth();
-        int pointer;
 
-        for (int i = 0; i < thickness; i++) { 
-            pointer = linear_start + i;
-            for (int y = 0; y < height; y++) { 
+        int start_col = std::max(0, col_index - thickness/2);
+        int end_col = std::min(width - 1, start_col + thickness - 1);
+
+        int linear_start = image.getLinearIndex(start_col, 0);
+
+        int pointer;
+        for (int col = start_col; col <= end_col; col++) { 
+            pointer = image.getLinearIndex(col, 0);
+            for (int y = 0; y < height; y++) {
                 image.setPixel(pointer, color);
                 pointer += width;
             }
         }
+
+        // TODO: While the below code is more readable, it is noticably slower ~25% on large jobs
+        // for (int col = start_col; col <= end_col; col++) { 
+        //     for (int y = 0; y < height; y++) { 
+        //         image.setPixel(col, y, color);
+        //     }
+        // }
 
 
     }

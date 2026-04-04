@@ -62,7 +62,9 @@ Image::~Image() {}
 
 
 
-
+int Image::getLinearIndex(Point pt) const { 
+    return getLinearIndex(pt.x, pt.y);
+}
 
 int Image::getLinearIndex(int x, int y) const { 
     return y * width_ + x;
