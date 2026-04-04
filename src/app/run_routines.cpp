@@ -108,8 +108,8 @@ namespace app {
     ImageResult runGrid(const Image& image) { 
 
         grid::Parameters params;
-        params.rows = 10;
-        params.cols = 10;
+        params.rows = 30;
+        params.cols = 40;
 
 
 

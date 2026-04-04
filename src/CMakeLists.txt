@@ -26,6 +26,7 @@ add_executable(mosaic_tiler
     utils/math/sequence.cpp
     utils/graphics/graphics.cpp
     utils/graphics/line.cpp
+    utils/graphics/polygon.cpp
     utils/random/random.cpp
     utils/transform/resize.cpp
     utils/filter/color.cpp
