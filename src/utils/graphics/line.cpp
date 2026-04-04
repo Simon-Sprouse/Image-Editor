@@ -16,7 +16,25 @@ namespace {
 
 namespace draw::line { 
 
-    void drawColumn() {}
+    void drawCol(Image& image, int col_index, const Color& color, int thickness) {
+
+        int start_col = std::max(0, col_index - thickness/2);
+
+        int linear_start = image.getLinearIndex(start_col, 0);
+        int height = image.getHeight();
+        int width = image.getWidth();
+        int pointer;
+
+        for (int i = 0; i < thickness; i++) { 
+            pointer = linear_start + i;
+            for (int y = 0; y < height; y++) { 
+                image.setPixel(pointer, color);
+                pointer += width;
+            }
+        }
+
+
+    }
 
 
 

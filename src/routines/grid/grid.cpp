@@ -28,11 +28,19 @@ Image Grid::getCanvas() {
 void Grid::run() { 
 
 
-    vector<int> rows = math::sequence::uniformSamples(0, original.getHeight() - 1, params.rows - 1);
 
+    vector<int> rows = math::sequence::uniformSamples(0, original.getHeight() - 1, params.rows - 1);
     for (int row : rows) { 
         draw::line::drawRow(canvas, row, Color(0), 5);
     }
+
+
+    vector<int> cols = math::sequence::uniformSamples(0, original.getWidth() - 1, params.cols - 1);
+    for (int col : cols) { 
+        draw::line::drawCol(canvas, col, Color(255), 5);
+    }
+
+    
 
 }
 

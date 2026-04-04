@@ -74,8 +74,6 @@ namespace math::sequence {
         }
 
 
-        cout << "output.size(): " << output.size() << endl;
-
         return output;
 
     }

@@ -109,13 +109,17 @@ namespace app {
 
         grid::Parameters params;
         params.rows = 10;
-        params.cols = 17;
+        params.cols = 10;
 
 
 
         grid::Grid my_grid(params);
         my_grid.loadExistingImage(image);
+
+
         my_grid.run();
+        
+
 
         ImageResult output;
         output.label = "grid";
