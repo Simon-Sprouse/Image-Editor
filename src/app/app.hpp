@@ -17,5 +17,6 @@ namespace app {
         bool empty() const {return image.empty();}
     };
 
+    void testIterators(string image_path, string save_dir);
     void mainLoop(string image_path, string save_dir);
 }

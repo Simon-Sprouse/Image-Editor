@@ -36,6 +36,20 @@ int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    app::testIterators(file_system_image_path, file_system_save_dir);
+
     app::mainLoop(file_system_image_path, file_system_save_dir);
 
    

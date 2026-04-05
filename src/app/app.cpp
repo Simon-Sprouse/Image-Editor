@@ -8,8 +8,36 @@
 #include <opencv2/opencv.hpp>
 
 using std::cout, std:: endl;
+using image::Color;
 
 namespace app {
+
+
+    void testIterators(string image_path, string save_dir) { 
+
+
+
+        Image image = image::io::loadImageFileSystem(image_path);
+        cout << "Loaded image from: " << image_path << endl;
+        cout << "Original Dimensions: " << image.size() << endl << endl;
+
+        Color* data = image.data();
+        cout << "You can now get pointer access to the linear start" << endl;
+        cout << "image.data(): " << image.data() << endl << endl;
+
+        Color* begin = image.begin();
+        Color* end = image.end();
+        cout << "Now we have access to begin() and end() methods." << endl;
+        cout << "image.begin(): " << image.begin() << endl;
+        cout << "image.end(): " << image.end() << endl;
+        cout << "This unlocks range iteration in for loops" << endl;
+        int i = 0;
+        for (auto c : image) { i++; }
+        cout << "completed: " << i << " range iteration loops" << endl << endl;
+
+
+
+    }
 
     void mainLoop(string image_path, string save_dir) { 
 

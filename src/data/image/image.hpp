@@ -226,6 +226,13 @@ class Image {
 
     int getLinearIndex(Point pt) const;
     int getLinearIndex(int x, int y) const;
+
+    Color* data() { return data_.data(); }
+    const Color* data() const { return data_.data(); }
+    Color* begin() { return data(); }
+    const Color* begin() const { return data(); }
+    Color* end() { return data() + data_.size(); }
+    const Color* end() const { return data() + data_.size(); }
     
 
 
