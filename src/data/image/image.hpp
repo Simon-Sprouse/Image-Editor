@@ -168,6 +168,57 @@ inline Size operator*(const Size& s, double scalar) {
 
 
 
+
+
+
+
+
+// The rowPtr function already returns a pointer to the first element in row
+// This iterator must expand beyond that existing functionality
+// there are two main advantages that justify this class
+// 1. This iterator tracks width - therefore it can implement begin() and end() for range iteration
+// 2. This iterator allows a direct fill() method enabling image.row(y).fill(color);
+class RowIterator { 
+    Color* ptr_;
+    int width_;
+
+    public:
+        RowIterator(Color* ptr, int width) : ptr_(ptr), width_(width) {}
+
+        Color* begin() { return ptr_; }
+        Color* end() { return ptr_ + width_; }
+        const Color* begin() const { return ptr_; }
+        const Color* end() const { return ptr_; }
+
+        Color& operator[](int x) { return ptr_[x]; }
+        const Color& operator[](int x) const { return ptr_[x]; }
+        Color* data() { return ptr_; }
+        int size() { return width_; }
+        void fill(const Color& color) { std::fill_n(ptr_, width_, color); }
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Image {
 
 
@@ -227,6 +278,7 @@ class Image {
     int getLinearIndex(Point pt) const;
     int getLinearIndex(int x, int y) const;
 
+    // TODO think about literal iterator overload
     Color* data() { return data_.data(); }
     const Color* data() const { return data_.data(); }
     Color* begin() { return data(); }
@@ -234,6 +286,10 @@ class Image {
     Color* end() { return data() + data_.size(); }
     const Color* end() const { return data() + data_.size(); }
     
+    Color* rowPtr(int y);
+    const Color* rowPtr(int y) const;
+    RowIterator row(int y);
+
 
 
     private:

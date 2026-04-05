@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 using std::cout, std:: endl;
-using image::Color;
+using image::Color, image::RowIterator;
 
 namespace app {
 
@@ -34,6 +34,27 @@ namespace app {
         int i = 0;
         for (auto c : image) { i++; }
         cout << "completed: " << i << " range iteration loops" << endl << endl;
+
+        int y = 5;
+        int x = 42;
+        Color* row_ptr = image.rowPtr(y);
+        cout << "Now we support pointer and iterator access for a given row (y)" << endl;
+        cout << "image.rowPtr(y): " << row_ptr << endl;
+        RowIterator r = image.row(y);
+        cout << "image.row(y).data(): " << r.data() << endl;
+        cout << "image.row(y).begin(): " << r.begin() << endl;
+        cout << "image.row(y).end(): " << r.end() << endl;
+        cout << "image.row(y)[x]: " << r[x] << endl;
+        cout << "This unlocks range iteratrion in for loops with row" << endl;
+        i = 0;
+        for (auto r2 : image.row(y)) { i++; }
+        cout << "completed: " << i << " range iteration loops over row" << endl;
+        cout << "This also unlocks fill using chain from iterator" << endl;
+        Color test_color(0, 255, 255);
+        image.row(y).fill(test_color);
+        cout << "Post fill, accessing first k elements in row: " << endl;
+        for (int k = 0; k < 3; k++) { cout << r[k] << ", "; }
+        cout << endl << endl;
 
 
 

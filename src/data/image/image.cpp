@@ -177,10 +177,18 @@ bool Image::inBounds(int x, int y) const {
 }
 
 
+Color* Image::rowPtr(int y) { 
+    return data() + (y * width_);
+}
+
+const Color* Image::rowPtr(int y) const {
+    return data() + (y * width_);
+}
 
 
-
-
+RowIterator Image::row(int y) { 
+    return RowIterator(rowPtr(y), width_);
+}
 
 
 
