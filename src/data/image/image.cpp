@@ -191,7 +191,10 @@ RowIterator Image::row(int y) {
 }
 
 
-
+RegionRowIterator Image::regionRows(Point tl, int dx, int dy) { 
+    Color* start = data() + getLinearIndex(tl);
+    return RegionRowIterator(start, dx, dy, width_);
+}
 
 
 

@@ -198,6 +198,31 @@ class RowIterator {
 
 };
 
+class RegionRowIterator {
+    Color* start_;
+    int dx_;
+    int dy_;
+    int width_; // for image, not region
+
+    public: 
+
+        RegionRowIterator(Color* start, int dx, int dy, int width) : start_(start), 
+        dx_(dx), dy_(dy), width_(width) {}
+
+        RowIterator operator*() { return RowIterator(start_, dx_); }
+        RowIterator row() { return RowIterator(start_, dx_); }
+        RegionRowIterator& operator++() { 
+            dy_--;
+            start_ += width_;
+            return *this;
+        }
+        bool operator!=(const RegionRowIterator& other) {return start_ != other.start_; };
+
+        RegionRowIterator begin() { return RegionRowIterator(start_, dx_, dy_, width_); }
+        RegionRowIterator end() { return RegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
+
+};
+
 
 
 
@@ -289,6 +314,7 @@ class Image {
     Color* rowPtr(int y);
     const Color* rowPtr(int y) const;
     RowIterator row(int y);
+    RegionRowIterator regionRows(Point tl, int dx, int dy);
 
 
 

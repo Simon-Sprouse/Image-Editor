@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 using std::cout, std:: endl;
-using image::Color, image::RowIterator;
+using image::Color, image::Point, image::RowIterator, image::RegionRowIterator;
 
 namespace app {
 
@@ -56,6 +56,41 @@ namespace app {
         for (int k = 0; k < 3; k++) { cout << r[k] << ", "; }
         cout << endl << endl;
 
+
+        cout << "Now supporting region row iteration" << endl;
+        RegionRowIterator rr = image.regionRows(Point(200, 100), 50, 75);
+        cout << "This unlocks range iteration where rows are the sentinel" << endl;
+        int filled_elements = 0;
+        int filled_rows = 0;
+        for (auto row : rr) { 
+            row.fill(Color(69, 42, 21)); 
+            filled_elements += row.size();
+            filled_rows++;
+        }
+        cout << "filled: " << filled_elements << " elements using region row iterator" << endl;
+        cout << "filled: " << filled_rows << " rows using region row iterator" << endl;
+        cout << "printing 3x3 elements in tl corner: " << endl;
+        RegionRowIterator debug = image.regionRows(Point(200, 100), 50, 75);
+        for (int k = 0; k < 3; k++) { 
+            RowIterator row = debug.row();
+            for (int l = 0; l < 3; l++) { 
+                cout << row[l] << ", ";
+            }
+            cout << endl;
+            ++debug;
+        }
+        // does the above logic call for a region iterator? 
+        cout << "This also greatly simplifies reading the region" << endl;
+        int sum = 0;
+        for (auto row : rr) { 
+            for (auto c : row) {
+                sum += c.r + c.g + c.b;
+            }
+        }
+        cout << "sum of region: " << sum << endl << endl;
+
+        string save_path = save_dir + "iterator_test.jpg";
+        image::io::saveImageFileSystem(image, save_path);
 
 
     }
