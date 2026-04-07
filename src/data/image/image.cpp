@@ -196,6 +196,10 @@ RegionRowIterator Image::regionRows(Point tl, int dx, int dy) {
     return RegionRowIterator(start, dx, dy, width_);
 }
 
+const ConstRegionRowIterator Image::regionRows(const Point& tl, int dx, int dy) const { 
+    const Color* start = data() + getLinearIndex(tl);
+    return ConstRegionRowIterator(start, dx, dy, width_);
+}
 
 
 

@@ -139,7 +139,11 @@ namespace app {
                 result = runPopArtSlow(image);
             }
             else if (key == '5') { 
-                result = runGrid(image);
+                int num_iterations = 10;
+                for (int i = 0; i < num_iterations; i++) {
+                    result = runGrid(image);
+                }
+                
             }
 
 
