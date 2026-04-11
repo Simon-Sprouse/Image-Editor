@@ -35,6 +35,7 @@ namespace app {
         for (auto c : image) { i++; }
         cout << "completed: " << i << " range iteration loops" << endl << endl;
 
+
         int y = 5;
         int x = 42;
         Color* row_ptr = image.rowPtr(y);
@@ -91,6 +92,21 @@ namespace app {
 
         string save_path = save_dir + "iterator_test.jpg";
         image::io::saveImageFileSystem(image, save_path);
+
+
+        cout << "finally we support region iterators" << endl;
+        cout << "printing a 3x5 grid as a flat sequence" << endl;
+        Point tl(200, 100);
+        int dx = 3;
+        int dy = 5;
+        int count = 0;
+        for (auto px : image.region(tl, dx, dy)) { 
+            cout << px << ", ";
+            count++;
+        }
+        cout << endl << endl;
+        cout << "count: " << count << endl;
+        
 
 
     }

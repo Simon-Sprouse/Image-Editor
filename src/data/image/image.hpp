@@ -289,6 +289,38 @@ class ConstRegionRowIterator {
 
 
 
+class RegionIterator { 
+    Color* ptr_;
+    int dx_;
+    int y_remaining_; // called remaining because it experiences decrement
+    int width_;
+    int x_remaining_;
+
+    public: 
+        RegionIterator(Color* ptr, int dx, int dy, int width) : ptr_(ptr),
+        dx_(dx), y_remaining_(dy-1), width_(width), x_remaining_(dx-1) {}
+
+        RegionIterator begin() { return RegionIterator(ptr_, dx_, y_remaining_, width_); }
+        RegionIterator end() { 
+            Color* end_ptr = ptr_ + x_remaining_ + 1 + (width_ * y_remaining_);
+            return RegionIterator(end_ptr, dx_, 0, width_); 
+        }
+        Color& operator*() { return *ptr_; }
+
+        RegionIterator& operator++() { 
+            if (x_remaining_) { 
+                ptr_++;
+                x_remaining_--;
+            }
+            else { 
+                ptr_ += width_ - dx_ + 1;
+                x_remaining_ = dx_;
+                y_remaining_--;
+            }
+            return *this;
+        }
+        bool operator!=(const RegionIterator& other) { return ptr_ != other.ptr_; }
+};
 
 
 
@@ -376,6 +408,7 @@ class Image {
     // const ConstRowIterator row(int y); // TODO I don't need this right? 
     RegionRowIterator regionRows(Point tl, int dx, int dy);
     const ConstRegionRowIterator regionRows(const Point& tl, int dx, int dy) const;
+    RegionIterator region(Point tl, int dx, int dy);
 
 
 
