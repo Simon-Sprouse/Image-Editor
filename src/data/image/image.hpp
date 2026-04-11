@@ -186,9 +186,7 @@ class RowIterator {
         RowIterator(Color* ptr, int width) : ptr_(ptr), width_(width) {}
 
         Color* begin() { return ptr_; }
-        const Color* begin() const { return ptr_; } // todo do we need these const methods? 
         Color* end() { return ptr_ + width_; }
-        const Color* end() const { return ptr_ + width_; }
 
         Color& operator[](int x) { return ptr_[x]; }
         const Color& operator[](int x) const { return ptr_[x]; }
@@ -243,8 +241,10 @@ class RegionRowIterator {
         dx_(dx), dy_(dy), width_(width) {}
 
 
+        RegionRowIterator begin() { return RegionRowIterator(start_, dx_, dy_, width_); }
+        RegionRowIterator end() { return RegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
+
         RowIterator operator*() { return RowIterator(start_, dx_); }
-        RowIterator row() { return RowIterator(start_, dx_); }
         RegionRowIterator& operator++() { 
             dy_--;
             start_ += width_;
@@ -252,8 +252,8 @@ class RegionRowIterator {
         }
         bool operator!=(const RegionRowIterator& other) {return start_ != other.start_; };
 
-        RegionRowIterator begin() { return RegionRowIterator(start_, dx_, dy_, width_); }
-        RegionRowIterator end() { return RegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
+        RowIterator row() { return RowIterator(start_, dx_); }
+
 
 };
 
@@ -270,9 +270,10 @@ class ConstRegionRowIterator {
         ConstRegionRowIterator(const Color* start, int dx, int dy, int width) : start_(start), 
         dx_(dx), dy_(dy), width_(width) {}
 
+        ConstRegionRowIterator begin() const { return ConstRegionRowIterator(start_, dx_, dy_, width_); }
+        ConstRegionRowIterator end() const { return ConstRegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
 
         ConstRowIterator operator*() const { return ConstRowIterator(start_, dx_); }
-        ConstRowIterator row() const { return ConstRowIterator(start_, dx_); }
         ConstRegionRowIterator& operator++() { 
             dy_--;
             start_ += width_;
@@ -280,9 +281,8 @@ class ConstRegionRowIterator {
         }
         bool operator!=(const ConstRegionRowIterator& other) const {return start_ != other.start_; };
 
-        ConstRegionRowIterator begin() const { return ConstRegionRowIterator(start_, dx_, dy_, width_); }
-        ConstRegionRowIterator end() const { return ConstRegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
-
+        ConstRowIterator row() const { return ConstRowIterator(start_, dx_); }
+        
 };
 
 
