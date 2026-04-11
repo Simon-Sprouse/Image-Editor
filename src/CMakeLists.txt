@@ -34,6 +34,8 @@ add_executable(mosaic_tiler
     utils/filter/edge.cpp
 
     ../test/routines/mosaic/mosaic_test.cpp
+    ../test/workbench/workbench_main.cpp
+    ../test/workbench/iterator_examples.cpp
 
 
 

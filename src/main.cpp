@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 
+#include "../test/workbench/workbench_main.hpp"
 #include "../test/routines/mosaic/mosaic_test.hpp"
 
 #include "app/app.hpp"
@@ -16,6 +17,7 @@ int main() {
     using mosaic_gen::Mosaic;
 
 
+    // paths reletive to the build folder (where executable is built)
     string file_system_image_path = "../images/flower.jpg";
     string file_system_save_dir = "../results/";
 
@@ -40,15 +42,12 @@ int main() {
 
 
 
+    workbench::runAll(file_system_image_path, file_system_save_dir);
 
 
 
 
 
-
-
-
-    app::testIterators(file_system_image_path, file_system_save_dir);
 
     app::mainLoop(file_system_image_path, file_system_save_dir);
 
