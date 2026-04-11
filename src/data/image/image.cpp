@@ -176,4 +176,40 @@ bool Image::inBounds(int x, int y) const {
     return x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
 }
 
+
+Color* Image::rowPtr(int y) { 
+    return data() + (y * width_);
+}
+
+const Color* Image::rowPtr(int y) const {
+    return data() + (y * width_);
+}
+
+
+RowIterator Image::row(int y) { 
+    return RowIterator(rowPtr(y), width_);
+}
+
+
+RegionRowIterator Image::regionRows(Point tl, int dx, int dy) { 
+    Color* start = data() + getLinearIndex(tl);
+    return RegionRowIterator(start, dx, dy, width_);
+}
+
+const ConstRegionRowIterator Image::regionRows(const Point& tl, int dx, int dy) const { 
+    const Color* start = data() + getLinearIndex(tl);
+    return ConstRegionRowIterator(start, dx, dy, width_);
+}
+
+RegionIterator Image::region(Point tl, int dx, int dy) { 
+    Color* start = data() + getLinearIndex(tl);
+    return RegionIterator(start, dx, dy, width_);
+}
+
+
+
+
+
+
+
 }
