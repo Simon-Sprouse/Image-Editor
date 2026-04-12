@@ -59,11 +59,7 @@ namespace app {
                 result = runPopArtSlow(image);
             }
             else if (key == '5') { 
-                int num_iterations = 10;
-                for (int i = 0; i < num_iterations; i++) {
-                    result = runGrid(image);
-                }
-                
+                result = runGrid(image);
             }
 
 

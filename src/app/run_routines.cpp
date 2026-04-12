@@ -110,6 +110,7 @@ namespace app {
         grid::Parameters params;
         params.rows = 30;
         params.cols = 40;
+        params.thickness = 1;
 
 
 
