@@ -14,7 +14,7 @@ namespace unit_test {
 
     void runAllIterator(string image_path) { 
         Image image = io::loadImageFileSystem(image_path);
-        iterator::testIterator(image);
+        iterator::testRegionIterator(image.clone());
     }
 
 

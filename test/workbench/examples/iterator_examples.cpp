@@ -10,15 +10,13 @@ using std::cout, std::endl;
 namespace workbench { 
 
 
-    void testIterators(string image_path, string save_dir) { 
+    void testIterators(Image& image, string save_dir) { 
 
         using image::RegionIterator, image::RegionRowIterator, image::RowIterator;
 
         cout << "running testIterators" << endl;
 
-        Image image = image::io::loadImageFileSystem(image_path);
-        cout << "Loaded image from: " << image_path << endl;
-        cout << "Original Dimensions: " << image.size() << endl << endl;
+
 
         Color* data = image.data();
         cout << "You can now get pointer access to the linear start" << endl;

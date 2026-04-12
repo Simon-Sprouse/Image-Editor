@@ -292,17 +292,17 @@ class ConstRegionRowIterator {
 class RegionIterator { 
     Color* ptr_;
     int dx_;
-    int y_remaining_; // called remaining because it experiences decrement
+    int dy_; 
     int width_;
     int x_remaining_;
 
     public: 
         RegionIterator(Color* ptr, int dx, int dy, int width) : ptr_(ptr),
-        dx_(dx), y_remaining_(dy-1), width_(width), x_remaining_(dx-1) {}
+        dx_(dx), dy_(dy), width_(width), x_remaining_(dx-1) {}
 
-        RegionIterator begin() { return RegionIterator(ptr_, dx_, y_remaining_, width_); }
+        RegionIterator begin() { return RegionIterator(ptr_, dx_, dy_, width_); }
         RegionIterator end() { 
-            Color* end_ptr = ptr_ + x_remaining_ + 1 + (width_ * y_remaining_);
+            Color* end_ptr = ptr_ - (dx_ - x_remaining_ - 1) + (width_ * dy_);
             return RegionIterator(end_ptr, dx_, 0, width_); 
         }
         Color& operator*() { return *ptr_; }
@@ -314,8 +314,8 @@ class RegionIterator {
             }
             else { 
                 ptr_ += width_ - dx_ + 1;
-                x_remaining_ = dx_;
-                y_remaining_--;
+                x_remaining_ = dx_ - 1;
+                dy_--;
             }
             return *this;
         }
