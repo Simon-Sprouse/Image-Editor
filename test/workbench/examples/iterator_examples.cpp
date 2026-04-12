@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+
 using image::Image, image::Color, image::Point;
 using std::cout, std::endl;
 

@@ -30,8 +30,11 @@ Image Grid::getCanvas() {
 }
 
 void Grid::computeRectCoords() { 
+
+
     cols = math::sequence::uniformSamplesBounds(0, original.getWidth(), params.cols); // todo: should be name indexes
     rows = math::sequence::uniformSamplesBounds(0, original.getHeight(), params.rows);
+
 
     vector<int> col_intervals;
     col_intervals.reserve(params.cols - 1); // eg 10 seperation indexes means 9 interval spaces between
@@ -54,12 +57,14 @@ void Grid::computeRectCoords() {
         row_intervals.push_back(dy);
     }
 
+
     for (int i = 0; i < cols.size() - 1; i++) { 
         for (int j = 0; j < rows.size() - 1; j++) { 
             Rect coord = Rect{Point(cols[i], rows[j]), col_intervals[i], row_intervals[j]};
             rect_coords.push_back(coord);
         }
     }
+
 }
 
 
@@ -100,6 +105,16 @@ void Grid::run() {
 
 void Grid::setParameters(Parameters p) { 
     params = p;
+}
+
+void Grid::clearData() { 
+    params = Parameters();
+
+    rect_coords.clear();
+    cols.clear();
+    rows.clear();
+
+    canvas = Image(original.size());
 }
 
 

@@ -37,6 +37,7 @@ class Grid {
         void run();
         Image getCanvas();
         void setParameters(Parameters p);
+        void clearData();
         
 
 

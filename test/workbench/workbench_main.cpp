@@ -13,18 +13,22 @@ using std::string;
 namespace workbench { 
     void runAll(string file_system_image_path, string file_system_save_dir) { 
         cout << "running all tests from workbench" << endl;
-        runAllIterator(file_system_image_path, file_system_save_dir);
+        // runAllIterator(file_system_image_path, file_system_save_dir);
 
 
 
-        // bool running = true;
-        // int key = -1;
-        // string window_name = "workbench_window"; // the first name passed to namedWindow is immutable and is used for id
-        // string display_name;                // this tracks display title but doesn't change id
+        bool running = true;
+        int key = -1;
+        string window_name = "workbench_window"; // the first name passed to namedWindow is immutable and is used for id
+        string display_name;                // this tracks display title but doesn't change id
 
-        // cv::namedWindow(window_name, cv::WINDOW_NORMAL);
-        // cv::resizeWindow(window_name, cv::Size(100, 100));
+        cv::namedWindow(window_name, cv::WINDOW_NORMAL);
+        cv::resizeWindow(window_name, cv::Size(100, 100));
 
+        runAllGrid(file_system_image_path, file_system_save_dir, window_name);
+
+
+        cv::destroyAllWindows();
 
 
 
@@ -40,11 +44,12 @@ namespace workbench {
     }
 
 
-    void runAllGrid(string image_path, string save_dir) {
+    void runAllGrid(string image_path, string save_dir, string window_name) {
         Image image = image::io::loadImageFileSystem(image_path);
         cout << "Loaded image from: " << image_path << endl;
         cout << "Original Dimensions: " << image.size() << endl << endl;
 
-        grid::runGrid(image.clone(), save_dir);
+        runGrid(image.clone(), save_dir, window_name);
+
     }
 }

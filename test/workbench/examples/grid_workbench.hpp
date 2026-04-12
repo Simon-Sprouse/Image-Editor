@@ -6,6 +6,6 @@ using namespace image;
 #include <string>
 using namespace std;
 
-namespace workbench::grid {
-    void runGrid(Image image, string save_dir) {}
+namespace workbench {
+    void runGrid(Image image, string save_dir, string window_name);
 }
