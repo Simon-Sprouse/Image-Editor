@@ -34,7 +34,7 @@ namespace unit_test::iterator {
     bool assertEqualVector(vector<T> lhs, vector<T> rhs, string message) { 
         if (!(lhs == rhs)) { 
             cerr << "Failure: " << message << endl;
-            cerr << "Expected (vector of size(" << lhs.size() << " == vector of size(" << rhs.size() << "))" << endl;
+            cerr << "Expected (vector of size(" << lhs.size() << ") == vector of size(" << rhs.size() << "))" << endl;
             return false;
         }
         else { 
@@ -47,4 +47,6 @@ namespace unit_test::iterator {
 
 
     void testRegionIterator(Image image);
+    void testRowIterator(Image imge);
+    void testRegionRowIterator(Image image);
 }
