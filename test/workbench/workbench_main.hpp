@@ -10,6 +10,6 @@ namespace workbench {
     using namespace image;
 
     void runAll(string file_system_image_path, string file_system_save_dir);
-    void runAllIterator(string image_path, string save_dir);
-    void runAllGrid(string image_path, string save_dir, string window_name);
+    void runAllIterator(string image_path, string save_dir); // TODO remove useless wrapper
+
 }
