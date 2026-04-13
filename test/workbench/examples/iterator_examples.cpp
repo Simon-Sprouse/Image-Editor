@@ -11,11 +11,14 @@ using std::cout, std::endl;
 namespace workbench { 
 
 
-    void testIterators(Image& image, string save_dir) { 
+    void runIterator(string image_path, Logger logger) { 
 
         using image::RegionIterator, image::RegionRowIterator, image::RowIterator;
 
         cout << "running testIterators" << endl;
+
+        Image image = image::io::loadImageFileSystem(image_path);
+
 
 
 
@@ -88,8 +91,9 @@ namespace workbench {
         }
         cout << "sum of region: " << sum << endl << endl;
 
-        string save_path = save_dir + "iterator_test.jpg";
-        image::io::saveImageFileSystem(image, save_path);
+        // TODO replace this with logger save
+        // string save_path = save_dir + "iterator_test.jpg";
+        // image::io::saveImageFileSystem(image, save_path);
 
 
         cout << "finally we support region iterators" << endl;

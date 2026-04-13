@@ -15,6 +15,12 @@ using std::cout, std::endl;
 
 namespace logger { 
 
+    void Logger::initCV() { 
+        // todo should logger own this? 
+        cv::namedWindow(window_name_, cv::WINDOW_NORMAL);
+        cv::resizeWindow(window_name_, cv::Size(100, 100));
+    }
+
 
     void Logger::start(string task_name) { 
 
@@ -41,9 +47,17 @@ namespace logger {
 
         stop(task_name); // handle timer
 
+        
         cv::setWindowTitle(window_name_, task_name);
         cv::imshow(window_name_, io::imageToCvMat(output));
-        cv::waitKey(0);
+
+        // allow user to exit workbench (escape or q) or continue (anything else)
+        int key = cv::waitKey(0);
+        if (key == 'q' || key == 27) { 
+            throw UserEscapeSignal();
+        }
+
+
 
 
 

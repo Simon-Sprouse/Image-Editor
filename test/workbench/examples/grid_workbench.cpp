@@ -43,7 +43,7 @@ namespace workbench {
 
 
         // huge example for why function pointers are probably bad. 
-        for (int i = 1; i < 10; i++) { 
+        for (int i = 1; i < 100; i++) { 
 
             my_grid.clearData();
 

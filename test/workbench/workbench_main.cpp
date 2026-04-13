@@ -7,41 +7,41 @@
 #include <string>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <exception>
 
 using std::cout, std::endl;
 using std::string;
-using logger::Logger;
+using logger::Logger, logger::UserEscapeSignal;
 
 namespace workbench { 
-    void runAll(string file_system_image_path, string file_system_save_dir) { 
-        cout << "running all tests from workbench" << endl;
-        // runAllIterator(file_system_image_path, file_system_save_dir);
 
+    // Define all workbenches here
+    // Some might be commented out for testing purposes
+    void runAll(string image_path, Logger& logger) { 
 
-
-        string window_name = "workbench_window"; // the first name passed to namedWindow is immutable and is used for id
-
-        // todo should logger own this? 
-        cv::namedWindow(window_name, cv::WINDOW_NORMAL);
-        cv::resizeWindow(window_name, cv::Size(100, 100));
-
-        Logger my_logger(window_name, file_system_save_dir);
-        runGrid(file_system_image_path, my_logger);
-
-
-        cv::destroyAllWindows();
-
-
+        runIterator(image_path, logger);
+        runGrid(image_path, logger);
 
     }
 
-    void runAllIterator(string image_path, string save_dir) { 
+    // This function wrapper exists to catch user input
+    // If the user hits escape or q, then the logger forces an early return
+    void runWorkbench(string image_path, string save_dir) { 
 
-        Image image = image::io::loadImageFileSystem(image_path);
-        cout << "Loaded image from: " << image_path << endl;
-        cout << "Original Dimensions: " << image.size() << endl << endl;
+        Logger my_logger("workbench_window", save_dir);
+        my_logger.initCV();
 
-        testIterators(image, save_dir);
+        try { 
+            runAll(image_path, my_logger);
+        }
+        catch (const UserEscapeSignal& s) { 
+            cout << "User has exited the workbench" << endl;
+        }
+        catch (const std::exception& e) { 
+            cerr << "Real exception: " << e.what() << endl;
+        }
+        
+        cv::destroyAllWindows();
     }
 
 
