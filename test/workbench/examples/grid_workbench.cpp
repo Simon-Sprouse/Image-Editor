@@ -1,0 +1,88 @@
+#include "grid_workbench.hpp"
+
+#include "../../src/data/image/image.hpp"
+#include "../../src/data/image/io.hpp"
+using namespace image;
+
+#include "../../src/routines/grid/grid.hpp"
+
+#include <opencv2/opencv.hpp>
+
+#include <string>
+using namespace std;
+
+#include <iostream>
+
+
+namespace workbench { 
+
+    void runGrid(string image_path, Logger logger) { 
+
+        Image image = image::io::loadImageFileSystem(image_path);
+
+        grid::Parameters params;
+        params.rows = 30;
+        params.cols = 40;
+        params.thickness = 5;
+        grid::Grid my_grid(params);
+
+
+        logger.start("original_image");
+        my_grid.loadExistingImage(image);
+        logger.stop("original_image", my_grid.getCanvas());
+
+
+        logger.start("draw areas");
+        my_grid.computeRectCoords();
+        my_grid.drawRectAreas();
+        logger.stop("draw areas", my_grid.getCanvas());
+
+        logger.start("draw grid lines");
+        my_grid.drawGridLines();
+        logger.stop("draw grid lines", my_grid.getCanvas());
+
+
+        // huge example for why function pointers are probably bad. 
+        for (int i = 1; i < 100; i++) { 
+
+            my_grid.clearData();
+
+            params.rows = 2 * i;
+            params.cols = 3 * i;
+
+            my_grid.setParameters(params);
+
+            string task_name = "draw areas iter: " + to_string(i);
+            logger.start(task_name);
+            my_grid.computeRectCoords();
+            my_grid.drawRectAreas();
+            logger.stop(task_name, my_grid.getCanvas());
+
+        }
+
+
+        // OLD PATTERN vvv
+
+        // cv::setWindowTitle(window_name, "original image");
+        // cv::imshow(window_name, io::imageToCvMat(my_grid.getCanvas()));
+        // cv::waitKey(0);
+
+        // my_grid.drawRectAreas();
+        // cv::setWindowTitle(window_name, "grid with rect areas");
+        // cv::imshow(window_name, io::imageToCvMat(my_grid.getCanvas()));
+        // cv::waitKey(0);
+
+        // my_grid.drawGridLines();
+        // cv::setWindowTitle(window_name, "grid with lines");
+        // cv::imshow(window_name, io::imageToCvMat(my_grid.getCanvas()));
+        // cv::waitKey(0);
+
+
+
+
+
+
+        
+
+    }
+}

@@ -33,8 +33,14 @@ add_executable(mosaic_tiler
     utils/filter/blur.cpp
     utils/filter/edge.cpp
 
-    ../test/routines/mosaic/mosaic_test.cpp
 
+    ../test/workbench/workbench_main.cpp
+    ../test/workbench/logger.cpp
+    ../test/workbench/examples/iterator_examples.cpp
+    ../test/workbench/examples/grid_workbench.cpp
+    ../test/unit/unit_test_main.cpp
+    ../test/unit/tests/iterator_unit_test.cpp
+    
 
 
 
