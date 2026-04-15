@@ -36,6 +36,10 @@ namespace logger {
             string window_name_;
             string save_dir_;
             unordered_map<string, std::pair<TimePoint, TimePoint>> task_times;
-            // times
+            
+            void stopTimer_(string task_name);
+            void printTime_(string task_name);
+            void blockCV_();
+
     };
 }

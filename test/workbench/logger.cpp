@@ -11,9 +11,11 @@ using Clock = std::chrono::high_resolution_clock;
 using TimePoint = Clock::time_point;
 
 #include <iostream>
-using std::cout, std::endl;
+using std::cout, std::endl, std::setw;
 
 namespace logger { 
+
+    // todo, should we get access to the insides of classes? can we do that with a helper class? What's the best way to do that? 
 
     void Logger::initCV() { 
         // todo should logger own this? 
@@ -33,32 +35,45 @@ namespace logger {
 
     }
 
-    void Logger::stop(string task_name) { 
-        // todo think about handling tasks that weren't started
+    void Logger::stopTimer_(string task_name) { 
         TimePoint stop_time = Clock::now();
-        task_times[task_name].second = stop_time; // we will set the end time later
+        task_times[task_name].second = stop_time; 
+    }
+    void Logger::printTime_(string task_name) { 
+        std::chrono::duration<double> elapsed = task_times[task_name].second - task_times[task_name].first;
 
-        // todo make this a function for printing
-        std::chrono::duration<double> elapsed = stop_time - task_times[task_name].first;
-        cout << "Task: " << task_name << " time: " << elapsed.count() << " s" << endl;
+
+        // Todo make this more elegant once it's extended. 
+        cout << 
+        "Task: " << task_name << setw(15) << 
+        " time: " << elapsed.count() << " s" 
+        << endl;
     }
 
-    void Logger::stop(string task_name, const Image& output) { 
-
-        stop(task_name); // handle timer
-
-        
-        cv::setWindowTitle(window_name_, task_name);
-        cv::imshow(window_name_, io::imageToCvMat(output));
-
+    void Logger::blockCV_() { 
         // allow user to exit workbench (escape or q) or continue (anything else)
         int key = cv::waitKey(0);
         if (key == 'q' || key == 27) { 
             throw UserEscapeSignal();
         }
+    }
 
+    void Logger::stop(string task_name) { 
+        stopTimer_(task_name);
+        printTime_(task_name);
+        blockCV_();
+    }
 
+    void Logger::stop(string task_name, const Image& output) { 
 
+        stopTimer_(task_name);
+        printTime_(task_name);
+
+        
+        cv::setWindowTitle(window_name_, task_name);
+        cv::imshow(window_name_, io::imageToCvMat(output));
+
+        blockCV_();
 
 
     }
