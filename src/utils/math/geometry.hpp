@@ -1,9 +1,12 @@
 #pragma once
 
 #include "../../data/image/image.hpp"
+#include "../../data/shapes/shapes.hpp"
 
 #include <vector>
 #include <array>
+
+using namespace shapes;
 
 
 namespace Geometry { 
@@ -44,5 +47,13 @@ namespace Geometry {
     std::vector<Point> getPointsInsideSquare(Point center, int size, double angle_deg);
 
 
+
+
+
+
+
+
+    // todo shapes section or new file? 
+    std::vector<Rect> rectTableFactory(Axis_Table x_idx, Axis_Table y_idx); // todo is factory the right term?
 
 }
