@@ -1,6 +1,7 @@
 #include "workbench_main.hpp"
 #include "examples/iterator_examples.hpp"
 #include "examples/grid_workbench.hpp"
+#include "examples/pixelate_workbench.hpp"
 #include "../../src/data/image/io.hpp"
 #include "logger.hpp"
 
@@ -20,7 +21,8 @@ namespace workbench {
     void runAll(string image_path, Logger& logger) { 
 
         // runIterator(image_path, logger);
-        runGrid(image_path, logger);
+        // runGrid(image_path, logger);
+        runPixelate(image_path, logger);
 
     }
 
