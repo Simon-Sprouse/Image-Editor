@@ -54,6 +54,7 @@ namespace Geometry {
 
 
     // todo shapes section or new file? 
+    vector<int> getIntervalsFromIndexes(const vector<int>& indexes);
     std::vector<Rect> rectTableFactory(Axis_Table ax); // todo is factory the right term?
 
 }
