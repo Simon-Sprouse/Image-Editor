@@ -13,8 +13,7 @@ namespace pixelate {
 
 
     struct Parameters { 
-        Axis_Table x_idx;
-        Axis_Table y_idx;
+        Axis_Table ax;
     };
 
 

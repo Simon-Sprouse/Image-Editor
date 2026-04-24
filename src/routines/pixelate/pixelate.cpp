@@ -13,7 +13,7 @@ namespace pixelate {
         canvas = image.clone();
 
 
-        rect_table_ = rectTableFactory(params_.x_idx, params_.y_idx); // todo: x_idx doesn't sound like enough like a list
+        rect_table_ = rectTableFactory(params_.ax); // todo: x_idx doesn't sound like enough like a list
     }
     
 

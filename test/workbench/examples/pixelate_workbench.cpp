@@ -26,12 +26,12 @@ namespace workbench {
         // todo rethink parameters
         int num_cols = 40; // todo these actually are named off by one bc they are indexes
         int num_rows = 12;
-        Axis_Table cols = {dimension::x, math::sequence::uniformSamplesBounds(0, original.getWidth(), num_cols)}; 
-        Axis_Table rows = {dimension::y, math::sequence::uniformSamplesBounds(0, original.getHeight(), num_rows)};
+        vector<int> cols = math::sequence::uniformSamplesBounds(0, original.getWidth(), num_cols); 
+        vector<int> rows = math::sequence::uniformSamplesBounds(0, original.getHeight(), num_rows);
+        Axis_Table ax{cols, rows};
 
         pixelate::Parameters params;
-        params.x_idx = cols;
-        params.y_idx = rows;
+        params.ax = ax;
 
         pixelate::Pixelate my_pixelate(params);
         my_pixelate.init(original);

@@ -54,6 +54,6 @@ namespace Geometry {
 
 
     // todo shapes section or new file? 
-    std::vector<Rect> rectTableFactory(Axis_Table x_idx, Axis_Table y_idx); // todo is factory the right term?
+    std::vector<Rect> rectTableFactory(Axis_Table ax); // todo is factory the right term?
 
 }

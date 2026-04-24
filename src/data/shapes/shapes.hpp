@@ -16,15 +16,11 @@ namespace shapes {
 
     // todo overload operators on rect like comp and equals
 
-    enum class dimension { 
-        x,
-        y,
-        z
-    };
+
 
     struct Axis_Table { 
-        dimension dim;
-        vector<int> indexes;
+        vector<int> x_table;
+        vector<int> y_table;
     };
 
 
