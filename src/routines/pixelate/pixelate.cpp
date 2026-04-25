@@ -34,7 +34,7 @@ namespace pixelate {
             Color avg_color = filter::color::avgColor(original, rect);
 
             // todo: namespaceing might be good pattern? because it shows where to find this? 
-            draw::polygon::drawRect(canvas, rect.tl, rect.dx, rect.dy, avg_color);
+            draw::polygon::drawRect(canvas, rect, avg_color);
         }
     }
 }

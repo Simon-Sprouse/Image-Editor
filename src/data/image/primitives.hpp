@@ -4,6 +4,8 @@
 
 namespace image { 
 
+    // todo: move geometric stuff to shapes and expand on color theory here
+
 
     struct Color { 
 

@@ -74,7 +74,7 @@ void Grid::drawRectAreas() {
         // todo overload with polygon struct
         Color avg_color = filter::color::avgColor(original, rect);
 
-        draw::polygon::drawRect(canvas, rect.tl, rect.dx, rect.dy, avg_color);
+        draw::polygon::drawRect(canvas, rect, avg_color);
 
     }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../image/image.hpp"
+#include "../image/primitives.hpp"
 #include <vector>
 
 using namespace std;

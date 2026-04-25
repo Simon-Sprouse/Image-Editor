@@ -3,6 +3,8 @@
 // todo: logical circular dependency
 #include "polygon.hpp"
 
+#include "../../data/shapes/shapes.hpp"
+
 
 #include <vector>
 #include <iostream>
@@ -10,6 +12,8 @@
 using std::cout, std::endl;
 
 using std::vector;
+
+using shapes::Rect;
 
 
 
@@ -24,38 +28,12 @@ namespace draw::line {
 
     void drawCol(Image& image, int col_index, const Color& color, int thickness) {
 
-        // int height = image.getHeight();
-        // int width = image.getWidth();
-
-        // int start_col = std::max(0, col_index - thickness/2);
-        // int end_col = std::min(width - 1, start_col + thickness - 1);
-
-        // int linear_start = image.getLinearIndex(start_col, 0);
-
-        // int pointer;
-        // for (int col = start_col; col <= end_col; col++) { 
-        //     pointer = image.getLinearIndex(col, 0);
-        //     for (int y = 0; y < height; y++) {
-        //         image.setPixel(pointer, color);
-        //         pointer += width;
-        //     }
-        // }
-
-        // TODO: While the below code is more readable, it is noticably slower ~25% on large jobs
-        // for (int col = start_col; col <= end_col; col++) { 
-        //     for (int y = 0; y < height; y++) { 
-        //         image.setPixel(col, y, color);
-        //     }
-        // }
-
-
+    
         int start_col = std::max(0, col_index - thickness/2);
         int end_col = std::min(image.getWidth() - 1, start_col + thickness - 1);
         int bounded_dx = end_col - start_col + 1;
         Point tl(start_col, 0);
-        draw::polygon::drawRect(image, tl, bounded_dx, image.getHeight(), color);
-
-
+        draw::polygon::drawRect(image, Rect{tl, bounded_dx, image.getHeight()}, color);
 
 
     }
@@ -64,30 +42,11 @@ namespace draw::line {
 
     void drawRow(Image& image, int row_index, const Color& color, int thickness) {
 
-        // // find row indicies to achieve thickness
-        // int start_row = std::max(0, row_index - (thickness/2));
-        // int end_row = std::min(image.getHeight()-1, start_row + (thickness-1));
-
-        // int linear_start;
-        // int width = image.getWidth();
-        // for (int row = start_row; row <= end_row; row++) { 
-        //     linear_start = image.getLinearIndex(0, row);
-        //     for (int x = 0; x < width; x++) { 
-        //         image.setPixel(linear_start + x, color);
-        //     }
-        // }
-
-
-
-
         int start_row = std::max(0, row_index - (thickness/2));
         int end_row = std::min(image.getHeight()-1, start_row + (thickness-1));
         int bounded_dy = end_row - start_row + 1;
         Point tl(0, start_row);
-        draw::polygon::drawRect(image, tl, image.getWidth(), bounded_dy, color);
-
-
-
+        draw::polygon::drawRect(image, Rect{tl, image.getWidth(), bounded_dy}, color);
 
     }
 
