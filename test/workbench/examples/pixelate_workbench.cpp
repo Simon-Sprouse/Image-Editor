@@ -10,6 +10,7 @@
 using namespace image;
 using namespace std;
 
+
 // todo: all routine workbenches together in one file
 
 namespace workbench { 
@@ -18,9 +19,49 @@ namespace workbench {
         cout << "hello from pixelate workbench" << endl;
 
 
+       
+
+        // common
+        int min = 0;
+        int max = 100000;
+
+        logger.start("fib");
+        vector<int> fib = math::sequence::goldenRatioSamples(min, max);
+        for (auto idx : fib) { 
+            cout << idx << " ";
+        }
+        cout << endl;
+        logger.stop("fib");
+
+
+        logger.start("even");
+        int num_idx = 12;
+        vector<int> even = math::sequence::uniformSamplesBounds(min, max, num_idx); 
+        for (auto idx : even) { cout << idx << " ";}
+        cout << endl;
+        logger.stop("even");
+
+
+
+        logger.start("sequence params");
+        math::sequence::SequenceParams s;
+        s.min = 10;
+        s.max = 1000;
+        s.num_elements = 10;
+        using st = math::sequence::SequenceType;
+        st type = st::uniform;
+        vector<int> seq = math::sequence::sequenceSelector(s, type);
+        for (auto idx : seq) { cout << idx << " ";}
+        cout << endl;
+        logger.stop("sequence params");
+
+
+
         logger.start("init");
 
         Image original = image::io::loadImageFileSystem(image_path);
+
+        
 
         
         // todo rethink parameters
@@ -38,7 +79,7 @@ namespace workbench {
         my_pixelate.run();
 
         logger.stop("init", my_pixelate.getCanvas());
-
+        
 
 
     }

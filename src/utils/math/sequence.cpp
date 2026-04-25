@@ -6,8 +6,8 @@
 #include <cmath>
 
 
-using std::vector;
-using std::cout, std::endl;
+
+using namespace std;
 
 
 
@@ -93,6 +93,41 @@ namespace math::sequence {
         return output;
 
     }
+
+
+
+    vector<int> goldenRatioSamples(int min, int max) { 
+
+        vector<int> output;
+        output.push_back(min); // todo: better way to add bounds
+
+        int l_pointer = min;
+        int range = max - l_pointer;
+
+        const double inv_phi = 0.6180339887498948; // todo: better way to do this
+
+        while (range > 1) { 
+            int step = std::max(1, static_cast<int>(range * inv_phi));
+            int new_index = l_pointer + step;
+            output.push_back(new_index);
+            l_pointer = new_index;
+            range = max - l_pointer;
+        }
+
+        output.push_back(max);
+        return output;
+    }
+
+
+
+
+    vector<int> sequenceSelector(const SequenceParams& p, SequenceType type) { 
+        switch (type) { 
+            case (SequenceType::uniform): return uniformSamplesBounds(p.min, p.max, p.num_elements);
+            case (SequenceType::golden_ratio): return goldenRatioSamples(p.min, p.max);
+        }
+    }
+
 
 
 
