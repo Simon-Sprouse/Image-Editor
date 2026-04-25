@@ -1,6 +1,7 @@
 #include "iterator_examples.hpp"
 #include "../../src/data/image/image.hpp"
 #include "../../src/data/image/io.hpp"
+#include "../../src/data/shapes/shapes.hpp"
 
 #include <iostream>
 
@@ -60,7 +61,8 @@ namespace workbench {
 
 
         cout << "Now supporting region row iteration" << endl;
-        RegionRowIterator rr = image.regionRows(Point(200, 100), 50, 75);
+        Rect rect{Point(200, 100), 50, 75};
+        RegionRowIterator rr = image.regionRows(rect);
         cout << "This unlocks range iteration where rows are the sentinel" << endl;
         int filled_elements = 0;
         int filled_rows = 0;
@@ -72,7 +74,7 @@ namespace workbench {
         cout << "filled: " << filled_elements << " elements using region row iterator" << endl;
         cout << "filled: " << filled_rows << " rows using region row iterator" << endl;
         cout << "printing 3x3 elements in tl corner: " << endl;
-        RegionRowIterator debug = image.regionRows(Point(200, 100), 50, 75);
+        RegionRowIterator debug = image.regionRows(rect);
         for (int k = 0; k < 3; k++) { 
             RowIterator row = debug.row();
             for (int l = 0; l < 3; l++) { 
@@ -102,7 +104,7 @@ namespace workbench {
         int dx = 3;
         int dy = 5;
         int count = 0;
-        for (auto px : image.region(tl, dx, dy)) { 
+        for (auto px : image.region(Rect{tl, dx, dy})) { 
             cout << px << ", ";
             count++;
         }

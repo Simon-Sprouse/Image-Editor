@@ -5,9 +5,11 @@
 #include <vector>
 
 #include "primitives.hpp"
-
+#include "../shapes/shapes.hpp"
 
 namespace image { 
+
+using shapes::Rect;
 
 
 // The rowPtr function already returns a pointer to the first element in row
@@ -67,7 +69,7 @@ class ConstRowIterator {
 
 
 class RegionRowIterator {
-    Color* start_;
+    Color* start_; // todo: color theory -- should Color* be the data type in image? Should image be SoA per each channel? 
     int dx_;
     int dy_;
     int width_; // for image, not region
@@ -125,7 +127,7 @@ class ConstRegionRowIterator {
 
 
 
-
+// this is a footgun likely
 class RegionIterator { 
     Color* ptr_;
     int dx_;
@@ -243,9 +245,9 @@ class Image {
     const Color* rowPtr(int y) const;
     RowIterator row(int y);
     // const ConstRowIterator row(int y); // TODO I don't need this right? 
-    RegionRowIterator regionRows(Point tl, int dx, int dy);
-    const ConstRegionRowIterator regionRows(const Point& tl, int dx, int dy) const;
-    RegionIterator region(Point tl, int dx, int dy);
+    RegionRowIterator regionRows(const Rect& rect);
+    const ConstRegionRowIterator regionRows(const Rect& rect) const;
+    RegionIterator region(const Rect& rect);
 
     // RegionRowIterator regionRows(Point tl, int dx, int dy);
     // const ConstRegionRowIterator regionRows(const Point& tl, int dx, int dy) const;

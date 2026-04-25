@@ -24,7 +24,7 @@ namespace filter::color {
         int total_b = 0;
 
         // todo overload iterator
-        for (auto row : image.regionRows(rect.tl, rect.dx, rect.dy)) { 
+        for (auto row : image.regionRows(rect)) { 
             for (auto c : row) { 
                 total_r += c.r;
                 total_g += c.g;
