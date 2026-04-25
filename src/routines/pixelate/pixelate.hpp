@@ -2,6 +2,7 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
+#include "../../utils/math/sequence.hpp"
 
 #include <vector>
 
@@ -13,7 +14,8 @@ namespace pixelate {
 
 
     struct Parameters { 
-        Axis_Table ax;
+        math::sequence::SequenceParams seq_x;
+        math::sequence::SequenceParams seq_y;
     };
 
 
@@ -30,6 +32,7 @@ namespace pixelate {
         private: 
             Parameters params_;
 
+            Axis_Table ax_;
             vector<Rect> rect_table_;
 
             Image original;

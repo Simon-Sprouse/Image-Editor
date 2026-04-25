@@ -96,7 +96,7 @@ namespace math::sequence {
 
 
 
-    vector<int> goldenRatioSamples(int min, int max) { 
+    vector<int> ratioSamples(int min, int max, double ratio) { 
 
         vector<int> output;
         output.push_back(min); // todo: better way to add bounds
@@ -104,10 +104,10 @@ namespace math::sequence {
         int l_pointer = min;
         int range = max - l_pointer;
 
-        const double inv_phi = 0.6180339887498948; // todo: better way to do this
+        // const double inv_phi = 0.6180339887498948; // todo: better way to do this
 
         while (range > 1) { 
-            int step = std::max(1, static_cast<int>(range * inv_phi));
+            int step = std::max(1, static_cast<int>(range * ratio));
             int new_index = l_pointer + step;
             output.push_back(new_index);
             l_pointer = new_index;
@@ -121,10 +121,10 @@ namespace math::sequence {
 
 
 
-    vector<int> sequenceSelector(const SequenceParams& p, SequenceType type) { 
-        switch (type) { 
+    vector<int> sequenceSelector(const SequenceParams& p) { 
+        switch (p.type) { 
             case (SequenceType::uniform): return uniformSamplesBounds(p.min, p.max, p.num_elements);
-            case (SequenceType::golden_ratio): return goldenRatioSamples(p.min, p.max);
+            case (SequenceType::ratio): return ratioSamples(p.min, p.max, p.ratio);
         }
     }
 

@@ -6,14 +6,19 @@
 using namespace image;
 using namespace Geometry;
 
+
 namespace pixelate { 
 
     void Pixelate::init(const Image& image) {
         original = image.clone();
         canvas = image.clone();
 
+        // generate sequences and store as axis table
+        ax_.x_table = math::sequence::sequenceSelector(params_.seq_x);
+        ax_.y_table = math::sequence::sequenceSelector(params_.seq_y);
 
-        rect_table_ = rectTableFactory(params_.ax); // todo: x_idx doesn't sound like enough like a list
+        // produce rect table from axis table
+        rect_table_ = rectTableFactory(ax_); 
     }
     
 

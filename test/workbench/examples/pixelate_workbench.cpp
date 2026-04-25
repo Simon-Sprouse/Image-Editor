@@ -24,14 +24,16 @@ namespace workbench {
         // common
         int min = 0;
         int max = 100000;
+        const double inv_phi = 0.6180339887498948; // todo: better way to do this
 
-        logger.start("fib");
-        vector<int> fib = math::sequence::goldenRatioSamples(min, max);
-        for (auto idx : fib) { 
+
+        logger.start("ratio");
+        vector<int> ratio = math::sequence::ratioSamples(min, max, inv_phi);
+        for (auto idx : ratio) { 
             cout << idx << " ";
         }
         cout << endl;
-        logger.stop("fib");
+        logger.stop("ratio");
 
 
         logger.start("even");
@@ -48,37 +50,46 @@ namespace workbench {
         s.min = 10;
         s.max = 1000;
         s.num_elements = 10;
+        s.ratio = 0.5;
         using st = math::sequence::SequenceType;
-        st type = st::uniform;
-        vector<int> seq = math::sequence::sequenceSelector(s, type);
+        s.type = st::uniform;
+        vector<int> seq = math::sequence::sequenceSelector(s);
         for (auto idx : seq) { cout << idx << " ";}
         cout << endl;
         logger.stop("sequence params");
 
 
 
-        logger.start("init");
+        logger.start("run pixelate");
 
         Image original = image::io::loadImageFileSystem(image_path);
 
-        
+        // create sequence params
+        using st = math::sequence::SequenceType;
 
+        math::sequence::SequenceParams seq_x;
+        seq_x.type = st::ratio;
+        seq_x.min = 0;
+        seq_x.max = original.getWidth();
+        seq_x.num_elements = 20;
+        seq_x.ratio = 0.5; // todo: default values for these
         
-        // todo rethink parameters
-        int num_cols = 40; // todo these actually are named off by one bc they are indexes
-        int num_rows = 12;
-        vector<int> cols = math::sequence::uniformSamplesBounds(0, original.getWidth(), num_cols); 
-        vector<int> rows = math::sequence::uniformSamplesBounds(0, original.getHeight(), num_rows);
-        Axis_Table ax{cols, rows};
+        math::sequence::SequenceParams seq_y;
+        seq_y.type = st::ratio;
+        seq_y.min = 0;
+        seq_y.max = original.getHeight();
+        seq_y.num_elements = 10;
+        seq_y.ratio = 0.25;
 
         pixelate::Parameters params;
-        params.ax = ax;
+        params.seq_x = seq_x;
+        params.seq_y = seq_y;
 
         pixelate::Pixelate my_pixelate(params);
         my_pixelate.init(original);
         my_pixelate.run();
 
-        logger.stop("init", my_pixelate.getCanvas());
+        logger.stop("run pixelate", my_pixelate.getCanvas());
         
 
 
