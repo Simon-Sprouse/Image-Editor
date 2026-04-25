@@ -9,37 +9,32 @@ using namespace Geometry;
 
 namespace pixelate { 
 
-    void Pixelate::init(const Image& image) {
-        original = image.clone();
-        canvas = image.clone();
+    void Pixelate::init(Cache& cache) {
+
+        // implies original is set by caller -- todo: is this good? 
+        cache.canvas = cache.original.clone();
 
         // generate sequences and store as axis table
-        ax_.x_table = math::sequence::sequenceSelector(params_.seq_x);
-        ax_.y_table = math::sequence::sequenceSelector(params_.seq_y);
+        cache.ax.x_table = math::sequence::sequenceSelector(params.seq_x);
+        cache.ax.y_table = math::sequence::sequenceSelector(params.seq_y);
 
         // produce rect table from axis table
-        rect_table_ = rectTableFactory(ax_); 
+        cache.rect_table = rectTableFactory(cache.ax); 
     }
     
 
-    Image Pixelate::getCanvas() { 
-        return canvas.clone();
+    void Pixelate::run(Cache& cache) { 
+        drawRectAreas(cache.original, cache.canvas, cache.rect_table);
     }
 
-    void Pixelate::run() { 
-        drawRectAreas();
-
-    }
-
-    void Pixelate::drawRectAreas() { 
-        for (Rect rect : rect_table_) { 
+    void Pixelate::drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table) { 
+        for (Rect rect : rect_table) { 
 
             // todo overload with polygon struct
             Color avg_color = filter::color::avgColor(original, rect.tl, rect.dx, rect.dy);
 
             // todo: namespaceing might be good pattern? because it shows where to find this? 
             draw::polygon::drawRect(canvas, rect.tl, rect.dx, rect.dy, avg_color);
-
         }
     }
 }

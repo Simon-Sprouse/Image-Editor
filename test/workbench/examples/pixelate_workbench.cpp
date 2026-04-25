@@ -4,6 +4,7 @@
 #include "../../src/routines/pixelate/pixelate.hpp"
 #include "../../src/data/shapes/shapes.hpp"
 #include "../../utils/math/sequence.hpp"
+#include "../../utils/math/constants.hpp"
 #include <vector>
 #include <iostream>
 
@@ -19,17 +20,15 @@ namespace workbench {
         cout << "hello from pixelate workbench" << endl;
 
 
-       
-
         // common
         int min = 0;
         int max = 100000;
-        const double inv_phi = 0.6180339887498948; // todo: better way to do this
-
+        
 
         logger.start("ratio");
-        vector<int> ratio = math::sequence::ratioSamples(min, max, inv_phi);
-        for (auto idx : ratio) { 
+        double ratio = math::constants::inv_phi;
+        vector<int> r = math::sequence::ratioSamples(min, max, ratio);
+        for (auto idx : r) { 
             cout << idx << " ";
         }
         cout << endl;
@@ -62,34 +61,40 @@ namespace workbench {
 
         logger.start("run pixelate");
 
-        Image original = image::io::loadImageFileSystem(image_path);
+        // --- load image ---
+        Image original_img = image::io::loadImageFileSystem(image_path);
 
-        // create sequence params
+        // -- load params --- 
         using st = math::sequence::SequenceType;
 
         math::sequence::SequenceParams seq_x;
         seq_x.type = st::ratio;
         seq_x.min = 0;
-        seq_x.max = original.getWidth();
+        seq_x.max = original_img.getWidth();
         seq_x.num_elements = 20;
         seq_x.ratio = 0.5; // todo: default values for these
         
         math::sequence::SequenceParams seq_y;
         seq_y.type = st::ratio;
         seq_y.min = 0;
-        seq_y.max = original.getHeight();
+        seq_y.max = original_img.getHeight();
         seq_y.num_elements = 10;
         seq_y.ratio = 0.25;
 
         pixelate::Parameters params;
         params.seq_x = seq_x;
         params.seq_y = seq_y;
-
         pixelate::Pixelate my_pixelate(params);
-        my_pixelate.init(original);
-        my_pixelate.run();
 
-        logger.stop("run pixelate", my_pixelate.getCanvas());
+        // --- run routine --- 
+
+        pixelate::Cache cache;
+        cache.original = original_img;
+
+        my_pixelate.init(cache);
+        my_pixelate.run(cache);
+
+        logger.stop("run pixelate", cache.canvas);
         
 
 

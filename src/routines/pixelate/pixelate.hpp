@@ -18,25 +18,29 @@ namespace pixelate {
         math::sequence::SequenceParams seq_y;
     };
 
+    struct Cache { 
+        Image original;
+        Image canvas;
+        Axis_Table ax;
+        vector<Rect> rect_table;
+    };
 
 
     class Pixelate { 
         public: 
 
-            Pixelate(Parameters p) : params_(p) {};
+            Pixelate(Parameters p) : params(p) {};
 
-            void run();
-            void drawRectAreas();
-            void init(const Image& image); // todo standardize and consolidate init() style logic in all routines
-            Image getCanvas();
+            // for now init expects cold start, later we will do selective updates
+            void init(Cache& cache); // todo standardize and consolidate init() style logic in all routines
+            void run(Cache& cache);
+            
+            
         private: 
-            Parameters params_;
 
-            Axis_Table ax_;
-            vector<Rect> rect_table_;
+            void drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table);
 
-            Image original;
-            Image canvas;
+            Parameters params;
 
     };
 
