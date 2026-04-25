@@ -349,6 +349,7 @@ namespace Geometry {
     }
 
 
+    // todo this name is bad
     vector<Rect> rectTableFactory(Axis_Table ax) { 
 
         // todo: this logic was copied from grid class and may be duplicate or sub-optimal

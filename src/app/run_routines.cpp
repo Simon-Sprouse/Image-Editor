@@ -3,13 +3,18 @@
 #include "../routines/mosaic/mosaic.hpp"
 #include "../routines/pop_art/pop_art.hpp"
 #include "../routines/grid/grid.hpp"
+#include "../routines/pixelate/pixelate.hpp"
+#include "../data/shapes/shapes.hpp"
+#include "../utils/math/sequence.hpp"
 
 #include <iostream>
 #include <string>
 
 
 using std::string, std::cout, std::endl;
-
+using shapes::Rect;
+using seq = math::sequence::SequenceParams;
+using seq_t = math::sequence::SequenceType;
 
 
 
@@ -107,27 +112,75 @@ namespace app {
 
     ImageResult runGrid(const Image& image) { 
 
-        grid::Parameters params;
-        params.rows = 30;
-        params.cols = 40;
-        params.thickness = 1;
+        seq seq_x;
+        seq_x.type = seq_t::uniform;
+        seq_x.min = 0;
+        seq_x.max = image.getWidth();
+        seq_x.ratio = 0.5;
+        seq_x.num_elements = 10;
 
+        seq seq_y;
+        seq_y.type = seq_t::ratio;
+        seq_y.min = 0;
+        seq_y.max = image.getHeight();
+        seq_y.ratio = 0.5;
+        seq_y.num_elements = 40;
 
+        grid::Parameters p;
+        p.seq_x = seq_x;
+        p.seq_y = seq_y;
+        p.thickness = 3;
 
-        grid::Grid my_grid(params);
-        my_grid.loadExistingImage(image);
+        grid::Cache cache;
+        cache.original = image.clone();
 
-
-        my_grid.run();
-        
+        grid::Grid my_grid(p);
+        my_grid.init(cache);
+        my_grid.run(cache);
 
 
         ImageResult output;
         output.label = "grid";
-        output.image = my_grid.getCanvas();
+        output.image = cache.canvas;
 
         return output;
 
+    }
+
+
+    ImageResult runPixelate(const Image& image) { 
+
+        seq seq_x;
+        seq_x.type = seq_t::uniform;
+        seq_x.min = 0;
+        seq_x.max = image.getWidth();
+        seq_x.ratio = 0.5;
+        seq_x.num_elements = 40;
+
+        seq seq_y;
+        seq_y.type = seq_t::ratio;
+        seq_y.min = 0;
+        seq_y.max = image.getHeight();
+        seq_y.ratio = 0.5;
+        seq_y.num_elements = 20;
+
+        pixelate::Parameters p;
+        p.seq_x = seq_x;
+        p.seq_y = seq_y;
+
+        pixelate::Cache cache;
+        cache.original = image.clone();
+
+        pixelate::Pixelate my_pixelate(p);
+        my_pixelate.init(cache);
+        my_pixelate.run(cache);
+
+
+        ImageResult output;
+        output.label = "pixelate";
+        output.image = cache.canvas;
+
+        return output;
     }
 
 

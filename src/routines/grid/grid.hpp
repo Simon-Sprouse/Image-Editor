@@ -2,19 +2,28 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
+#include "../../utils/math/sequence.hpp"
 
 #include <vector>
 using std::vector;
-using shapes::Rect;
 
 namespace grid { 
 
 using image::Image, image::Color, image::Point;
+using Seq = math::sequence::SequenceParams;
+using shapes::Rect, shapes::Axis_Table;
+
 
 struct Parameters { 
-    int rows;
-    int cols;
+    Seq seq_x;
+    Seq seq_y;
     int thickness;
+};
+
+struct Cache { 
+    Image original;
+    Image canvas;
+    Axis_Table ax;
 };
 
 
@@ -23,31 +32,21 @@ class Grid {
 
     public: 
         
-        Grid() {};
         Grid(Parameters p) : params(p) {};
 
-        void loadExistingImage(const Image& image);
+        void init(Cache& cache);
+        void run(Cache& cache);
 
-        void computeRectCoords();
-        void drawRectAreas();
-        void drawGridLines();
-        void run();
-        Image getCanvas();
-        void setParameters(Parameters p);
-        void clearData();
+        // void setParameters(Parameters p); todo: what happens here? 
+        // void clearData();
         
 
 
     private: 
         Parameters params;
 
-        vector<Rect> rect_coords;
-        vector<int> cols;
-        vector<int> rows;
+        void drawGridLines(Image& canvas, const Axis_Table& ax);
 
-
-        Image original;
-        Image canvas;
 
 };
 
