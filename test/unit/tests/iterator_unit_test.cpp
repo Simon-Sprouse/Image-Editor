@@ -1,4 +1,5 @@
 #include "iterator_unit_test.hpp"
+#include "../../src/data/shapes/shapes.hpp"
 
 #include <iostream>
 #include <vector>
@@ -6,6 +7,7 @@
 using std::cout, std::cerr, std::endl;
 using std::vector, std::to_string;
 using namespace image;
+using shapes::Rect;
 
 namespace unit_test::iterator {
 
@@ -19,15 +21,16 @@ namespace unit_test::iterator {
         Point tl = Point(200, 100);
         int dx = 50;
         int dy = 75;
+        Rect rect{tl, dx, dy};
         int region_size = dx * dy;
 
 
         // construction
-        RegionIterator ri = image.region(tl, dx, dy); // better test lol
+        RegionIterator ri = image.region(rect); // better test lol
 
         // num iterations
         int num_iterations = 0;
-        for (auto px : image.region(tl, dx, dy)) { 
+        for (auto px : image.region(rect)) { 
             num_iterations++;
         }
         assertEqual(region_size, num_iterations, "num iterations in region");
@@ -49,7 +52,7 @@ namespace unit_test::iterator {
 
         vector<Color> ts;
         ts.reserve(region_size);
-        for (auto px : image.region(tl, dx, dy)) { 
+        for (auto px : image.region(rect)) { 
             ts.push_back(px);
         }
 
@@ -103,16 +106,17 @@ namespace unit_test::iterator {
         Point tl = Point(200, 100);
         int dx = 50;
         int dy = 75;
+        Rect rect{tl, dx, dy};
         int region_size = dx * dy;
         
 
         // constructor
-        RegionRowIterator rri = image.regionRows(tl, dx, dy);
+        RegionRowIterator rri = image.regionRows(rect);
 
         // num iterations
         int num_iterations_row = 0;
         int num_iterations_px = 0;
-        for (auto row : image.regionRows(tl, dx, dy)) { 
+        for (auto row : image.regionRows(rect)) { 
             for (auto px : row) { 
                 num_iterations_px++;
             }
@@ -135,7 +139,7 @@ namespace unit_test::iterator {
 
         vector<Color> ts;
         gt.reserve(dy);
-        RegionRowIterator rri_row_test = image.regionRows(tl, dx, dy);
+        RegionRowIterator rri_row_test = image.regionRows(rect);
         for (int i = 0; i < row_number; i++) { 
             ++rri_row_test; 
             // todo postfix and other completeness for iterators
@@ -160,7 +164,7 @@ namespace unit_test::iterator {
 
         vector<Color> ts_region;
         ts_region.reserve(region_size);
-        for (auto row : image.regionRows(tl, dx, dy)) { 
+        for (auto row : image.regionRows(rect)) { 
             for (auto px : row) { 
                 ts_region.push_back(px);
             }

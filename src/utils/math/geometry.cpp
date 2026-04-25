@@ -2,6 +2,7 @@
 
 
 #include <iostream>
+#include <vector>
 
 
 using namespace std;
@@ -329,5 +330,43 @@ namespace Geometry {
     }
 
 
+
+
+
+
+    vector<int> getIntervalsFromIndexes(const vector<int>& indexes) { 
+
+        int num_intervals = indexes.size() - 1;
+        vector<int> intervals;
+
+        for (int i = 0; i < num_intervals; i++) { 
+            int current_idx = indexes[i];
+            int next_idx = indexes[i+1]; // fine becuse 
+            int delta = next_idx - current_idx;
+            intervals.push_back(delta);
+        }
+        return intervals;
+    }
+
+
+    // todo this name is bad
+    vector<Rect> rectTableFactory(Axis_Table ax) { 
+
+        // todo: this logic was copied from grid class and may be duplicate or sub-optimal
+
+        vector<int> col_intervals = getIntervalsFromIndexes(ax.x_table);
+        vector<int> row_intervals = getIntervalsFromIndexes(ax.y_table);
+
+        vector<Rect> rect_table;
+        for (int i = 0; i < col_intervals.size(); i++) { 
+            for (int j = 0; j < row_intervals.size(); j++) { 
+                Rect r = Rect{Point(ax.x_table[i], ax.y_table[j]), col_intervals[i], row_intervals[j]};
+                rect_table.push_back(r);
+            }
+        }
+
+        return rect_table;
+
+    }
 
 }

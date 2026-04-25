@@ -61,6 +61,9 @@ namespace app {
             else if (key == '5') { 
                 result = runGrid(image);
             }
+            else if (key == '6') { 
+                result = runPixelate(image);
+            }
 
 
             if (!result.empty()) { 

@@ -1,0 +1,47 @@
+#pragma once
+
+#include "../../data/image/image.hpp"
+#include "../../data/shapes/shapes.hpp"
+#include "../../utils/math/sequence.hpp"
+
+#include <vector>
+
+using namespace image;
+using namespace shapes;
+using namespace std;
+
+namespace pixelate { 
+
+
+    struct Parameters { 
+        math::sequence::SequenceParams seq_x;
+        math::sequence::SequenceParams seq_y;
+    };
+
+    struct Cache { 
+        Image original;
+        Image canvas;
+        Axis_Table ax;
+        vector<Rect> rect_table;
+    };
+
+
+    class Pixelate { 
+        public: 
+
+            Pixelate(Parameters p) : params(p) {};
+
+            // for now init expects cold start, later we will do selective updates
+            void init(Cache& cache); // todo standardize and consolidate init() style logic in all routines
+            void run(Cache& cache);
+            
+            
+        private: 
+
+            void drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table);
+
+            Parameters params;
+
+    };
+
+}

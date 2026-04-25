@@ -20,6 +20,7 @@ add_executable(mosaic_tiler
     routines/mosaic/mosaic.cpp
     routines/pop_art/pop_art.cpp
     routines/grid/grid.cpp
+    routines/pixelate/pixelate.cpp
 
     utils/math/geometry.cpp
     utils/math/kernel.cpp
@@ -38,6 +39,7 @@ add_executable(mosaic_tiler
     ../test/workbench/logger.cpp
     ../test/workbench/examples/iterator_examples.cpp
     ../test/workbench/examples/grid_workbench.cpp
+    ../test/workbench/examples/pixelate_workbench.cpp
     ../test/unit/unit_test_main.cpp
     ../test/unit/tests/iterator_unit_test.cpp
     

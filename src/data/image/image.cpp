@@ -191,19 +191,19 @@ RowIterator Image::row(int y) {
 }
 
 
-RegionRowIterator Image::regionRows(Point tl, int dx, int dy) { 
-    Color* start = data() + getLinearIndex(tl);
-    return RegionRowIterator(start, dx, dy, width_);
+RegionRowIterator Image::regionRows(const Rect& rect) { 
+    Color* start = data() + getLinearIndex(rect.tl);
+    return RegionRowIterator(start, rect.dx, rect.dy, width_);
 }
 
-const ConstRegionRowIterator Image::regionRows(const Point& tl, int dx, int dy) const { 
-    const Color* start = data() + getLinearIndex(tl);
-    return ConstRegionRowIterator(start, dx, dy, width_);
+const ConstRegionRowIterator Image::regionRows(const Rect& rect) const { 
+    const Color* start = data() + getLinearIndex(rect.tl);
+    return ConstRegionRowIterator(start, rect.dx, rect.dy, width_);
 }
 
-RegionIterator Image::region(Point tl, int dx, int dy) { 
-    Color* start = data() + getLinearIndex(tl);
-    return RegionIterator(start, dx, dy, width_);
+RegionIterator Image::region(const Rect& rect) { 
+    Color* start = data() + getLinearIndex(rect.tl);
+    return RegionIterator(start, rect.dx, rect.dy, width_);
 }
 
 
