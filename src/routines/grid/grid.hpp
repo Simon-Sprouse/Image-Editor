@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../../data/image/image.hpp"
+#include "../../data/shapes/shapes.hpp"
 
 #include <vector>
 using std::vector;
+using shapes::Rect;
 
 namespace grid { 
 
@@ -15,12 +17,7 @@ struct Parameters {
     int thickness;
 };
 
-// Todo: structs for polygon shapes? 
-struct Rect { 
-    Point tl_corner;
-    int dx;
-    int dy;
-};
+
 
 class Grid { 
 

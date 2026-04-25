@@ -31,7 +31,7 @@ namespace pixelate {
         for (Rect rect : rect_table) { 
 
             // todo overload with polygon struct
-            Color avg_color = filter::color::avgColor(original, rect.tl, rect.dx, rect.dy);
+            Color avg_color = filter::color::avgColor(original, rect);
 
             // todo: namespaceing might be good pattern? because it shows where to find this? 
             draw::polygon::drawRect(canvas, rect.tl, rect.dx, rect.dy, avg_color);

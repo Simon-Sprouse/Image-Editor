@@ -72,9 +72,9 @@ void Grid::drawRectAreas() {
     for (Rect rect : rect_coords) { 
 
         // todo overload with polygon struct
-        Color avg_color = filter::color::avgColor(original, rect.tl_corner, rect.dx, rect.dy);
+        Color avg_color = filter::color::avgColor(original, rect);
 
-        draw::polygon::drawRect(canvas, rect.tl_corner, rect.dx, rect.dy, avg_color);
+        draw::polygon::drawRect(canvas, rect.tl, rect.dx, rect.dy, avg_color);
 
     }
 }
