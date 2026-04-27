@@ -120,6 +120,20 @@ namespace random_gen {
 
 
 
+    uint32_t lcg(uint32_t seed) { 
+        // Real formula is: 
+        // R0 = seed
+        // Rn = (aRn + c) mod m
+        // where: c and m are coprime, a-1 divisible by prime factors of m, 
+        //        and if m is divisible then a-1 % 4 == 0
+        //
+        // but we cam set m = 2^32 and int_32 overflows gives a natural mod
+        uint32_t a = 1664525u;
+        uint32_t c = 1013904223u;
+        return a * seed + c;
+    }
+
+
 
 
 

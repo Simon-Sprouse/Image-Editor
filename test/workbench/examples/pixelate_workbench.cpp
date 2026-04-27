@@ -6,6 +6,7 @@
 #include "../../src/functions/math/sequence.hpp"
 #include "../../src/functions/math/constants.hpp"
 #include "../../src/variants/math/sequence_variants.hpp"
+#include "../../src/functions/random/random.hpp"
 #include <vector>
 #include <iostream>
 
@@ -42,6 +43,29 @@ namespace workbench {
         for (auto idx : even) { cout << idx << " ";}
         cout << endl;
         logger.stop("even");
+
+
+        logger.start("random");
+        uint32_t seed = 93u;
+        uint32_t random_int = random_gen::lcg(seed);
+        cout << "random int: " << random_int << endl;
+        int num_random_iterations = 10;
+        cout << num_random_iterations << "more rands: ";
+        for (int i = 0; i < num_random_iterations; i++){ 
+            cout << random_gen::lcg(1<<i) << " ";
+        }        
+        cout << endl;
+
+        cout << "random sequence: " << endl;
+        vector<int> random_vec = math::sequence::randomSamples(min, max, num_idx, seed);
+        for (auto n : random_vec) { 
+            cout << n << " ";
+        }
+        cout << endl;
+
+        logger.stop("random");
+
+
 
 
 

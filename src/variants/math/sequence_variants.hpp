@@ -11,7 +11,8 @@ namespace variant_fn {
 
      enum class SequenceMode { 
         uniform,
-        ratio
+        ratio,
+        random
     };
 
     // common params accross all variants
@@ -27,12 +28,16 @@ namespace variant_fn {
 
         // ratio
         double ratio;
+
+        // random 
+        uint32_t seed;
     };
 
     inline vector<int> sequenceFn(const SequenceCommon& p) { 
         switch (p.mode) { 
             case (SequenceMode::uniform): return math::sequence::uniformSamplesBounds(p.min, p.max, p.num_elements);
             case (SequenceMode::ratio): return math::sequence::ratioSamples(p.min, p.max, p.ratio);
+            case (SequenceMode::random): return math::sequence::randomSamples(p.min, p.max, p.num_elements, p.seed);
         }
     }
 

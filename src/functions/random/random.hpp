@@ -49,6 +49,17 @@ namespace random_gen {
         std::shuffle(vec.begin(), vec.end(), rng);
     }
 
+
+
+
+
+
+    // NEW CODE vvv POST MOSAIC
+
+    // Linear Congruential Generator - simple solution could be optimized
+
+    // todo extend into variant at some point
+    uint32_t lcg(uint32_t seed);
    
 
 }
