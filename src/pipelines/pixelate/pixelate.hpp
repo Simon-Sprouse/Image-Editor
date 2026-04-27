@@ -2,7 +2,7 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
-#include "../../functions/math/sequence.hpp"
+#include "../../variants/math/sequence_variants.hpp"
 
 #include <vector>
 
@@ -14,8 +14,8 @@ namespace pixelate {
 
 
     struct Parameters { 
-        math::sequence::SequenceParams seq_x;
-        math::sequence::SequenceParams seq_y;
+        variant_fn::SequenceCommon seq_x_common;
+        variant_fn::SequenceCommon seq_y_common;
     };
 
     struct Cache { 

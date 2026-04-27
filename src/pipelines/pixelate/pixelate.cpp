@@ -15,8 +15,8 @@ namespace pixelate {
         cache.canvas = cache.original.clone();
 
         // generate sequences and store as axis table
-        cache.ax.x_table = math::sequence::sequenceSelector(params.seq_x);
-        cache.ax.y_table = math::sequence::sequenceSelector(params.seq_y);
+        cache.ax.x_table = variant_fn::sequenceFn(params.seq_x_common);
+        cache.ax.y_table = variant_fn::sequenceFn(params.seq_y_common);
 
         // produce rect table from axis table
         cache.rect_table = rectTableFactory(cache.ax); 

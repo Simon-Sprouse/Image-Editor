@@ -1,5 +1,4 @@
 #include "sequence.hpp"
-#include "../random/random.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -121,12 +120,7 @@ namespace math::sequence {
 
 
 
-    vector<int> sequenceSelector(const SequenceParams& p) { 
-        switch (p.type) { 
-            case (SequenceType::uniform): return uniformSamplesBounds(p.min, p.max, p.num_elements);
-            case (SequenceType::ratio): return ratioSamples(p.min, p.max, p.ratio);
-        }
-    }
+
 
 
 

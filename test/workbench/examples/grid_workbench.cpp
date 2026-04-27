@@ -3,6 +3,7 @@
 #include "../../src/data/image/io.hpp"
 #include "../../src/pipelines/grid/grid.hpp"
 #include "../../src/functions/math/sequence.hpp"
+#include "../../src/variants/math/sequence_variants.hpp"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
@@ -10,8 +11,7 @@
 using namespace std;
 using namespace image;
 using grid::Grid, grid::Parameters, grid::Cache;
-using seq = math::sequence::SequenceParams;
-using seq_t = math::sequence::SequenceType;
+
 
 
 namespace workbench { 
@@ -25,23 +25,23 @@ namespace workbench {
 
         // todo - input validation / default values
         // note - this block is the biggest downside of our pattern
-        seq seq_x;
-        seq_x.type = seq_t::uniform;
+        variant_fn::SequenceCommon seq_x;
+        seq_x.mode = variant_fn::SequenceMode::uniform;
         seq_x.min = 0;
         seq_x.max = original_img.getWidth();
         seq_x.num_elements = 10;
         seq_x.ratio = 0.5;
 
-        seq seq_y;
-        seq_y.type = seq_t::ratio;
+        variant_fn::SequenceCommon seq_y;
+        seq_y.mode = variant_fn::SequenceMode::ratio;
         seq_y.min = 0;
         seq_y.max = original_img.getHeight();
         seq_y.num_elements = 30;
         seq_y.ratio = 0.5;
 
         Parameters p;
-        p.seq_x = seq_x;
-        p.seq_y = seq_y;
+        p.seq_x_common = seq_x;
+        p.seq_y_common = seq_y;
         p.thickness = 3;
 
         Cache cache;

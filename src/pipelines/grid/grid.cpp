@@ -2,7 +2,6 @@
 
 #include "../../functions/graphics/line.hpp"
 #include "../../functions/graphics/polygon.hpp"
-#include "../../functions/math/sequence.hpp"
 #include "../../functions/math/geometry.hpp"
 #include "../../functions/filter/color.hpp"
 
@@ -23,8 +22,8 @@ namespace grid {
 
 void Grid::init(Cache& cache) { 
     cache.canvas = cache.original.clone();
-    cache.ax.x_table = math::sequence::sequenceSelector(params.seq_x);
-    cache.ax.y_table = math::sequence::sequenceSelector(params.seq_y);
+    cache.ax.x_table = variant_fn::sequenceFn(params.seq_x_common);
+    cache.ax.y_table = variant_fn::sequenceFn(params.seq_y_common);
 }
 
 

@@ -3,8 +3,9 @@
 #include "../../src/data/image/io.hpp"                  // todo: if we include io we also want image.hpp
 #include "../../src/pipelines/pixelate/pixelate.hpp"
 #include "../../src/data/shapes/shapes.hpp"
-#include "../../functions/math/sequence.hpp"
-#include "../../functions/math/constants.hpp"
+#include "../../src/functions/math/sequence.hpp"
+#include "../../src/functions/math/constants.hpp"
+#include "../../src/variants/math/sequence_variants.hpp"
 #include <vector>
 #include <iostream>
 
@@ -45,14 +46,14 @@ namespace workbench {
 
 
         logger.start("sequence params");
-        math::sequence::SequenceParams s;
+        variant_fn::SequenceCommon s;
         s.min = 10;
         s.max = 1000;
         s.num_elements = 10;
         s.ratio = 0.5;
-        using st = math::sequence::SequenceType;
-        s.type = st::uniform;
-        vector<int> seq = math::sequence::sequenceSelector(s);
+        using st = variant_fn::SequenceMode;
+        s.mode = st::uniform;
+        vector<int> seq = variant_fn::sequenceFn(s);
         for (auto idx : seq) { cout << idx << " ";}
         cout << endl;
         logger.stop("sequence params");
@@ -65,25 +66,24 @@ namespace workbench {
         Image original_img = image::io::loadImageFileSystem(image_path);
 
         // -- load params --- 
-        using st = math::sequence::SequenceType;
 
-        math::sequence::SequenceParams seq_x;
-        seq_x.type = st::ratio;
+        variant_fn::SequenceCommon seq_x;
+        seq_x.mode = st::ratio;
         seq_x.min = 0;
         seq_x.max = original_img.getWidth();
         seq_x.num_elements = 20;
         seq_x.ratio = 0.5; // todo: default values for these
         
-        math::sequence::SequenceParams seq_y;
-        seq_y.type = st::ratio;
+        variant_fn::SequenceCommon seq_y;
+        seq_y.mode = st::ratio;
         seq_y.min = 0;
         seq_y.max = original_img.getHeight();
         seq_y.num_elements = 10;
         seq_y.ratio = 0.25;
 
         pixelate::Parameters params;
-        params.seq_x = seq_x;
-        params.seq_y = seq_y;
+        params.seq_x_common = seq_x;
+        params.seq_y_common = seq_y;
         pixelate::Pixelate my_pixelate(params);
 
         // --- run pipeline --- 
