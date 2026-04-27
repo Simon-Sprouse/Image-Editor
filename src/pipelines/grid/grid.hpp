@@ -2,7 +2,7 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
-#include "../../utils/math/sequence.hpp"
+#include "../../functions/math/sequence.hpp"
 
 #include <vector>
 using std::vector;

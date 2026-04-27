@@ -1,8 +1,8 @@
 #include "grid_workbench.hpp"
 #include "../../src/data/image/image.hpp"
 #include "../../src/data/image/io.hpp"
-#include "../../src/routines/grid/grid.hpp"
-#include "../../src/utils/math/sequence.hpp"
+#include "../../src/pipelines/grid/grid.hpp"
+#include "../../src/functions/math/sequence.hpp"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>

@@ -20,9 +20,9 @@ namespace workbench {
     // Some might be commented out for testing purposes
     void runAll(string image_path, Logger& logger) { 
 
-        // runIterator(image_path, logger);
+        runIterator(image_path, logger);
         runGrid(image_path, logger);
-        // runPixelate(image_path, logger);
+        runPixelate(image_path, logger);
 
     }
 

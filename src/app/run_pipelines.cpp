@@ -1,11 +1,11 @@
-#include "run_routines.hpp"
+#include "run_pipelines.hpp"
 
-#include "../routines/mosaic/mosaic.hpp"
-#include "../routines/pop_art/pop_art.hpp"
-#include "../routines/grid/grid.hpp"
-#include "../routines/pixelate/pixelate.hpp"
+#include "../pipelines/mosaic/mosaic.hpp"
+#include "../pipelines/pop_art/pop_art.hpp"
+#include "../pipelines/grid/grid.hpp"
+#include "../pipelines/pixelate/pixelate.hpp"
 #include "../data/shapes/shapes.hpp"
-#include "../utils/math/sequence.hpp"
+#include "../functions/math/sequence.hpp"
 
 #include <iostream>
 #include <string>

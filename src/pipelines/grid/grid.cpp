@@ -1,10 +1,10 @@
 #include "grid.hpp"
 
-#include "../../utils/graphics/line.hpp"
-#include "../../utils/graphics/polygon.hpp"
-#include "../../utils/math/sequence.hpp"
-#include "../../utils/math/geometry.hpp"
-#include "../../utils/filter/color.hpp"
+#include "../../functions/graphics/line.hpp"
+#include "../../functions/graphics/polygon.hpp"
+#include "../../functions/math/sequence.hpp"
+#include "../../functions/math/geometry.hpp"
+#include "../../functions/filter/color.hpp"
 
 #include <vector>
 #include <iostream>

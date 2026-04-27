@@ -1,7 +1,7 @@
 #include "pixelate.hpp"
-#include "../../utils/math/geometry.hpp"
-#include "../../utils/graphics/polygon.hpp"
-#include "../../utils/filter/color.hpp"
+#include "../../functions/math/geometry.hpp"
+#include "../../functions/graphics/polygon.hpp"
+#include "../../functions/filter/color.hpp"
 
 using namespace image;
 using namespace Geometry;

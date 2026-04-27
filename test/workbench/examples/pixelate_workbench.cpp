@@ -1,10 +1,10 @@
 #include "pixelate_workbench.hpp"
 #include "../../src/data/image/image.hpp"
 #include "../../src/data/image/io.hpp"                  // todo: if we include io we also want image.hpp
-#include "../../src/routines/pixelate/pixelate.hpp"
+#include "../../src/pipelines/pixelate/pixelate.hpp"
 #include "../../src/data/shapes/shapes.hpp"
-#include "../../utils/math/sequence.hpp"
-#include "../../utils/math/constants.hpp"
+#include "../../functions/math/sequence.hpp"
+#include "../../functions/math/constants.hpp"
 #include <vector>
 #include <iostream>
 
@@ -12,7 +12,7 @@ using namespace image;
 using namespace std;
 
 
-// todo: all routine workbenches together in one file
+// todo: all pipeline workbenches together in one file
 
 namespace workbench { 
     void runPixelate(string image_path, Logger logger) { 
@@ -86,7 +86,7 @@ namespace workbench {
         params.seq_y = seq_y;
         pixelate::Pixelate my_pixelate(params);
 
-        // --- run routine --- 
+        // --- run pipeline --- 
 
         pixelate::Cache cache;
         cache.original = original_img;

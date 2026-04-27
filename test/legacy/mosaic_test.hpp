@@ -2,13 +2,13 @@
 
 #include "../../base_test.hpp"
 #include "../../../src/data/image/image.hpp"
-#include "../../../src/routines/mosaic/mosaic.hpp"
+#include "../../../src/pipelines/mosaic/mosaic.hpp"
 
-#include "../../../src/utils/graphics/graphics.hpp"
+#include "../../../src/functions/graphics/graphics.hpp"
 #include "../../../src/data/image/io.hpp"
-#include "../../../src/utils/random/random.hpp"
+#include "../../../src/functions/random/random.hpp"
 
-#include "../../../src/utils/math/geometry.hpp"
+#include "../../../src/functions/math/geometry.hpp"
 
 
 #include <opencv2/imgproc.hpp>
