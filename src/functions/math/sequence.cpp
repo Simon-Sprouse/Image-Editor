@@ -7,6 +7,7 @@
 
 
 
+
 using namespace std;
 
 
@@ -87,7 +88,7 @@ namespace math::sequence {
 
 
         vector<int> output = uniformSamples(min, max, num_elements - 2);
-        output.insert(output.begin(), min);
+        output.insert(output.begin(), min); // todo this is slow
         output.push_back(max);
         
         return output;
@@ -122,10 +123,15 @@ namespace math::sequence {
     vector<int> randomSamples(int min, int max, int num_elements, int32_t seed) { 
         vector<int> output;
         output.reserve(num_elements);
-        for (int i = 0; i < num_elements; i++) { 
+
+        output.push_back(min);
+
+        for (int i = 0; i < num_elements - 2; i++) { 
             int random_step = static_cast<int>(random_gen::lcg(seed + i) % (max - min));
             output.push_back(random_step + min);
+            cout << "random sample step: " << i << " output: " << random_step + min << endl;
         }
+        output.push_back(max);
         return output;
     }
 

@@ -46,6 +46,8 @@ namespace workbench {
 
 
         logger.start("random");
+
+        // make a single random number
         uint32_t seed = 93u;
         uint32_t random_int = random_gen::lcg(seed);
         cout << "random int: " << random_int << endl;
@@ -56,12 +58,15 @@ namespace workbench {
         }        
         cout << endl;
 
+        // make a sequence of random numbers
         cout << "random sequence: " << endl;
         vector<int> random_vec = math::sequence::randomSamples(min, max, num_idx, seed);
         for (auto n : random_vec) { 
             cout << n << " ";
         }
         cout << endl;
+
+
 
         logger.stop("random");
 
@@ -75,8 +80,9 @@ namespace workbench {
         s.max = 1000;
         s.num_elements = 10;
         s.ratio = 0.5;
+        s.seed = 100;
         using st = variant_fn::SequenceMode;
-        s.mode = st::uniform;
+        s.mode = st::random;
         vector<int> seq = variant_fn::sequenceFn(s);
         for (auto idx : seq) { cout << idx << " ";}
         cout << endl;
@@ -84,7 +90,7 @@ namespace workbench {
 
 
 
-        logger.start("run pixelate");
+        
 
         // --- load image ---
         Image original_img = image::io::loadImageFileSystem(image_path);
@@ -95,30 +101,58 @@ namespace workbench {
         seq_x.mode = st::ratio;
         seq_x.min = 0;
         seq_x.max = original_img.getWidth();
-        seq_x.num_elements = 20;
+        seq_x.num_elements = 4;
         seq_x.ratio = 0.5; // todo: default values for these
+        seq_x.seed = 300;
         
         variant_fn::SequenceCommon seq_y;
-        seq_y.mode = st::ratio;
+        seq_y.mode = st::random;
         seq_y.min = 0;
         seq_y.max = original_img.getHeight();
-        seq_y.num_elements = 10;
+        seq_y.num_elements = 5;
         seq_y.ratio = 0.25;
+        seq_y.seed = 100;
 
         pixelate::Parameters params;
         params.seq_x_common = seq_x;
+        params.seq_x_common.mode = st::random;
         params.seq_y_common = seq_y;
-        pixelate::Pixelate my_pixelate(params);
 
-        // --- run pipeline --- 
+        // --- load cache ---
 
         pixelate::Cache cache;
         cache.original = original_img;
+        
 
+        // --- run pipeline --- 
+        logger.start("run pixelate");
+        pixelate::Pixelate my_pixelate(params);
+        
         my_pixelate.init(cache);
         my_pixelate.run(cache);
 
         logger.stop("run pixelate", cache.canvas);
+
+        // --- run multiple times ---
+        
+        for (int i = 2; i < 100; i += 2) { 
+            std::string task_name = "run pixelate: " + std::to_string(i); // todo logger handles many tests with same name elegantly
+            logger.start(task_name);
+
+            params.seq_x_common.num_elements = i;
+            params.seq_x_common.seed = 300 + 1000*i;
+
+            params.seq_y_common.num_elements = i;
+            params.seq_y_common.seed = 500 + 700*i;
+
+
+            pixelate::Pixelate my_pixelate_scoped(params); // todo rule of 5 pipelines
+            my_pixelate_scoped.init(cache);
+            my_pixelate_scoped.run(cache);
+            logger.stop(task_name, cache.canvas);
+
+        }
+
         
 
 
