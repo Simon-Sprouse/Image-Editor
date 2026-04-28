@@ -26,20 +26,13 @@ namespace pixelate {
         std::sort(cache.ax.x_table.begin(), cache.ax.x_table.end());
         std::sort(cache.ax.y_table.begin(), cache.ax.y_table.end());
 
-        cout << "ax x_table" << endl;
-        for (auto n : cache.ax.x_table) { 
-            cout << "element: " << n << endl;
-        }
-        cout << endl << endl;
-
-        cout << "ax y_table" << endl;
-        for (auto n : cache.ax.y_table) { 
-            cout << "element: " << n << endl;
-        }
-        cout << endl << endl;
+        
 
         // produce rect table from axis table
         cache.rect_table = rectTableFactory(cache.ax); 
+
+        cout << "Rect table:" << endl;
+        shapes::printVectorNewline<shapes::Rect>(cache.rect_table);
     }
     
 
@@ -50,14 +43,11 @@ namespace pixelate {
     void Pixelate::drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table) { 
         for (Rect rect : rect_table) { 
 
-            cout << "rect.tl: " << rect.tl << endl;
-            cout << "rect.dx: " << rect.dx << endl;
-            cout << "rect.dy: " << rect.dy << endl; 
+            cout << rect << endl;
 
             // todo overload with polygon struct
             Color avg_color = filter::color::avgColor(original, rect);
 
-            cout << "avg color for rect: " << avg_color << endl;
 
             // todo: namespaceing might be good pattern? because it shows where to find this? 
             draw::polygon::drawRect(canvas, rect, avg_color);

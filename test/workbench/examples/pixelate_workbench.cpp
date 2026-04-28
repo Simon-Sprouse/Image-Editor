@@ -30,9 +30,7 @@ namespace workbench {
         logger.start("ratio");
         double ratio = math::constants::inv_phi;
         vector<int> r = math::sequence::ratioSamples(min, max, ratio);
-        for (auto idx : r) { 
-            cout << idx << " ";
-        }
+        shapes::printVector<int>(r);
         cout << endl;
         logger.stop("ratio");
 
@@ -40,7 +38,7 @@ namespace workbench {
         logger.start("even");
         int num_idx = 12;
         vector<int> even = math::sequence::uniformSamplesBounds(min, max, num_idx); 
-        for (auto idx : even) { cout << idx << " ";}
+        shapes::printVector<int>(r);
         cout << endl;
         logger.stop("even");
 
@@ -65,6 +63,7 @@ namespace workbench {
             cout << n << " ";
         }
         cout << endl;
+
 
 
 
@@ -129,6 +128,8 @@ namespace workbench {
         pixelate::Pixelate my_pixelate(params);
         
         my_pixelate.init(cache);
+        cout << "cache.ax: " << endl << cache.ax << endl;
+
         my_pixelate.run(cache);
 
         logger.stop("run pixelate", cache.canvas);
