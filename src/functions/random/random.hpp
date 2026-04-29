@@ -63,6 +63,6 @@ namespace random_gen {
     uint32_t triple32(uint32_t x); // todo: refactor
     uint32_t random_bounded(uint32_t x, int range);
     uint32_t random_bounded(uint32_t x, uint32_t range);
-   
+    uint32_t seedFromClock();
 
 }

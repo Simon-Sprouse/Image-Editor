@@ -17,10 +17,7 @@ namespace workbench {
         logger.stop("test random");
 
         // todo - is this enough entropy? 
-        using clock = std::chrono::system_clock;
-        uint32_t seed = static_cast<uint32_t>(
-            clock::to_time_t(clock::now())
-        );
+        uint32_t seed = random_gen::seedFromClock();
         cout << "seed: " << seed << endl;
         // uint32_t seed = 420u;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../functions/math/sequence.hpp"
+#include "../../functions/random/random.hpp"
 
 #include <vector>
 
@@ -30,7 +31,7 @@ namespace variant_fn {
         double ratio;
 
         // random 
-        uint32_t seed;
+        uint32_t seed = random_gen::seedFromClock();
     };
 
     inline vector<int> sequenceFn(const SequenceCommon& p) { 

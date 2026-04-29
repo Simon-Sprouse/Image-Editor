@@ -24,7 +24,7 @@ namespace workbench {
 
         // runIterator(image_path, logger);
         // runGrid(image_path, logger);
-        // runPixelate(image_path, logger);
+        runPixelate(image_path, logger);
         runRandom(image_path, logger);
         // sequenceVariant(image_path, logger);
     }

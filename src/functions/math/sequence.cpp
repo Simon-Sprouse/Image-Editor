@@ -120,16 +120,17 @@ namespace math::sequence {
     }
 
 
-    vector<int> randomSamples(int min, int max, int num_elements, int32_t seed) { 
+    vector<int> randomSamples(int min, int max, int num_elements, uint32_t seed) { 
         vector<int> output;
         output.reserve(num_elements);
-
         output.push_back(min);
 
+        int range = max - min;
+
         for (int i = 0; i < num_elements - 2; i++) { 
-            int random_step = static_cast<int>(random_gen::lcg(seed + i) % (max - min));
+            uint32_t hash = random_gen::triple32(seed + i);
+            int random_step = static_cast<int>(random_gen::random_bounded(hash, range));
             output.push_back(random_step + min);
-            cout << "random sample step: " << i << " output: " << random_step + min << endl;
         }
         output.push_back(max);
         return output;

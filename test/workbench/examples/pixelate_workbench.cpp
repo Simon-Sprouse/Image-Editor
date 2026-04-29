@@ -63,12 +63,12 @@ namespace workbench {
         using mode = variant_fn::SequenceMode;
 
         variant_fn::SequenceCommon seq_x;
-        seq_x.mode = mode::ratio;
+        seq_x.mode = mode::random;
         seq_x.min = 0;
         seq_x.max = original_img.getWidth();
         seq_x.num_elements = 4;
         seq_x.ratio = 0.5; // todo: default values for these
-        seq_x.seed = 300;
+        // seed given by default which is clock
         
         variant_fn::SequenceCommon seq_y;
         seq_y.mode = mode::random;
@@ -101,7 +101,7 @@ namespace workbench {
 
         // --- run multiple times ---
         
-        for (int i = 2; i < 100; i += 2) { 
+        for (int i = 2; i < 10; i += 2) { 
             std::string task_name = "run pixelate: " + std::to_string(i); // todo logger handles many tests with same name elegantly
             logger.start(task_name);
 

@@ -1,5 +1,6 @@
 #include "random.hpp"
 
+#include <chrono>
 
 
 namespace random_gen { 
@@ -156,6 +157,13 @@ namespace random_gen {
         return random_bounded(x, static_cast<uint32_t>(range));
     }
 
+    uint32_t seedFromClock() { 
+        using clock = std::chrono::high_resolution_clock;
+        auto now = clock::now();
+        auto duration = now.time_since_epoch();
+        return static_cast<uint32_t>(duration.count());
+    }
+   
 
 
 
