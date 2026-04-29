@@ -44,7 +44,7 @@ namespace shapes {
             cout << vec[i] << ", ";
         }
         if (elements) {cout << vec[elements-1];} // print w/ comma
-        cout << "](" << elements << " of " << vec.size() << ")";
+        cout << "](" << elements << " of " << vec.size() << ")" << endl;
     }
 
     template <typename T> 

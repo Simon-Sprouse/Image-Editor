@@ -60,6 +60,8 @@ namespace random_gen {
 
     // todo extend into variant at some point
     uint32_t lcg(uint32_t seed);
+    uint32_t random_bounded(uint32_t x, int range);
+    uint32_t random_bounded(uint32_t x, uint32_t range);
    
 
 }

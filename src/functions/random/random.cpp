@@ -133,6 +133,16 @@ namespace random_gen {
         return a * seed + c;
     }
 
+    // credit daniel lemire
+    // https://github.com/lemire/fastrange
+    uint32_t random_bounded(uint32_t x, uint32_t range) {
+        return uint32_t((uint64_t(x) * range) >> 32);
+    }
+
+    uint32_t random_bounded(uint32_t x, int range) { 
+        return random_bounded(x, static_cast<uint32_t>(range));
+    }
+
 
 
 

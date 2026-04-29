@@ -47,7 +47,7 @@ namespace logger {
         cout << 
         "Task: " << task_name << setw(15) << 
         " time: " << elapsed.count() << " s" 
-        << endl;
+        << endl << endl;
     }
 
     void Logger::blockCV_() { 
