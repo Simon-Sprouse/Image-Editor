@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <chrono>
 
 using namespace std;
 using namespace logger;
@@ -16,7 +17,12 @@ namespace workbench {
         logger.stop("test random");
 
         // todo - is this enough entropy? 
-        uint32_t seed = 420u;
+        using clock = std::chrono::system_clock;
+        uint32_t seed = static_cast<uint32_t>(
+            clock::to_time_t(clock::now())
+        );
+        cout << "seed: " << seed << endl;
+        // uint32_t seed = 420u;
 
         // todo scope tests? 
         // todo logger -> log rename 
