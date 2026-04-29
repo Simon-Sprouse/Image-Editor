@@ -133,6 +133,19 @@ namespace random_gen {
         return a * seed + c;
     }
 
+    // credit chris wellons
+    // https://github.com/skeeto/hash-prospector
+    uint32_t triple32(uint32_t x) {
+        x ^= x >> 17;
+        x *= 0xed5ad4bb;
+        x ^= x >> 11;
+        x *= 0xac4c1b51;
+        x ^= x >> 15;
+        x *= 0x31848bab;
+        x ^= x >> 14;
+        return x;
+    }
+
     // credit daniel lemire
     // https://github.com/lemire/fastrange
     uint32_t random_bounded(uint32_t x, uint32_t range) {

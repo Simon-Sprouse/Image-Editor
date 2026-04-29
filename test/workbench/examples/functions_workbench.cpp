@@ -16,27 +16,41 @@ namespace workbench {
         logger.stop("test random");
 
         // todo - is this enough entropy? 
-        uint32_t seed = 93u;
+        uint32_t seed = 420u;
 
         // todo scope tests? 
         // todo logger -> log rename 
         logger.start("lcg");
         {
-
-            // make a single random number
-            uint32_t random_int = random_gen::lcg(seed);
-            cout << "random int: " << random_int << endl;
+            cout << "lcg hash function: " << endl;
+            // todo what is difference between hash/bit_mixer/prng?
 
             // fill vector with random numbers
             int num_random_iterations = 10;
-            vector<int> random_vector;
+            vector<uint32_t> random_vector;
             for (int i = 0; i < num_random_iterations; i++){ 
                 random_vector.push_back(random_gen::lcg(seed + i));
             }        
-            shapes::printVector<int>(random_vector, 5);
+            shapes::printVector<uint32_t>(random_vector, 5);
 
             logger.stop("lcg"); // separate save (and save for display) and stop
         }   
+
+        logger.start("triple32");
+        { 
+            cout << "triple32 hash function" << endl;
+
+            // fill vector with random numbers
+            int num_random_iterations = 10;
+            vector<uint32_t> random_vector;
+            for (int i = 0; i < num_random_iterations; i++){ 
+                random_vector.push_back(random_gen::triple32(seed + i));
+            }        
+            shapes::printVector<uint32_t>(random_vector, 5);
+
+
+            logger.stop("triple32");
+        }
 
 
         logger.start("lemire's algorithm");
@@ -45,7 +59,7 @@ namespace workbench {
             // create vector of randoms
             vector<uint32_t> randoms;
             for (int i = 0; i < 10; i++) { 
-                int random_number = random_gen::lcg(seed + i);
+                int random_number = random_gen::triple32(seed + i);
                 randoms.push_back(random_number);
             }
             cout << "randoms:" << endl;
@@ -72,7 +86,17 @@ namespace workbench {
             
             logger.stop("lemire's algorithm");
         }
-        
+
+
+        logger.start("lemire's algorithm x multi");
+        {
+            vector<uint32_t> randoms;
+            for (int i = 0; i < std::pow(10, 6); i++) { 
+                int random_number = random_gen::triple32(seed + i);
+                int bouned = random_gen::random_bounded(random_number, 512);
+            }
+            logger.stop("lemire's algorithm x multi");
+        }
 
     }
 }
