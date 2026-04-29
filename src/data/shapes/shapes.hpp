@@ -36,8 +36,7 @@ namespace shapes {
 
     // todo: clean the code, fixed withd, maye used as helper and should live elsewhere
     template <typename T>
-    inline void printVector(const std::vector<T>& vec) { 
-        int max_elements = 10;
+    inline void printVector(const std::vector<T>& vec, int max_elements) { 
 
         int elements = std::min(max_elements, static_cast<int>(vec.size()));
         cout << "vec[";
@@ -47,6 +46,12 @@ namespace shapes {
         if (elements) {cout << vec[elements-1];} // print w/ comma
         cout << "](" << elements << " of " << vec.size() << ")";
     }
+
+    template <typename T> 
+    inline void printVector(const std::vector<T>& vec) { 
+        printVector<T>(vec, 10);
+    }
+
 
     template <typename T>
     inline void printVectorNewline(const std::vector<T>& vec) { 

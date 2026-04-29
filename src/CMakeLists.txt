@@ -40,6 +40,8 @@ add_executable(mosaic_tiler
     ../test/workbench/examples/iterator_examples.cpp
     ../test/workbench/examples/grid_workbench.cpp
     ../test/workbench/examples/pixelate_workbench.cpp
+    ../test/workbench/examples/functions_workbench.cpp
+    ../test/workbench/examples/variants_workbench.cpp
     ../test/unit/unit_test_main.cpp
     ../test/unit/tests/iterator_unit_test.cpp
     

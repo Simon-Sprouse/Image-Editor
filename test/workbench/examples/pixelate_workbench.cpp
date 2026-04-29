@@ -43,49 +43,13 @@ namespace workbench {
         logger.stop("even");
 
 
-        logger.start("random");
-
-        // make a single random number
-        uint32_t seed = 93u;
-        uint32_t random_int = random_gen::lcg(seed);
-        cout << "random int: " << random_int << endl;
-        int num_random_iterations = 10;
-        cout << num_random_iterations << "more rands: ";
-        for (int i = 0; i < num_random_iterations; i++){ 
-            cout << random_gen::lcg(1<<i) << " ";
-        }        
-        cout << endl;
-
-        // make a sequence of random numbers
-        cout << "random sequence: " << endl;
-        vector<int> random_vec = math::sequence::randomSamples(min, max, num_idx, seed);
-        for (auto n : random_vec) { 
-            cout << n << " ";
-        }
-        cout << endl;
-
-
-
-
-        logger.stop("random");
+       
 
 
 
 
 
-        logger.start("sequence params");
-        variant_fn::SequenceCommon s;
-        s.min = 10;
-        s.max = 1000;
-        s.num_elements = 10;
-        s.ratio = 0.5;
-        s.seed = 100;
-        using st = variant_fn::SequenceMode;
-        s.mode = st::random;
-        vector<int> seq = variant_fn::sequenceFn(s);
-        for (auto idx : seq) { cout << idx << " ";}
-        cout << endl;
-        logger.stop("sequence params");
+        
 
 
 
@@ -96,8 +60,10 @@ namespace workbench {
 
         // -- load params --- 
 
+        using mode = variant_fn::SequenceMode;
+
         variant_fn::SequenceCommon seq_x;
-        seq_x.mode = st::ratio;
+        seq_x.mode = mode::ratio;
         seq_x.min = 0;
         seq_x.max = original_img.getWidth();
         seq_x.num_elements = 4;
@@ -105,7 +71,7 @@ namespace workbench {
         seq_x.seed = 300;
         
         variant_fn::SequenceCommon seq_y;
-        seq_y.mode = st::random;
+        seq_y.mode = mode::random;
         seq_y.min = 0;
         seq_y.max = original_img.getHeight();
         seq_y.num_elements = 5;
@@ -114,7 +80,6 @@ namespace workbench {
 
         pixelate::Parameters params;
         params.seq_x_common = seq_x;
-        params.seq_x_common.mode = st::random;
         params.seq_y_common = seq_y;
 
         // --- load cache ---

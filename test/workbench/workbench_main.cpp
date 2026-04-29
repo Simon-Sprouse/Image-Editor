@@ -2,6 +2,8 @@
 #include "examples/iterator_examples.hpp"
 #include "examples/grid_workbench.hpp"
 #include "examples/pixelate_workbench.hpp"
+#include "examples/functions_workbench.hpp"
+#include "examples/variants_workbench.hpp"
 #include "../../src/data/image/io.hpp"
 #include "logger.hpp"
 
@@ -22,8 +24,9 @@ namespace workbench {
 
         // runIterator(image_path, logger);
         // runGrid(image_path, logger);
-        runPixelate(image_path, logger);
-
+        // runPixelate(image_path, logger);
+        runRandom(image_path, logger);
+        // sequenceVariant(image_path, logger);
     }
 
     // This function wrapper exists to catch user input
