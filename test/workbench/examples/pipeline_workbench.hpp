@@ -8,4 +8,5 @@ using namespace std;
 
 namespace workbench { 
     void runPixelate(string image_path, Logger logger);
+    void runGrid(string image_path, Logger logger);
 }

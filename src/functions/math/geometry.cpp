@@ -352,30 +352,8 @@ namespace Geometry {
     // todo this name is bad
     vector<Rect> rectTableFactory(Axis_Table ax) { 
 
-        // todo: this logic was copied from grid class and may be duplicate or sub-optimal
-
         vector<int> col_intervals = getIntervalsFromIndexes(ax.x_table);
         vector<int> row_intervals = getIntervalsFromIndexes(ax.y_table);
-
-        // todo move this to shapes.hpp
-        // todo print functions for every data type
-        cout << "inside rectTable Factory" << endl;
-        cout << "ax x_table" << endl;
-        cout << "num elements: " << ax.x_table.size() << endl;
-        for (auto n : ax.x_table) { 
-            cout << "element: " << n << endl;
-        }
-        cout << endl << endl;
-
-        cout << "ax y_table" << endl;
-        cout << "num elements: " << ax.y_table.size() << endl;
-        for (auto n : ax.y_table) { 
-            cout << "element: " << n << endl;
-        }
-        cout << endl << endl;
-
-
-
 
         vector<Rect> rect_table;
         for (int i = 0; i < col_intervals.size(); i++) { 
