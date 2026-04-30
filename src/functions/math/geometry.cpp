@@ -352,8 +352,6 @@ namespace Geometry {
     // todo this name is bad
     vector<Rect> rectTableFactory(Axis_Table ax) { 
 
-        // todo: this logic was copied from grid class and may be duplicate or sub-optimal
-
         vector<int> col_intervals = getIntervalsFromIndexes(ax.x_table);
         vector<int> row_intervals = getIntervalsFromIndexes(ax.y_table);
 

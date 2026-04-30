@@ -1,11 +1,12 @@
-#include "run_routines.hpp"
+#include "run_pipelines.hpp"
 
-#include "../routines/mosaic/mosaic.hpp"
-#include "../routines/pop_art/pop_art.hpp"
-#include "../routines/grid/grid.hpp"
-#include "../routines/pixelate/pixelate.hpp"
+#include "../pipelines/mosaic/mosaic.hpp"
+#include "../pipelines/pop_art/pop_art.hpp"
+#include "../pipelines/grid/grid.hpp"
+#include "../pipelines/pixelate/pixelate.hpp"
 #include "../data/shapes/shapes.hpp"
-#include "../utils/math/sequence.hpp"
+#include "../functions/math/sequence.hpp"
+#include "../variants/math/sequence_variants.hpp"
 
 #include <iostream>
 #include <string>
@@ -13,8 +14,8 @@
 
 using std::string, std::cout, std::endl;
 using shapes::Rect;
-using seq = math::sequence::SequenceParams;
-using seq_t = math::sequence::SequenceType;
+using seq_common = variant_fn::SequenceCommon;
+using seq_mode = variant_fn::SequenceMode;
 
 
 
@@ -112,23 +113,23 @@ namespace app {
 
     ImageResult runGrid(const Image& image) { 
 
-        seq seq_x;
-        seq_x.type = seq_t::uniform;
+        seq_common seq_x;
+        seq_x.mode = seq_mode::uniform;
         seq_x.min = 0;
         seq_x.max = image.getWidth();
         seq_x.ratio = 0.5;
         seq_x.num_elements = 10;
 
-        seq seq_y;
-        seq_y.type = seq_t::ratio;
+        seq_common seq_y;
+        seq_y.mode = seq_mode::ratio;
         seq_y.min = 0;
         seq_y.max = image.getHeight();
         seq_y.ratio = 0.5;
         seq_y.num_elements = 40;
 
         grid::Parameters p;
-        p.seq_x = seq_x;
-        p.seq_y = seq_y;
+        p.seq_x_common = seq_x;
+        p.seq_y_common = seq_y;
         p.thickness = 3;
 
         grid::Cache cache;
@@ -150,23 +151,23 @@ namespace app {
 
     ImageResult runPixelate(const Image& image) { 
 
-        seq seq_x;
-        seq_x.type = seq_t::uniform;
+        seq_common seq_x;
+        seq_x.mode = seq_mode::uniform;
         seq_x.min = 0;
         seq_x.max = image.getWidth();
         seq_x.ratio = 0.5;
         seq_x.num_elements = 40;
 
-        seq seq_y;
-        seq_y.type = seq_t::ratio;
+        seq_common seq_y;
+        seq_y.mode = seq_mode::ratio;
         seq_y.min = 0;
         seq_y.max = image.getHeight();
         seq_y.ratio = 0.5;
         seq_y.num_elements = 20;
 
         pixelate::Parameters p;
-        p.seq_x = seq_x;
-        p.seq_y = seq_y;
+        p.seq_x_common = seq_x;
+        p.seq_y_common = seq_y;
 
         pixelate::Cache cache;
         cache.original = image.clone();

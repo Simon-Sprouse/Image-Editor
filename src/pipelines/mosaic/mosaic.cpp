@@ -1,12 +1,12 @@
 #include "mosaic.hpp"
 
-#include "../../utils/graphics/graphics.hpp"
-#include "../../utils/math/geometry.hpp"
-#include "../../utils/random/random.hpp"
-#include "../../utils/filter/edge.hpp"
-#include "../../utils/transform/resize.hpp"
-#include "../../utils/filter/color.hpp"
-#include "../../utils/filter/blur.hpp"
+#include "../../functions/graphics/graphics.hpp"
+#include "../../functions/math/geometry.hpp"
+#include "../../functions/random/random.hpp"
+#include "../../functions/filter/edge.hpp"
+#include "../../functions/transform/resize.hpp"
+#include "../../functions/filter/color.hpp"
+#include "../../functions/filter/blur.hpp"
 
 // #include "gif.h" TODO add this later
 

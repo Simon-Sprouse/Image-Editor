@@ -1,6 +1,6 @@
 #include "pop_art.hpp"
-#include "../../utils/filter/color.hpp"
-#include "../../utils/random/random.hpp"
+#include "../../functions/filter/color.hpp"
+#include "../../functions/random/random.hpp"
 
 #include <iostream>
 #include <vector>

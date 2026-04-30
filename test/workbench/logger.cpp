@@ -47,7 +47,7 @@ namespace logger {
         cout << 
         "Task: " << task_name << setw(15) << 
         " time: " << elapsed.count() << " s" 
-        << endl;
+        << endl << endl;
     }
 
     void Logger::blockCV_() { 
@@ -56,6 +56,7 @@ namespace logger {
         if (key == 'q' || key == 27) { 
             throw UserEscapeSignal();
         }
+
     }
 
     void Logger::stop(string task_name) { 
@@ -71,9 +72,19 @@ namespace logger {
 
         
         cv::setWindowTitle(window_name_, task_name);
-        cv::imshow(window_name_, io::imageToCvMat(output));
+        cv::Mat output_mat = io::imageToCvMat(output);
+        cv::imshow(window_name_, output_mat);
 
-        blockCV_();
+        int key = cv::waitKey(0);
+        if (key == 'q' || key == 27) { 
+            throw UserEscapeSignal();
+        }
+        else if (key == 's') { 
+            // todo: this is disgusting, fix dir, strip whitespace
+            // todo: probably best to invoke from image::io
+            // todo: write to console when saving
+            cv::imwrite("../results/" + task_name + ".jpg", output_mat);
+        }
 
 
     }

@@ -11,35 +11,36 @@ find_package(OpenCV REQUIRED)
 # Collect all source files
 add_executable(mosaic_tiler
 
-    app/run_routines.cpp
+    app/run_pipelines.cpp
     app/app.cpp
     
     data/image/image.cpp
     data/image/io.cpp
 
-    routines/mosaic/mosaic.cpp
-    routines/pop_art/pop_art.cpp
-    routines/grid/grid.cpp
-    routines/pixelate/pixelate.cpp
+    pipelines/mosaic/mosaic.cpp
+    pipelines/pop_art/pop_art.cpp
+    pipelines/grid/grid.cpp
+    pipelines/pixelate/pixelate.cpp
 
-    utils/math/geometry.cpp
-    utils/math/kernel.cpp
-    utils/math/sequence.cpp
-    utils/graphics/graphics.cpp
-    utils/graphics/line.cpp
-    utils/graphics/polygon.cpp
-    utils/random/random.cpp
-    utils/transform/resize.cpp
-    utils/filter/color.cpp
-    utils/filter/blur.cpp
-    utils/filter/edge.cpp
+    functions/math/geometry.cpp
+    functions/math/kernel.cpp
+    functions/math/sequence.cpp
+    functions/graphics/graphics.cpp
+    functions/graphics/line.cpp
+    functions/graphics/polygon.cpp
+    functions/random/random.cpp
+    functions/transform/resize.cpp
+    functions/filter/color.cpp
+    functions/filter/blur.cpp
+    functions/filter/edge.cpp
 
 
     ../test/workbench/workbench_main.cpp
     ../test/workbench/logger.cpp
     ../test/workbench/examples/iterator_examples.cpp
-    ../test/workbench/examples/grid_workbench.cpp
-    ../test/workbench/examples/pixelate_workbench.cpp
+    ../test/workbench/examples/pipeline_workbench.cpp
+    ../test/workbench/examples/functions_workbench.cpp
+    ../test/workbench/examples/variants_workbench.cpp
     ../test/unit/unit_test_main.cpp
     ../test/unit/tests/iterator_unit_test.cpp
     
@@ -56,15 +57,15 @@ target_include_directories(mosaic_tiler PRIVATE
 
     data/image
 
-    routines/mosiac
-    routines/pop_art
-    routines/grid
+    pipelines/mosiac
+    pipelines/pop_art
+    pipelines/grid
 
-    utils/math
-    utils/graphics
-    utils/random
-    utils/transform
-    utils/filter
+    functions/math
+    functions/graphics
+    functions/random
+    functions/transform
+    functions/filter
 
     ../test
     ${OpenCV_INCLUDE_DIRS}

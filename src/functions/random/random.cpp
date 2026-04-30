@@ -1,5 +1,6 @@
 #include "random.hpp"
 
+#include <chrono>
 
 
 namespace random_gen { 
@@ -119,6 +120,50 @@ namespace random_gen {
     }
 
 
+
+    uint32_t lcg(uint32_t seed) { 
+        // Real formula is: 
+        // R0 = seed
+        // Rn = (aRn + c) mod m
+        // where: c and m are coprime, a-1 divisible by prime factors of m, 
+        //        and if m is divisible then a-1 % 4 == 0
+        //
+        // but we cam set m = 2^32 and int_32 overflows gives a natural mod
+        uint32_t a = 1664525u;
+        uint32_t c = 1013904223u;
+        return a * seed + c;
+    }
+
+    // credit chris wellons
+    // https://github.com/skeeto/hash-prospector
+    uint32_t triple32(uint32_t x) {
+        x ^= x >> 17;
+        x *= 0xed5ad4bb;
+        x ^= x >> 11;
+        x *= 0xac4c1b51;
+        x ^= x >> 15;
+        x *= 0x31848bab;
+        x ^= x >> 14;
+        return x;
+    }
+
+    // credit daniel lemire
+    // https://github.com/lemire/fastrange
+    uint32_t random_bounded(uint32_t x, uint32_t range) {
+        return uint32_t((uint64_t(x) * range) >> 32);
+    }
+
+    uint32_t random_bounded(uint32_t x, int range) { 
+        return random_bounded(x, static_cast<uint32_t>(range));
+    }
+
+    uint32_t seedFromClock() { 
+        using clock = std::chrono::high_resolution_clock;
+        auto now = clock::now();
+        auto duration = now.time_since_epoch();
+        return static_cast<uint32_t>(duration.count());
+    }
+   
 
 
 

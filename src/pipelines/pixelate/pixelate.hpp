@@ -2,7 +2,7 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
-#include "../../utils/math/sequence.hpp"
+#include "../../variants/math/sequence_variants.hpp"
 
 #include <vector>
 
@@ -14,8 +14,8 @@ namespace pixelate {
 
 
     struct Parameters { 
-        math::sequence::SequenceParams seq_x;
-        math::sequence::SequenceParams seq_y;
+        variant_fn::SequenceCommon seq_x_common;
+        variant_fn::SequenceCommon seq_y_common;
     };
 
     struct Cache { 
@@ -32,7 +32,7 @@ namespace pixelate {
             Pixelate(Parameters p) : params(p) {};
 
             // for now init expects cold start, later we will do selective updates
-            void init(Cache& cache); // todo standardize and consolidate init() style logic in all routines
+            void init(Cache& cache); // todo standardize and consolidate init() style logic in all pipelines
             void run(Cache& cache);
             
             

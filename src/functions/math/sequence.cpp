@@ -7,6 +7,7 @@
 
 
 
+
 using namespace std;
 
 
@@ -87,7 +88,7 @@ namespace math::sequence {
 
 
         vector<int> output = uniformSamples(min, max, num_elements - 2);
-        output.insert(output.begin(), min);
+        output.insert(output.begin(), min); // todo this is slow
         output.push_back(max);
         
         return output;
@@ -119,14 +120,24 @@ namespace math::sequence {
     }
 
 
+    vector<int> randomSamples(int min, int max, int num_elements, uint32_t seed) { 
+        vector<int> output;
+        output.reserve(num_elements);
+        output.push_back(min);
 
+        int range = max - min;
 
-    vector<int> sequenceSelector(const SequenceParams& p) { 
-        switch (p.type) { 
-            case (SequenceType::uniform): return uniformSamplesBounds(p.min, p.max, p.num_elements);
-            case (SequenceType::ratio): return ratioSamples(p.min, p.max, p.ratio);
+        for (int i = 0; i < num_elements - 2; i++) { 
+            uint32_t hash = random_gen::triple32(seed + i);
+            int random_step = static_cast<int>(random_gen::random_bounded(hash, range));
+            output.push_back(random_step + min);
         }
+        output.push_back(max);
+        return output;
     }
+
+
+
 
 
 

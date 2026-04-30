@@ -2,7 +2,7 @@
 
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
-#include "../../utils/math/sequence.hpp"
+#include "../../variants/math/sequence_variants.hpp"
 
 #include <vector>
 using std::vector;
@@ -10,13 +10,12 @@ using std::vector;
 namespace grid { 
 
 using image::Image, image::Color, image::Point;
-using Seq = math::sequence::SequenceParams;
 using shapes::Rect, shapes::Axis_Table;
 
 
 struct Parameters { 
-    Seq seq_x;
-    Seq seq_y;
+    variant_fn::SequenceCommon seq_x_common;
+    variant_fn::SequenceCommon seq_y_common;
     int thickness;
 };
 
