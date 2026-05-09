@@ -99,7 +99,7 @@ namespace workbench {
 
         
         Image original_img = io::loadImageFileSystem(image_path);
-        original_img.fill(Color(255, 240, 220)); // todo improve fill method
+        original_img.fill(RGBA(255, 240, 220)); // todo improve fill method
 
         // todo - input validation / default values
         // note - this block is the biggest downside of our pattern

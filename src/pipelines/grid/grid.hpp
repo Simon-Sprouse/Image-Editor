@@ -9,7 +9,7 @@ using std::vector;
 
 namespace grid { 
 
-using image::Image, image::Color, image::Point;
+using image::Image, image::RGBA, image::Point;
 using shapes::Rect, shapes::Axis_Table;
 
 

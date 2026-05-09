@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-using image::Image, image::Color, image::Point;
+using image::Image, image::RGBA, image::Point;
 using std::cout, std::endl;
 
 namespace workbench { 
@@ -23,12 +23,12 @@ namespace workbench {
 
 
 
-        Color* data = image.data();
+        RGBA* data = image.data();
         cout << "You can now get pointer access to the linear start" << endl;
         cout << "image.data(): " << image.data() << endl << endl;
 
-        Color* begin = image.begin();
-        Color* end = image.end();
+        RGBA* begin = image.begin();
+        RGBA* end = image.end();
         cout << "Now we have access to begin() and end() methods." << endl;
         cout << "image.begin(): " << image.begin() << endl;
         cout << "image.end(): " << image.end() << endl;
@@ -40,7 +40,7 @@ namespace workbench {
 
         int y = 5;
         int x = 42;
-        Color* row_ptr = image.rowPtr(y);
+        RGBA* row_ptr = image.rowPtr(y);
         cout << "Now we support pointer and iterator access for a given row (y)" << endl;
         cout << "image.rowPtr(y): " << row_ptr << endl;
         RowIterator r = image.row(y);
@@ -53,7 +53,7 @@ namespace workbench {
         for (auto r2 : image.row(y)) { i++; }
         cout << "completed: " << i << " range iteration loops over row" << endl;
         cout << "This also unlocks fill using chain from iterator" << endl;
-        Color test_color(0, 255, 255);
+        RGBA test_color(0, 255, 255);
         image.row(y).fill(test_color);
         cout << "Post fill, accessing first k elements in row: " << endl;
         for (int k = 0; k < 3; k++) { cout << r[k] << ", "; }
@@ -67,7 +67,7 @@ namespace workbench {
         int filled_elements = 0;
         int filled_rows = 0;
         for (auto row : rr) { 
-            row.fill(Color(69, 42, 21)); 
+            row.fill(RGBA(69, 42, 21)); 
             filled_elements += row.size();
             filled_rows++;
         }

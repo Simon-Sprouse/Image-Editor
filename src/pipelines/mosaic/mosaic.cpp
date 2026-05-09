@@ -155,7 +155,7 @@ void Mosaic::selectStroke(int stroke_id) {
         return;
     }
 
-    Color color(255);
+    RGBA color(255);
     selected_stroke = Image(resized.size());
     Graphics::drawStroke(selected_stroke, strokes[stroke_id], color);
 }
@@ -276,12 +276,12 @@ TileInfo Mosaic::placeTile(Point center, double size, double theta_deg, int fron
 
 
 
-    Graphics::drawSquare(mask, center, size, theta_deg, Color(255), size);
+    Graphics::drawSquare(mask, center, size, theta_deg, RGBA(255), size);
 
 
     // TODO add tile metadata to the tiles_placed vector
     int order = tiles_placed.size();
-    Color color = sampleTileColor(center, size, theta_deg);
+    RGBA color = sampleTileColor(center, size, theta_deg);
     TileInfo current_tile = {
         center,
         size, 
@@ -381,7 +381,7 @@ std::vector<Point> Mosaic::findNonZeroInRadius(const Image& src, const Point& ce
             int dx = x - cx;
             int dy = y - cy;
             if (dx * dx + dy * dy <= r2) {
-                const Color& c = src.at(Point(x, y));
+                const RGBA& c = src.at(Point(x, y));
                 if (c.r > 0 || c.g > 0 || c.b > 0) {
                     result.emplace_back(x, y);
                 }
@@ -446,7 +446,7 @@ std::vector<Point> Mosaic::findRingIntersections(const Point& center, double rin
 
                 // // DEBUG
                 // // set every pixel in mask as marked where we checked
-                // Color color(108, 0, 210);
+                // RGBA color(108, 0, 210);
                 // canvas.setPixel(worldPt.x, worldPt.y, color);
 
                 if (worldPt.x >= 0 && worldPt.x < mask.getWidth() &&
@@ -465,7 +465,7 @@ std::vector<Point> Mosaic::findRingIntersections(const Point& center, double rin
     // std::vector<Point> pixels_in_stroke;
     // for (int x = 0; x < selected_stroke.getWidth(); x++) { 
     //     for (int y = 0; y < selected_stroke.getHeight(); y++) { 
-    //         Color pixel = selected_stroke.at(x, y);
+    //         RGBA pixel = selected_stroke.at(x, y);
     //         if (pixel.r > 0) { 
     //             pixels_in_stroke.emplace_back(Point(x, y));
     //         }
@@ -772,7 +772,7 @@ void Mosaic::reconstructImage() {
     canvas = Image(resized.size());
 
     for (TileInfo tile : tiles_placed) { 
-        // Color color = sampleTileColor(tile);
+        // RGBA color = sampleTileColor(tile);
         Graphics::drawSquare(canvas, tile.center, tile.size * 1.0, tile.theta_deg, tile.color, tile.size);
     }
 
@@ -803,16 +803,16 @@ void Mosaic::renderDebugImageRange(int start, int num_tiles) {
 
     for (int i = start; i < max_index; i++) { 
         TileInfo tile = tiles_placed[i];
-        Color color;
+        RGBA color;
         if (tile.frontier == 0) { 
-            color = Color(255, 0, 0);
+            color = RGBA(255, 0, 0);
             // cout << "using red" << endl;
         }
         else if (tile.frontier > 0) { 
-            color = Color(0, 255, 0);
+            color = RGBA(0, 255, 0);
         }
         else if (tile.frontier == -1) { 
-            color = Color(0, 100, 255);
+            color = RGBA(0, 100, 255);
         }
         else { 
             // cout << "tile stored incorrectly" << endl;
@@ -858,16 +858,16 @@ void Mosaic::reconstructShowFrontiers() {
     canvas = Image(resized.size());
 
     for (TileInfo tile : tiles_placed) { 
-        // Color color = sampleTileColor(tile);
-        Color color;
+        // RGBA color = sampleTileColor(tile);
+        RGBA color;
         if (tile.frontier == 0) { 
-            color = Color(255, 0, 0);
+            color = RGBA(255, 0, 0);
         }
         else if (tile.frontier > 0) { 
-            color = Color(0, 255, 0);
+            color = RGBA(0, 255, 0);
         }
         else if (tile.frontier == -1) {
-            color = Color(0, 0, 255);
+            color = RGBA(0, 0, 255);
         }
         Graphics::drawSquare(canvas, tile.center, tile.size * 1.0, tile.theta_deg, color, tile.size);
     }
@@ -880,7 +880,7 @@ void Mosaic::reconstructShowFrontiers() {
 
 
 
-Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
+RGBA Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
 
     size /= 2; // TODO make this tuneable
 
@@ -892,7 +892,7 @@ Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
 
     for (const Point& pt : points) {
         if (resized.inBounds(pt.x, pt.y)) {
-            Color sample = resized.at(pt);
+            RGBA sample = resized.at(pt);
             r_sum += sample.r;
             g_sum += sample.g;
             b_sum += sample.b;
@@ -900,13 +900,13 @@ Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
         }
     }
 
-    if (count == 0) return Color(0, 0, 0);  // Avoid division by zero
+    if (count == 0) return RGBA(0, 0, 0);  // Avoid division by zero
 
     uint8_t r_avg = static_cast<uint8_t>(r_sum / count);
     uint8_t g_avg = static_cast<uint8_t>(g_sum / count);
     uint8_t b_avg = static_cast<uint8_t>(b_sum / count);
 
-    return Color(r_avg, g_avg, b_avg);
+    return RGBA(r_avg, g_avg, b_avg);
 }
 
 

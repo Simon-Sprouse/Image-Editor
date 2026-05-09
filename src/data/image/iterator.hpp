@@ -10,20 +10,20 @@ namespace image {
     // 1. This iterator tracks width - therefore it can implement begin() and end() for range iteration
     // 2. This iterator allows a direct fill() method enabling image.row(y).fill(color);
     class RowIterator { 
-        Color* ptr_;
+        RGBA* ptr_;
         int width_;
 
         public:
-            RowIterator(Color* ptr, int width) : ptr_(ptr), width_(width) {}
+            RowIterator(RGBA* ptr, int width) : ptr_(ptr), width_(width) {}
 
-            Color* begin() { return ptr_; }
-            Color* end() { return ptr_ + width_; }
+            RGBA* begin() { return ptr_; }
+            RGBA* end() { return ptr_ + width_; }
 
-            Color& operator[](int x) { return ptr_[x]; }
-            const Color& operator[](int x) const { return ptr_[x]; }
-            Color* data() { return ptr_; }
+            RGBA& operator[](int x) { return ptr_[x]; }
+            const RGBA& operator[](int x) const { return ptr_[x]; }
+            RGBA* data() { return ptr_; }
             int size() { return width_; }
-            void fill(const Color& color) { std::fill_n(ptr_, width_, color); }
+            void fill(const RGBA& color) { std::fill_n(ptr_, width_, color); }
 
     };
 
@@ -38,17 +38,17 @@ namespace image {
     // A templated iterator with const pointer but also a fill() method is NINCOMPOOP CODE
     // Thank you. :)
     class ConstRowIterator { 
-        const Color* ptr_;
+        const RGBA* ptr_;
         int width_;
 
         public:
-            ConstRowIterator(const Color* ptr, int width) : ptr_(ptr), width_(width) {}
+            ConstRowIterator(const RGBA* ptr, int width) : ptr_(ptr), width_(width) {}
 
-            const Color* begin() const { return ptr_; }
-            const Color* end() const { return ptr_ + width_; }
+            const RGBA* begin() const { return ptr_; }
+            const RGBA* end() const { return ptr_ + width_; }
 
-            const Color& operator[](int x) const { return ptr_[x]; }
-            const Color* data() const { return ptr_; }
+            const RGBA& operator[](int x) const { return ptr_[x]; }
+            const RGBA* data() const { return ptr_; }
             int size() const { return width_; }
 
     };
@@ -61,14 +61,14 @@ namespace image {
 
 
     class RegionRowIterator {
-        Color* start_; // todo: color theory -- should Color* be the data type in image? Should image be SoA per each channel? 
+        RGBA* start_; // todo: color theory -- should RGBA* be the data type in image? Should image be SoA per each channel? 
         int dx_;
         int dy_;
         int width_; // for image, not region
 
         public: 
 
-            RegionRowIterator(Color* start, int dx, int dy, int width) : start_(start), 
+            RegionRowIterator(RGBA* start, int dx, int dy, int width) : start_(start), 
             dx_(dx), dy_(dy), width_(width) {}
 
 
@@ -91,14 +91,14 @@ namespace image {
 
 
     class ConstRegionRowIterator {
-        const Color* start_;
+        const RGBA* start_;
         int dx_;
         int dy_;
         int width_; // for image, not region
 
         public: 
 
-            ConstRegionRowIterator(const Color* start, int dx, int dy, int width) : start_(start), 
+            ConstRegionRowIterator(const RGBA* start, int dx, int dy, int width) : start_(start), 
             dx_(dx), dy_(dy), width_(width) {}
 
             ConstRegionRowIterator begin() const { return ConstRegionRowIterator(start_, dx_, dy_, width_); }
@@ -121,22 +121,22 @@ namespace image {
 
     // this is a footgun likely
     class RegionIterator { 
-        Color* ptr_;
+        RGBA* ptr_;
         int dx_;
         int dy_; 
         int width_;
         int x_remaining_;
 
         public: 
-            RegionIterator(Color* ptr, int dx, int dy, int width) : ptr_(ptr),
+            RegionIterator(RGBA* ptr, int dx, int dy, int width) : ptr_(ptr),
             dx_(dx), dy_(dy), width_(width), x_remaining_(dx-1) {}
 
             RegionIterator begin() { return RegionIterator(ptr_, dx_, dy_, width_); }
             RegionIterator end() { 
-                Color* end_ptr = ptr_ - (dx_ - x_remaining_ - 1) + (width_ * dy_);
+                RGBA* end_ptr = ptr_ - (dx_ - x_remaining_ - 1) + (width_ * dy_);
                 return RegionIterator(end_ptr, dx_, 0, width_); 
             }
-            Color& operator*() { return *ptr_; }
+            RGBA& operator*() { return *ptr_; }
 
             RegionIterator& operator++() { 
                 if (x_remaining_) { 

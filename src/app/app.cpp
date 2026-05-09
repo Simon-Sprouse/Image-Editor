@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 using std::cout, std:: endl;
-using image::Color, image::Point, image::RowIterator, image::RegionRowIterator;
+using image::RGBA, image::Point, image::RowIterator, image::RegionRowIterator;
 
 namespace app {
 

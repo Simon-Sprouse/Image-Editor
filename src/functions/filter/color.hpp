@@ -6,12 +6,12 @@
 #include <vector>
 
 
-using image::Image, image::Color, image::Point;
+using image::Image, image::RGBA, image::Point;
 using shapes::Rect;
 
 namespace filter::color { 
 
-    Color avgColor(const Image& image, const Rect& rect);
+    RGBA avgColor(const Image& image, const Rect& rect);
 
 
 

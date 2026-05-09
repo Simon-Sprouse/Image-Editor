@@ -4,7 +4,7 @@
 
 namespace pop_art { 
 
-using image::Image, image::Color, image::Point;
+using image::Image, image::RGBA, image::Point;
 
 
 struct Parameters { 

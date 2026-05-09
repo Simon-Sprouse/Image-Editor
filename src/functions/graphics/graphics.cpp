@@ -10,7 +10,7 @@ using namespace std;
 namespace Graphics { 
 
 
-    void drawLine(Image& image, const Point& point_a, const Point& point_b, int thickness, const Color& color) {
+    void drawLine(Image& image, const Point& point_a, const Point& point_b, int thickness, const RGBA& color) {
         if (thickness <= 0) return;
     
         int x0 = point_a.x;
@@ -49,7 +49,7 @@ namespace Graphics {
     }
 
 
-    void drawArrow(Image& image, const Point& center, int length, int thickness, double angle_deg, const Color& color) {
+    void drawArrow(Image& image, const Point& center, int length, int thickness, double angle_deg, const RGBA& color) {
         if (image.empty()) {
             std::cerr << "drawArrow: Input image is empty." << std::endl;
             return;
@@ -94,7 +94,7 @@ namespace Graphics {
     
 
 
-    void drawFilledPolygon(Image& image, const std::vector<Point>& polygon, const Color& color) {
+    void drawFilledPolygon(Image& image, const std::vector<Point>& polygon, const RGBA& color) {
         if (polygon.size() < 3) return;
     
         // Find vertical bounds of the polygon
@@ -145,7 +145,7 @@ namespace Graphics {
 
 
 
-    void drawSquare(Image& image, const Point& center, double size, double angle_deg, const Color& color, int border_width) {
+    void drawSquare(Image& image, const Point& center, double size, double angle_deg, const RGBA& color, int border_width) {
         if (size <= 0 || border_width < 0) {
             std::cerr << "drawSquare: Invalid size or border width.\n";
             return;
@@ -230,7 +230,7 @@ namespace Graphics {
 
 
 
-    void drawStroke(Image& image, const std::vector<Point>& stroke, const Color& color) {
+    void drawStroke(Image& image, const std::vector<Point>& stroke, const RGBA& color) {
         for (const Point& pt : stroke) {
             if (pt.y >= 0 && pt.y < image.getHeight() && pt.x >= 0 && pt.x < image.getWidth()) {
                 image.setPixel(pt.x, pt.y, color);
@@ -241,11 +241,11 @@ namespace Graphics {
 
     void drawStrokesRandomColor(Image& image, const std::vector<std::vector<Point>>& strokes) { 
 
-        std::vector<image::Color> colors_used;
+        std::vector<image::RGBA> colors_used;
         
 
         for (std::vector<Point> stroke : strokes) { 
-            Color color;
+            RGBA color;
             do {
                 color = random_gen::randomColor();
             } while (std::find(colors_used.begin(), colors_used.end(), color) != colors_used.end());

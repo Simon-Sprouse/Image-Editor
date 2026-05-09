@@ -7,10 +7,10 @@
 
 namespace draw::polygon { 
 
-    using image::Image, image::Point, image::Color;
+    using image::Image, image::Point, image::RGBA;
     using shapes::Rect;
 
-    void drawRect(Image& image, const Rect& rect, const Color& color);
+    void drawRect(Image& image, const Rect& rect, const RGBA& color);
 
 
 

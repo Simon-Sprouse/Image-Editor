@@ -4,7 +4,7 @@
 
 #include <vector>
 
-using image::Image, image::Size, image::Color, image::Point;
+using image::Image, image::Size, image::RGBA, image::Point;
 
 namespace filter::color { 
 
@@ -12,7 +12,7 @@ namespace filter::color {
 
     // todo maybe extend this function to take a vector (although this implies copy in caller syntax)
     // todo maybe perform sampling of grid pixels not whole image
-    Color avgColor(const Image& image, const Rect& rect) { 
+    RGBA avgColor(const Image& image, const Rect& rect) { 
 
         
         // todo get iterator to work with const image and const point
@@ -32,7 +32,7 @@ namespace filter::color {
             }
         }
         int num_pixels = rect.dx * rect.dy;
-        return Color(total_r / num_pixels, total_g / num_pixels, total_b / num_pixels);
+        return RGBA(total_r / num_pixels, total_g / num_pixels, total_b / num_pixels);
 
     }
 
@@ -45,13 +45,13 @@ namespace filter::color {
 
         for (int y = 0; y < size.height; ++y) {
             for (int x = 0; x < size.width; ++x) {
-                const Color& pixel = src.at(x, y);
+                const RGBA& pixel = src.at(x, y);
 
                 // Compute luminance (grayscale intensity)
                 uint8_t gray = static_cast<uint8_t>(
                     0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b
                 );
-                Color new_pixel(gray, gray, gray);
+                RGBA new_pixel(gray, gray, gray);
                 dest.setPixel(x, y, new_pixel);
             }
         }

@@ -32,7 +32,7 @@ namespace image::io {
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 int idx = (y * width + x) * 4;
-                Color c;
+                RGBA c;
                 c.r = pixels[idx + 0];
                 c.g = pixels[idx + 1];
                 c.b = pixels[idx + 2];
@@ -60,7 +60,7 @@ namespace image::io {
     
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                Color c = img.at(x, y);
+                RGBA c = img.at(x, y);
                 int idx = (y * width + x) * channels;
                 buffer[idx + 0] = c.r;
                 buffer[idx + 1] = c.g;

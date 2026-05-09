@@ -7,60 +7,58 @@ namespace image {
     // todo: move geometric stuff to shapes and expand on color theory here
 
 
-    struct Color { 
+    struct RGBA { 
 
         uint8_t r;
         uint8_t g;
         uint8_t b;
         uint8_t a;
 
-        Color() : r(0), g(0), b(0), a(255) {}
+        RGBA() : r(0), g(0), b(0), a(255) {}
 
-        explicit Color(uint8_t value) 
+        explicit RGBA(uint8_t value) 
             : r(value), g(value), b(value), a(255) {}
-        Color(uint8_t red, uint8_t green, uint8_t blue) 
+        RGBA(uint8_t red, uint8_t green, uint8_t blue) 
             : r(red), g(green), b(blue), a(255) {}
-        Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) 
+        RGBA(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) 
             : r(red), g(green), b(blue), a(alpha) {}
 
-        explicit Color(int value) 
+        explicit RGBA(int value) 
             : r(clampToByte(value)), g(clampToByte(value)), b(clampToByte(value)), a(255) {}
-        Color(int red, int green, int blue) 
+        RGBA(int red, int green, int blue) 
             : r(clampToByte(red)), g(clampToByte(green)), b(clampToByte(blue)), a(255) {}
-        Color(int red, int green, int blue, int alpha) 
+        RGBA(int red, int green, int blue, int alpha) 
             : r(clampToByte(red)), g(clampToByte(green)), b(clampToByte(blue)), a(clampToByte(alpha)) {}
 
-        explicit Color(float value) 
+        explicit RGBA(float value) 
             : r(clampToByte(static_cast<int>(value))), g(clampToByte(static_cast<int>(value))), 
             b(clampToByte(static_cast<int>(value))), a(255) {}
-        Color(float red, float green, float blue) 
+        RGBA(float red, float green, float blue) 
             : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
             b(clampToByte(static_cast<int>(blue))), a(255) {}
-        Color(float red, float green, float blue, float alpha) 
+        RGBA(float red, float green, float blue, float alpha) 
             : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
             b(clampToByte(static_cast<int>(blue))), a(clampToByte(static_cast<int>(alpha))) {}
 
-        explicit Color(double value) 
+        explicit RGBA(double value) 
             : r(clampToByte(static_cast<int>(value))), g(clampToByte(static_cast<int>(value))), 
             b(clampToByte(static_cast<int>(value))), a(255) {}
-        Color(double red, double green, double blue) 
+        RGBA(double red, double green, double blue) 
             : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
             b(clampToByte(static_cast<int>(blue))), a(255) {}
-        Color(double red, double green, double blue, double alpha) 
+        RGBA(double red, double green, double blue, double alpha) 
             : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
             b(clampToByte(static_cast<int>(blue))), a(clampToByte(static_cast<int>(alpha))) {}
     
 
-        bool operator==(const Color& other) const {
+        bool operator==(const RGBA& other) const {
             return r == other.r && g == other.g && b == other.b && a == other.a;
         }
 
-        bool operator!=(const Color& other) const {
+        bool operator!=(const RGBA& other) const {
             return !(*this == other);
         }
 
-
-        
 
         private:
 
@@ -179,8 +177,8 @@ namespace image {
         return std::to_string(width) + "," + std::to_string(height);
     }
 
-    // Stream operator for Color
-    inline std::ostream& operator<<(std::ostream& os, const Color& color) {
+    // Stream operator for RGBA
+    inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
 
         os << "rgba[" << static_cast<int>(color.r) << ", "
                     << static_cast<int>(color.g) << ", "

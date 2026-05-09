@@ -1,7 +1,7 @@
 #include "blur.hpp"
 #include "../math/kernel.hpp"
 
-using image::Image, image::Size, image::Color;
+using image::Image, image::Size, image::RGBA;
 
 namespace filter::blur { 
 
@@ -28,14 +28,14 @@ namespace filter::blur {
                 double r = 0, g = 0, b = 0, a = 0;
                 for (int k = -radiusX; k <= radiusX; ++k) {
                     int sx = std::clamp(x + k, 0, width - 1);
-                    Color sample = src.at(sx, y);
+                    RGBA sample = src.at(sx, y);
                     double w = kernelX[k + radiusX];
                     r += sample.r * w;
                     g += sample.g * w;
                     b += sample.b * w;
                     a += sample.a * w;
                 }
-                temp.at(x, y) = Color(
+                temp.at(x, y) = RGBA(
                     static_cast<uint8_t>(r),
                     static_cast<uint8_t>(g),
                     static_cast<uint8_t>(b),
@@ -52,14 +52,14 @@ namespace filter::blur {
                 double r = 0, g = 0, b = 0, a = 0;
                 for (int k = -radiusY; k <= radiusY; ++k) {
                     int sy = std::clamp(y + k, 0, height - 1);
-                    Color sample = temp.at(x, sy);
+                    RGBA sample = temp.at(x, sy);
                     double w = kernelY[k + radiusY];
                     r += sample.r * w;
                     g += sample.g * w;
                     b += sample.b * w;
                     a += sample.a * w;
                 }
-                dest.at(x, y) = Color(
+                dest.at(x, y) = RGBA(
                     static_cast<uint8_t>(r),
                     static_cast<uint8_t>(g),
                     static_cast<uint8_t>(b),

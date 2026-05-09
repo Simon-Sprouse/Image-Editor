@@ -23,7 +23,7 @@ namespace mosaic_gen {
 using image::Image;
 using image::Size;
 using image::Point;
-using image::Color;
+using image::RGBA;
 using image::Vec2d;
 
 struct Parameters { 
@@ -62,7 +62,7 @@ struct TileInfo {
     Point center;
     double size;
     double theta_deg;
-    Color color;
+    RGBA color;
     int order;
     int frontier;
 
@@ -161,7 +161,7 @@ class Mosaic {
         
 
         void reconstructShowFrontiers();
-        Color sampleTileColor(Point center, double size, double theta_deg);
+        RGBA sampleTileColor(Point center, double size, double theta_deg);
 
         bool stepOnce();
         

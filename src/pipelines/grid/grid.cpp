@@ -38,11 +38,11 @@ void Grid::drawGridLines(Image& canvas, const Axis_Table& ax) {
 
     // todo edge case where last column / row index is off screen
     for (int x : ax.x_table) { 
-        draw::line::drawCol(canvas, x, Color(0), params.thickness);
+        draw::line::drawCol(canvas, x, RGBA(0), params.thickness);
     }
 
     for (int y : ax.y_table) { 
-        draw::line::drawRow(canvas, y, Color(0), params.thickness);
+        draw::line::drawRow(canvas, y, RGBA(0), params.thickness);
     }
     
 }

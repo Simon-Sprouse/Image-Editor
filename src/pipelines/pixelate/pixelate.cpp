@@ -38,7 +38,7 @@ namespace pixelate {
     void Pixelate::drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table) { 
         for (Rect rect : rect_table) { 
 
-            Color avg_color = filter::color::avgColor(original, rect);
+            RGBA avg_color = filter::color::avgColor(original, rect);
 
             // todo: namespaceing might be good pattern? because it shows where to find this? 
             draw::polygon::drawRect(canvas, rect, avg_color);

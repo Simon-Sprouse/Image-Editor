@@ -9,13 +9,13 @@ Image::Image() : width_(0), height_(0) {}
 
 // Param constructors
 Image::Image(int width, int height)
-    : width_(width), height_(height), data_(std::vector<Color>(width_* height_, Color())) {}
-Image::Image(int width, int height, const Color& fill)
-    : width_(width), height_(height), data_(std::vector<Color>(width_* height_, fill)) {}
+    : width_(width), height_(height), data_(std::vector<RGBA>(width_* height_, RGBA())) {}
+Image::Image(int width, int height, const RGBA& fill)
+    : width_(width), height_(height), data_(std::vector<RGBA>(width_* height_, fill)) {}
 Image::Image(Size size)
-    : width_(size.width), height_(size.height), data_(std::vector<Color>(size.width * size.height, Color())) {}
-Image::Image(Size size, const Color& fill)
-    : width_(size.width), height_(size.height), data_(std::vector<Color>(size.width * size.height, fill)) {}
+    : width_(size.width), height_(size.height), data_(std::vector<RGBA>(size.width * size.height, RGBA())) {}
+Image::Image(Size size, const RGBA& fill)
+    : width_(size.width), height_(size.height), data_(std::vector<RGBA>(size.width * size.height, fill)) {}
 
 // Copy constructor
 Image::Image(const Image& other) 
@@ -70,22 +70,22 @@ int Image::getLinearIndex(int x, int y) const {
     return y * width_ + x;
 }
 
-Color& Image::at(int index) { 
+RGBA& Image::at(int index) { 
     return data_[index];
 }
-const Color& Image::at(int index) const {
+const RGBA& Image::at(int index) const {
     return data_[index];
 }
-Color& Image::at(int x, int y) {
+RGBA& Image::at(int x, int y) {
     return data_[getLinearIndex(x, y)];
 }
-const Color& Image::at(int x, int y) const {
+const RGBA& Image::at(int x, int y) const {
     return data_[getLinearIndex(x, y)];
 }
-Color& Image::at(Point pt) {
+RGBA& Image::at(Point pt) {
     return data_[getLinearIndex(pt.x, pt.y)];
 }
-const Color& Image::at(Point pt) const {
+const RGBA& Image::at(Point pt) const {
     return data_[getLinearIndex(pt.x, pt.y)];
 }
 
@@ -135,23 +135,23 @@ const uint8_t* Image::rawData() const {
 }
 
 size_t Image::rawDataBytesSize() { 
-    return data_.size() * sizeof(Color);
+    return data_.size() * sizeof(RGBA);
 }
 
 const size_t Image::rawDataBytesSize() const { 
-    return data_.size() * sizeof (Color);
+    return data_.size() * sizeof (RGBA);
 }
 
 
-void Image::setPixel(int index, const Color& color) { 
+void Image::setPixel(int index, const RGBA& color) { 
     data_.at(index) = color;
 }
 
-void Image::setPixel(int x, int y, const Color& color) {
+void Image::setPixel(int x, int y, const RGBA& color) {
     setPixel(getLinearIndex(x, y), color);
 }
 
-void Image::setPixel(const Point& pt, const Color& color) { 
+void Image::setPixel(const Point& pt, const RGBA& color) { 
     setPixel(getLinearIndex(pt.x, pt.y), color);
 }
 
@@ -160,7 +160,7 @@ bool Image::empty() const {
     return data_.empty();
 }
 
-void Image::fill(const Color& color) {
+void Image::fill(const RGBA& color) {
     std::fill(data_.begin(), data_.end(), color);
 }
 
@@ -177,11 +177,11 @@ bool Image::inBounds(int x, int y) const {
 }
 
 
-Color* Image::rowPtr(int y) { 
+RGBA* Image::rowPtr(int y) { 
     return data() + (y * width_);
 }
 
-const Color* Image::rowPtr(int y) const {
+const RGBA* Image::rowPtr(int y) const {
     return data() + (y * width_);
 }
 
@@ -192,17 +192,17 @@ RowIterator Image::row(int y) {
 
 
 RegionRowIterator Image::regionRows(const Rect& rect) { 
-    Color* start = data() + getLinearIndex(rect.tl);
+    RGBA* start = data() + getLinearIndex(rect.tl);
     return RegionRowIterator(start, rect.dx, rect.dy, width_);
 }
 
 const ConstRegionRowIterator Image::regionRows(const Rect& rect) const { 
-    const Color* start = data() + getLinearIndex(rect.tl);
+    const RGBA* start = data() + getLinearIndex(rect.tl);
     return ConstRegionRowIterator(start, rect.dx, rect.dy, width_);
 }
 
 RegionIterator Image::region(const Rect& rect) { 
-    Color* start = data() + getLinearIndex(rect.tl);
+    RGBA* start = data() + getLinearIndex(rect.tl);
     return RegionIterator(start, rect.dx, rect.dy, width_);
 }
 

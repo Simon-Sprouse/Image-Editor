@@ -4,7 +4,7 @@
 #include "edge.hpp"
 #include "../filter/color.hpp"
 
-using image::Image, image::Size, image::Point, image::Vec2d, image::Color;
+using image::Image, image::Size, image::Point, image::Vec2d, image::RGBA;
 
 namespace filter::edge { 
 
@@ -43,8 +43,8 @@ namespace filter::edge {
     
                 uint8_t gxVal = static_cast<uint8_t>(std::clamp(gx + 128, 0, 255));
                 uint8_t gyVal = static_cast<uint8_t>(std::clamp(gy + 128, 0, 255));
-                dest_grad_x.setPixel(x, y, Color(gxVal, gxVal, gxVal));
-                dest_grad_y.setPixel(x, y, Color(gyVal, gyVal, gyVal));
+                dest_grad_x.setPixel(x, y, RGBA(gxVal, gxVal, gxVal));
+                dest_grad_y.setPixel(x, y, RGBA(gyVal, gyVal, gyVal));
             }
         }
     }
@@ -75,7 +75,7 @@ namespace filter::edge {
             for (int x = 0; x < width; ++x) {
                 double mag = magnitudes[y * width + x];
                 uint8_t val = static_cast<uint8_t>((mag / maxMag) * 255.0);
-                dest.setPixel(x, y, Color(val, val, val));
+                dest.setPixel(x, y, RGBA(val, val, val));
             }
         }
     }
@@ -210,7 +210,7 @@ namespace filter::edge {
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 uint8_t val = (edgeMap[y * width + x] == 255) ? 255 : 0;
-                dest.setPixel(x, y, Color(val, val, val));
+                dest.setPixel(x, y, RGBA(val, val, val));
             }
         }
     }
@@ -568,7 +568,7 @@ namespace filter::edge {
         //             val = static_cast<uint8_t>(std::min(255.0f, 255.0f * (d / max_dist)));
         //         }
                 
-        //         distance_map_dest.at(x, y) = Color(val, val, val);
+        //         distance_map_dest.at(x, y) = RGBA(val, val, val);
         //     }
         // }
     }
@@ -603,7 +603,7 @@ namespace filter::edge {
                     float norm = (v - min_val) / (max_val - min_val);
                     gray = static_cast<uint8_t>(std::round(norm * 255.0f));
                 }
-                img.at(x, y) = Color(gray, gray, gray);
+                img.at(x, y) = RGBA(gray, gray, gray);
             }
         }
         return img;

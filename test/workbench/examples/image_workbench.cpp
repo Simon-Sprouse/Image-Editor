@@ -32,7 +32,7 @@ namespace workbench {
 
 
         logger.start("image fill");
-        original.fill(Color(255, 255, 255));
+        original.fill(RGBA(255, 255, 255));
         logger.stop("image fill");
 
 

@@ -25,9 +25,9 @@ class Image {
 
     // Param constructors
     Image(int width, int height);
-    Image(int width, int height, const Color& fill);
+    Image(int width, int height, const RGBA& fill);
     Image(Size size);
-    Image(Size size, const Color& fill);
+    Image(Size size, const RGBA& fill);
     Image(Size size, const std::vector<float>& vec);
 
     // Copy constructor
@@ -45,12 +45,12 @@ class Image {
     // Destructor
     ~Image();
 
-    Color& at(int index);
-    const Color& at(int index) const;
-    Color& at(int x, int y);
-    const Color& at(int x, int y) const;
-    Color& at(Point pt);
-    const Color& at(Point pt) const;
+    RGBA& at(int index);
+    const RGBA& at(int index) const;
+    RGBA& at(int x, int y);
+    const RGBA& at(int x, int y) const;
+    RGBA& at(Point pt);
+    const RGBA& at(Point pt) const;
     Size size() const;
     int getFlatSize() const;
     int getHeight() const;
@@ -59,11 +59,11 @@ class Image {
     const uint8_t* rawData() const;
     size_t rawDataBytesSize();
     const size_t rawDataBytesSize() const;
-    void setPixel(int index, const Color& color);
-    void setPixel(int x, int y, const Color& color);
-    void setPixel(const Point& pt, const Color& color);
+    void setPixel(int index, const RGBA& color);
+    void setPixel(int x, int y, const RGBA& color);
+    void setPixel(const Point& pt, const RGBA& color);
     bool empty() const;
-    void fill(const Color& color);
+    void fill(const RGBA& color);
     Image clone() const;
     bool inBounds(int x, int y) const;
 
@@ -75,15 +75,15 @@ class Image {
 
     // TODO think about literal iterator overload
     // TODO cbegin() and cend() ? cdata()?
-    Color* data() { return data_.data(); }
-    const Color* data() const { return data_.data(); }
-    Color* begin() { return data(); }
-    const Color* begin() const { return data(); }
-    Color* end() { return data() + data_.size(); }
-    const Color* end() const { return data() + data_.size(); }
+    RGBA* data() { return data_.data(); }
+    const RGBA* data() const { return data_.data(); }
+    RGBA* begin() { return data(); }
+    const RGBA* begin() const { return data(); }
+    RGBA* end() { return data() + data_.size(); }
+    const RGBA* end() const { return data() + data_.size(); }
     
-    Color* rowPtr(int y);
-    const Color* rowPtr(int y) const;
+    RGBA* rowPtr(int y);
+    const RGBA* rowPtr(int y) const;
     RowIterator row(int y);
     // const ConstRowIterator row(int y); // TODO I don't need this right? 
     RegionRowIterator regionRows(const Rect& rect);
@@ -100,7 +100,7 @@ class Image {
 
         int width_;
         int height_;
-        std::vector<Color> data_;
+        std::vector<RGBA> data_;
 
 
 };
