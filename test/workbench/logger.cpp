@@ -46,7 +46,8 @@ namespace logger {
         // Todo make this more elegant once it's extended. 
         cout << 
         "Task: " << task_name << setw(15) << 
-        " time: " << elapsed.count() << " s" 
+        " time: " << elapsed.count() << "s " << setw(10) << 
+        1.0f / elapsed.count() << " hz"
         << endl << endl;
     }
 

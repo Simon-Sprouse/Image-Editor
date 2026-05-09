@@ -3,6 +3,7 @@
 #include "examples/pipeline_workbench.hpp"
 #include "examples/functions_workbench.hpp"
 #include "examples/variants_workbench.hpp"
+#include "examples/image_workbench.hpp"
 #include "../../src/data/image/io.hpp"
 #include "logger.hpp"
 
@@ -22,10 +23,11 @@ namespace workbench {
     void runAll(string image_path, Logger& logger) { 
 
         // runIterator(image_path, logger);
-        runRandom(image_path, logger);
+        // runRandom(image_path, logger);
         // sequenceVariant(image_path, logger);
         runPixelate(image_path, logger);
         runGrid(image_path, logger);
+        runImage(image_path, logger);
         
     }
 
