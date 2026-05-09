@@ -4,6 +4,7 @@
 
 using namespace image;
 
+
 #include <iostream>
 using std::cerr, std::cout, std::endl;
 
@@ -13,6 +14,8 @@ using std::vector;
 
 #include <string> 
 using std::string;
+
+
 
 namespace unit_test::iterator { 
 
@@ -46,7 +49,7 @@ namespace unit_test::iterator {
 
 
 
-    void testRegionIterator(Image image);
-    void testRowIterator(Image imge);
-    void testRegionRowIterator(Image image);
+    void testRegionIterator(Image<RGBA> image);
+    void testRowIterator(Image<RGBA> imge);
+    void testRegionRowIterator(Image<RGBA> image);
 }

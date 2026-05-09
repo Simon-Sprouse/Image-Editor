@@ -5,13 +5,14 @@
 #include "../data/image/image.hpp"
 
 using std::string;
-using image::Image;
+using namespace image;
+
 
 namespace app { 
 
 
     struct ImageResult { 
-        Image image;
+        Image<RGBA> image;
         string label;
 
         bool empty() const {return image.empty();}

@@ -4,10 +4,8 @@
 
 namespace mosaic_gen::test { 
 
-using image::Image;
-using image::Size;
-using image::Point;
-using image::RGBA;
+
+using namespace image;
 using image::io::saveImageFileSystem;
 
 
@@ -22,14 +20,14 @@ void MosaicTest::testConstructor() {
 void MosaicTest::testPipeline() {
 
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     saveImageFileSystem(mosaic.original, save_dir_ + "original.jpg");
     saveImageFileSystem(mosaic.resized, save_dir_ + "resized.jpg");
 
 
-    Image strokes_img(mosaic.resized.size());
+    Image<RGBA> strokes_img(mosaic.resized.size());
     Graphics::drawStrokesRandomColor(strokes_img, mosaic.strokes);
 
     saveImageFileSystem(strokes_img, save_dir_ + "strokes.jpg");
@@ -41,7 +39,7 @@ void MosaicTest::testSelectStroke() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
 
@@ -49,7 +47,7 @@ void MosaicTest::testSelectStroke() {
 
     for (int stroke_id : stroke_ids) {
         mosaic.selectStroke(stroke_id);
-        saveImageFileSystem(mosaic.selected_stroke, save_dir_ + "selected_stroke" + std::to_string(stroke_id) + ".jpg");
+        saveImage<RGBA>FileSystem(mosaic.selected_stroke, save_dir_ + "selected_stroke" + std::to_string(stroke_id) + ".jpg");
     }
     
 }
@@ -58,7 +56,7 @@ void MosaicTest::testSelectStroke() {
 void MosaicTest::testMask() { 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     int size = mosaic.params.tile_size;
@@ -84,12 +82,12 @@ void MosaicTest::testRandomStart() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.selectStroke(0);
 
-    Image test_canvas = mosaic.selected_stroke.clone();
+    Image<RGBA> test_canvas = mosaic.selected_stroke.clone();
     Point pt = mosaic.getRandomPointOnStroke(0);
     int size = mosaic.params.tile_size;
     double theta_deg = 0;
@@ -108,12 +106,12 @@ void MosaicTest::testFindThetaStroke() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.selectStroke(0);
 
-    Image test_canvas = mosaic.selected_stroke.clone();
+    Image<RGBA> test_canvas = mosaic.selected_stroke.clone();
     Point pt = mosaic.getRandomPointOnStroke(0);
     int size = mosaic.params.tile_size;
 
@@ -152,12 +150,12 @@ void MosaicTest::testRingIntersections() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.selectStroke(0);
 
-    Image test_canvas = mosaic.selected_stroke.clone();
+    Image<RGBA> test_canvas = mosaic.selected_stroke.clone();
     Point pt = mosaic.getRandomPointOnStroke(0);
     int size = mosaic.params.tile_size;
 
@@ -193,12 +191,12 @@ void MosaicTest::testMultipleRings() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.selectStroke(0);
 
-    Image test_canvas = mosaic.selected_stroke.clone();
+    Image<RGBA> test_canvas = mosaic.selected_stroke.clone();
     Point pt = mosaic.getRandomPointOnStroke(0);
     int size = mosaic.params.tile_size;
     double theta_deg = mosaic.findBestTheta(pt, size);
@@ -227,7 +225,7 @@ void MosaicTest::testMultipleRings() {
 void MosaicTest::testPlaceTileStroke() { 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline(); 
     mosaic.placeTilesAlongStroke(0);
@@ -266,7 +264,7 @@ void MosaicTest::testPlaceTileAllStrokes() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline(); 
     mosaic.placeTilesAllStrokes();
@@ -281,11 +279,11 @@ void MosaicTest::testSquareBorderPoints() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline(); 
 
-    Image test_img(mosaic.resized.size());
+    Image<RGBA> test_img(mosaic.resized.size());
     int distance_from_center = mosaic.params.distance_from_center;
 
 
@@ -355,7 +353,7 @@ void MosaicTest::testVectorField() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.computeDistanceField();
@@ -365,7 +363,7 @@ void MosaicTest::testVectorField() {
     std::vector<Point> points = random_gen::gridPointsVector(mosaic.resized.size(), grid_size);
     std::vector<Point> jittered_points = random_gen::jitterPoints(points, max_step, mosaic.resized.size());
 
-    Image test_canvas = mosaic.canny.clone();
+    Image<RGBA> test_canvas = mosaic.canny.clone();
     for (Point pt : jittered_points) { 
         double theta_deg = mosaic.findThetaTangent(pt);
         RGBA arrow_color(255, 0, 0);
@@ -384,7 +382,7 @@ void MosaicTest::testFloodFill() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.placeTilesAllStrokes();
@@ -402,7 +400,7 @@ void MosaicTest::testGapFill() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.placeTilesAllStrokes();
@@ -420,7 +418,7 @@ void MosaicTest::testReconstructImage() {
 
     // necessary progress
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
     mosaic.placeTilesAllStrokes();
@@ -438,7 +436,7 @@ void MosaicTest::testStepOnce() {
 
 
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
 
     // test first step
@@ -462,7 +460,7 @@ void MosaicTest::testStepK() {
 
     int k = 100000;
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.stepK(k);
 
@@ -481,7 +479,7 @@ void MosaicTest::testCanny() {
 
     int k = 100000;
     Mosaic mosaic(params_);
-    Image original = image::io::loadImageFileSystem(image_path_);
+    Image<RGBA> original = image::io::loadImageFileSystem(image_path_);
     mosaic.loadExistingImage(original);
     mosaic.contourPipeline();
 

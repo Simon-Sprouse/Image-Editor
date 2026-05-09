@@ -4,17 +4,18 @@
 #include "edge.hpp"
 #include "../filter/color.hpp"
 
-using image::Image, image::Size, image::Point, image::Vec2d, image::RGBA;
+using namespace image;
+
 
 namespace filter::edge { 
 
 
-    void sobelFilter(const Image& src, Image& dest_grad_x, Image& dest_grad_y) {
+    void sobelFilter(const Image<RGBA>& src, Image<RGBA>& dest_grad_x, Image<RGBA>& dest_grad_y) {
         int w = src.getWidth();
         int h = src.getHeight();
     
-        dest_grad_x = Image(w, h);
-        dest_grad_y = Image(w, h);
+        dest_grad_x = Image<RGBA>(w, h);
+        dest_grad_y = Image<RGBA>(w, h);
     
         // 3x3 Sobel kernels
         int kernelX[3][3] = {
@@ -49,10 +50,10 @@ namespace filter::edge {
         }
     }
 
-    void visualizeSobel(const Image& gradX, const Image& gradY, Image& dest) {
+    void visualizeSobel(const Image<RGBA>& gradX, const Image<RGBA>& gradY, Image<RGBA>& dest) {
         int width = gradX.getWidth();
         int height = gradX.getHeight();
-        dest = Image(width, height);
+        dest = Image<RGBA>(width, height);
     
         double maxMag = 0.0;
         std::vector<double> magnitudes(width * height);
@@ -97,7 +98,7 @@ namespace filter::edge {
 
     
 
-    void cannyFilter(Image& src_blurred, Image& dest, int canny_threshold_1, int canny_threshold_2) {
+    void cannyFilter(Image<RGBA>& src_blurred, Image<RGBA>& dest, int canny_threshold_1, int canny_threshold_2) {
         int width = src_blurred.getWidth();
         int height = src_blurred.getHeight();
     
@@ -206,7 +207,7 @@ namespace filter::edge {
         }
     
         // -- Final output
-        dest = Image(width, height);
+        dest = Image<RGBA>(width, height);
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 uint8_t val = (edgeMap[y * width + x] == 255) ? 255 : 0;
@@ -216,7 +217,7 @@ namespace filter::edge {
     }
 
     // TODO unify sobel filter functions
-    void sobelFilterRaw(const Image& src, std::vector<int>& gradX, std::vector<int>& gradY) {
+    void sobelFilterRaw(const Image<RGBA>& src, std::vector<int>& gradX, std::vector<int>& gradY) {
         int w = src.getWidth();
         int h = src.getHeight();
         gradX.resize(w * h);
@@ -262,7 +263,7 @@ namespace filter::edge {
 
 
 
-    void findContours(const Image& src_binary, std::vector<std::vector<Point>>& contours) {
+    void findContours(const Image<RGBA>& src_binary, std::vector<std::vector<Point>>& contours) {
         int width = src_binary.getWidth();
         int height = src_binary.getHeight();
     
@@ -335,7 +336,7 @@ namespace filter::edge {
         // cv::findContours(edges.clone(), cv_contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
 
         // Create an output color image
-        Image contours(image_size);
+        Image<RGBA> contours(image_size);
         int contour_id = 0;
 
 
@@ -442,12 +443,12 @@ namespace filter::edge {
 
 
 
-    std::vector<float> computeDistanceField(const Image& strokes_img_source) {
+    std::vector<float> computeDistanceField(const Image<RGBA>& strokes_img_source) {
         int width = strokes_img_source.getWidth();
         int height = strokes_img_source.getHeight();
     
         // Step 1: Convert to grayscale
-        Image gray(width, height);
+        Image<RGBA> gray(width, height);
         filter::color::toGrayscale(strokes_img_source, gray);
     
         // Step 2: Create binary map (threshold at 1, like OpenCV code)
@@ -575,7 +576,7 @@ namespace filter::edge {
     
     
     
-    Image floatMapToGrayscaleImage(const std::vector<float>& data, Size size) {
+    Image<RGBA> floatMapToGrayscaleImage(const std::vector<float>& data, Size size) {
         int width = size.width;
         int height = size.height;
         int count = width * height;
@@ -594,7 +595,7 @@ namespace filter::edge {
     
         if (min_val == max_val) max_val += 1.0f; // Avoid divide-by-zero
     
-        Image img(width, height);
+        Image<RGBA> img(width, height);
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 float v = data[y * width + x];

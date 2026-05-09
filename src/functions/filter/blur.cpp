@@ -1,12 +1,14 @@
 #include "blur.hpp"
 #include "../math/kernel.hpp"
 
-using image::Image, image::Size, image::RGBA;
+using namespace image;
+
+
 
 namespace filter::blur { 
 
 
-    void gaussianBlur(Image& src, Image& dest, Size kernel_size, double blur_sigma) {
+    void gaussianBlur(Image<RGBA>& src, Image<RGBA>& dest, Size kernel_size, double blur_sigma) {
         const int width = src.getWidth();
         const int height = src.getHeight();
     
@@ -20,7 +22,7 @@ namespace filter::blur {
         std::vector<double> kernelX = math::kernel::generateGaussianKernel1D(radiusX, blur_sigma);
         std::vector<double> kernelY = math::kernel::generateGaussianKernel1D(radiusY, blur_sigma);
     
-        Image temp(width, height);  // Intermediate buffer
+        Image<RGBA> temp(width, height);  // Intermediate buffer
     
         // Horizontal pass
         for (int y = 0; y < height; ++y) {
@@ -44,7 +46,7 @@ namespace filter::blur {
             }
         }
     
-        dest = Image(width, height);  // Allocate output
+        dest = Image<RGBA>(width, height);  // Allocate output
     
         // Vertical pass
         for (int y = 0; y < height; ++y) {
@@ -69,7 +71,7 @@ namespace filter::blur {
         }
     }
 
-    void gaussianBlur(Image& src, Image& dest, int kernel_size, double blur_sigma) {
+    void gaussianBlur(Image<RGBA>& src, Image<RGBA>& dest, int kernel_size, double blur_sigma) {
         Size kernel(kernel_size, kernel_size);
         gaussianBlur(src, dest, kernel, blur_sigma);
     }

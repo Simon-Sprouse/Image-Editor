@@ -11,6 +11,7 @@
 using std::cout, std::endl;
 using std::vector;
 
+using namespace image;
 
 
 namespace grid { 
@@ -34,7 +35,7 @@ void Grid::run(Cache& cache) {
 
 
 
-void Grid::drawGridLines(Image& canvas, const Axis_Table& ax) { 
+void Grid::drawGridLines(Image<RGBA>& canvas, const Axis_Table& ax) { 
 
     // todo edge case where last column / row index is off screen
     for (int x : ax.x_table) { 

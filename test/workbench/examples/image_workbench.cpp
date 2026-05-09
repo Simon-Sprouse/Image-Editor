@@ -5,6 +5,7 @@
 
 using namespace logger;
 using namespace image;
+
 using namespace std;
 
 #include <opencv2/opencv.hpp>
@@ -16,7 +17,7 @@ namespace workbench {
         
 
         logger.start("image load");
-        Image original = io::loadImageFileSystem(image_path);
+        Image<RGBA> original = io::loadImageFileSystem(image_path);
         
 
         logger.stop("image load");

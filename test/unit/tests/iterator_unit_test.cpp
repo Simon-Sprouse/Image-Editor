@@ -13,7 +13,7 @@ namespace unit_test::iterator {
 
 
 
-    void testRegionIterator(Image image) { 
+    void testRegionIterator(Image<RGBA> image) { 
         cout << "hello from region iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 
@@ -62,7 +62,7 @@ namespace unit_test::iterator {
     }
 
 
-    void testRowIterator(Image image) { 
+    void testRowIterator(Image<RGBA> image) { 
         cout << "hello from row iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 
@@ -99,7 +99,7 @@ namespace unit_test::iterator {
 
     }
 
-    void testRegionRowIterator(Image image) { 
+    void testRegionRowIterator(Image<RGBA> image) { 
         cout << "hello from region row iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 

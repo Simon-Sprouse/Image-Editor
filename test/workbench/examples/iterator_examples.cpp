@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-using image::Image, image::RGBA, image::Point;
+using namespace image;
 using std::cout, std::endl;
 
 namespace workbench { 
@@ -18,7 +18,7 @@ namespace workbench {
 
         cout << "running testIterators" << endl;
 
-        Image image = image::io::loadImageFileSystem(image_path);
+        Image<RGBA> image = image::io::loadImageFileSystem(image_path);
 
 
 

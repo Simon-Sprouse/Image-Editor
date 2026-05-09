@@ -7,16 +7,17 @@
 #include <algorithm>
 
 using std::vector, std::sort, std::cout, std::endl;
+using namespace image;
 
 namespace pop_art {
 
 
 
-void PopArt::loadExistingImage(const Image& img) { 
+void PopArt::loadExistingImage(const Image<RGBA>& img) { 
     original = img.clone();
 }
 
-Image PopArt::getCanvas() { 
+Image<RGBA> PopArt::getCanvas() { 
     return canvas.clone();
 }
 
@@ -60,7 +61,7 @@ void PopArt::run() {
     }
 
     // recolor image using map O(n)
-    canvas = Image(original.size());
+    canvas = Image<RGBA>(original.size());
     for (int i = 0; i < num_pixels; i++) { 
         canvas.setPixel(i, new_color_for_value[gray.at(i).r]);
     }   
@@ -98,7 +99,7 @@ void PopArt::findBins_() {
     }
 
     // set all pixels in bin_map to store (bin_id, bin_id, bin_id) as color
-    bin_map = Image(original.size());
+    bin_map = Image<RGBA>(original.size());
     int bin_id_for_pixel;
     for (int i = 0; i < num_pixels; i++) { 
         bin_id_for_pixel = bin_id_for_value[gray.at(i).r];
@@ -117,7 +118,7 @@ void PopArt::runPersistent() {
     
     // recolor image
     // extract bin_id from each pixel and recolor pixel based on bin_id
-    canvas = Image(original.size());
+    canvas = Image<RGBA>(original.size());
     for (int i = 0; i < bin_map.getFlatSize(); i++) { 
         canvas.setPixel(i, colors[bin_map.at(i).r]);
     }   
@@ -163,7 +164,7 @@ void PopArt::runSlow() {
 
     int pixels_per_bin = num_pixels / num_bins;
     int bin;
-    bin_map = Image(original.size());
+    bin_map = Image<RGBA>(original.size());
 
 
     for (int i = 0; i < pixels.size(); i++) { 

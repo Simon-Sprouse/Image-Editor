@@ -5,12 +5,14 @@
 #include "../../data/image/image.hpp"
 #include "../../data/shapes/shapes.hpp"
 
+using namespace image;
+using shapes::Rect;
+
 namespace draw::polygon { 
 
-    using image::Image, image::Point, image::RGBA;
-    using shapes::Rect;
 
-    void drawRect(Image& image, const Rect& rect, const RGBA& color);
+
+    void drawRect(Image<RGBA>& image, const Rect& rect, const RGBA& color);
 
 
 

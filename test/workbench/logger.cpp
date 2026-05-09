@@ -5,6 +5,7 @@
 #include "../../src/data/image/io.hpp"
 using namespace image;
 
+
 #include <opencv2/opencv.hpp>
 
 using Clock = std::chrono::high_resolution_clock;
@@ -66,7 +67,7 @@ namespace logger {
         blockCV_();
     }
 
-    void Logger::stop(string task_name, const Image& output) { 
+    void Logger::stop(string task_name, const Image<RGBA>& output) { 
 
         stopTimer_(task_name);
         printTime_(task_name);

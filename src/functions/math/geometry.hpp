@@ -7,12 +7,13 @@
 #include <array>
 
 using namespace shapes;
+using namespace image;
 
 
 namespace Geometry { 
 
-    using image::Point;
-    using image::Vec2d;
+
+
 
 
     inline bool inBoundsRect(const Point& pt, const Point& tl_corner, int dx, int dy) { 

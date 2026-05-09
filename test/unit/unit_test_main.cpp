@@ -4,6 +4,8 @@
 #include <iostream>
 
 using std::cout, std::endl;
+using namespace image;
+
 
 namespace unit_test {
 
@@ -13,7 +15,7 @@ namespace unit_test {
     }
 
     void runAllIterator(string image_path) { 
-        Image image = io::loadImageFileSystem(image_path);
+        Image<RGBA> image = io::loadImageFileSystem(image_path);
         iterator::testRegionIterator(image.clone());
         iterator::testRowIterator(image.clone());
         iterator::testRegionRowIterator(image.clone());

@@ -4,7 +4,9 @@
 
 #include <vector>
 
-using image::Image, image::Size, image::RGBA, image::Point;
+using namespace image;
+
+
 
 namespace filter::color { 
 
@@ -12,7 +14,7 @@ namespace filter::color {
 
     // todo maybe extend this function to take a vector (although this implies copy in caller syntax)
     // todo maybe perform sampling of grid pixels not whole image
-    RGBA avgColor(const Image& image, const Rect& rect) { 
+    RGBA avgColor(const Image<RGBA>& image, const Rect& rect) { 
 
         
         // todo get iterator to work with const image and const point
@@ -39,9 +41,9 @@ namespace filter::color {
 
 
 
-    void toGrayscale(const Image& src, Image& dest) { 
+    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest) { 
         Size size = src.size();
-        dest = Image(size);  // reallocate dest image with same size
+        dest = Image<RGBA>(size);  // reallocate dest image with same size
 
         for (int y = 0; y < size.height; ++y) {
             for (int x = 0; x < size.width; ++x) {

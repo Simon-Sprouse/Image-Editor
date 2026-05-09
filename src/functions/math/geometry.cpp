@@ -11,6 +11,9 @@ namespace Geometry {
 
     using image::Point;
     using image::Vec2d;
+    using image::RGBA;
+    using Image = image::Image<RGBA>;
+
 
    
 
