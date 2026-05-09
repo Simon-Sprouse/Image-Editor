@@ -7,6 +7,9 @@ using namespace logger;
 using namespace image;
 using namespace std;
 
+#include <opencv2/opencv.hpp>
+
+
 namespace workbench { 
     void runImage(string image_path, Logger logger) { 
 
@@ -31,9 +34,27 @@ namespace workbench {
 
 
 
-        logger.start("image fill");
-        original.fill(RGBA(255, 255, 255));
-        logger.stop("image fill");
+
+
+
+
+        image::RGBA rgba(0);
+
+        image::HSV a(0);
+        cout << a << endl;
+
+        image::HSV b(1000, 20, 20);
+        cout << b << endl;
+
+        image::GRAY c(240);
+        cout << c << endl;
+
+
+
+
+
+
+
 
 
 

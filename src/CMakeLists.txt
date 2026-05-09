@@ -76,3 +76,4 @@ target_include_directories(mosaic_tiler PRIVATE
 
 # Link OpenCV
 target_link_libraries(mosaic_tiler ${OpenCV_LIBS})
+target_compile_options(mosaic_tiler PRIVATE -O3 -march=native)

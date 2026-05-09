@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 
 // todo: find a less ethnic name for this file
 
@@ -14,42 +15,33 @@ namespace image {
         uint8_t b;
         uint8_t a;
 
+        // === Default Constructor === 
         RGBA() : r(0), g(0), b(0), a(255) {}
 
-        explicit RGBA(uint8_t value) 
-            : r(value), g(value), b(value), a(255) {}
-        RGBA(uint8_t red, uint8_t green, uint8_t blue) 
-            : r(red), g(green), b(blue), a(255) {}
-        RGBA(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) 
+        // === uint8 Constructor ===
+        RGBA(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) 
             : r(red), g(green), b(blue), a(alpha) {}
+        explicit RGBA(uint8_t value)
+            : RGBA(value, value, value) {}
 
-        explicit RGBA(int value) 
-            : r(clampToByte(value)), g(clampToByte(value)), b(clampToByte(value)), a(255) {}
-        RGBA(int red, int green, int blue) 
-            : r(clampToByte(red)), g(clampToByte(green)), b(clampToByte(blue)), a(255) {}
-        RGBA(int red, int green, int blue, int alpha) 
-            : r(clampToByte(red)), g(clampToByte(green)), b(clampToByte(blue)), a(clampToByte(alpha)) {}
+        // === int Constructor ===
+        RGBA(int red, int green, int blue, int alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGBA(int value)
+            : RGBA(value, value, value) {}
 
-        explicit RGBA(float value) 
-            : r(clampToByte(static_cast<int>(value))), g(clampToByte(static_cast<int>(value))), 
-            b(clampToByte(static_cast<int>(value))), a(255) {}
-        RGBA(float red, float green, float blue) 
-            : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
-            b(clampToByte(static_cast<int>(blue))), a(255) {}
-        RGBA(float red, float green, float blue, float alpha) 
-            : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
-            b(clampToByte(static_cast<int>(blue))), a(clampToByte(static_cast<int>(alpha))) {}
+        // === float Constructor ===
+        RGBA(float red, float green, float blue, float alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGBA(float value)
+            : RGBA(value, value, value) {}
 
-        explicit RGBA(double value) 
-            : r(clampToByte(static_cast<int>(value))), g(clampToByte(static_cast<int>(value))), 
-            b(clampToByte(static_cast<int>(value))), a(255) {}
-        RGBA(double red, double green, double blue) 
-            : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
-            b(clampToByte(static_cast<int>(blue))), a(255) {}
-        RGBA(double red, double green, double blue, double alpha) 
-            : r(clampToByte(static_cast<int>(red))), g(clampToByte(static_cast<int>(green))), 
-            b(clampToByte(static_cast<int>(blue))), a(clampToByte(static_cast<int>(alpha))) {}
-    
+        // === double Constructor ===
+        RGBA(double red, double green, double blue, double alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGBA(double value)
+            : RGBA(value, value, value) {}
+
 
         bool operator==(const RGBA& other) const {
             return r == other.r && g == other.g && b == other.b && a == other.a;
@@ -62,13 +54,53 @@ namespace image {
 
         private:
 
-            static constexpr uint8_t clampToByte(int value) { 
-                if (value < 0) return 0;
-                else if (value > 255) return 255;
-                return static_cast<uint8_t>(value);
+            // todo more elegant solution here: limits, widening, templatizing
+            static constexpr uint8_t clamp_8b(int value) { 
+                return static_cast<uint8_t>(std::clamp(value, 0, 255));
             }
 
+
     };
+    static_assert(sizeof(RGBA) == 4);
+
+
+    struct HSV { 
+
+        uint16_t h;
+        uint8_t s;
+        uint8_t v;
+
+        HSV() : h(0), s(0), v(0) {}
+
+        HSV(uint16_t hue) 
+            : h(hue), s(255), v(255) {}
+
+        HSV(uint16_t hue, uint8_t saturation, uint8_t value)
+            : h(hue), s(saturation), v(value) {}
+
+
+        // todo need way more of these
+
+    };
+    static_assert(sizeof(HSV) == 4);
+
+
+    struct GRAY { 
+        uint8_t v;
+
+        GRAY() : v(0) {}
+        GRAY(uint8_t value) : v(value) {}
+
+    };
+    static_assert(sizeof(GRAY) == 1);
+
+
+
+
+
+
+
+
 
 
 
@@ -189,13 +221,36 @@ namespace image {
         return os;
     }
 
+
+    // Stream operator for HSV
+    inline std::ostream& operator<<(std::ostream& os, const HSV& color) {
+
+        os << "hsv[" << static_cast<int>(color.h) << ", "
+                    << static_cast<int>(color.s) << ", "
+                    << static_cast<int>(color.v) << "]";
+
+
+        return os;
+    }
+
+    // Stream operator for GRAY
+    inline std::ostream& operator<<(std::ostream& os, const GRAY& color) {
+
+        os << "gray[" << static_cast<int>(color.v) << "]";
+
+        return os;
+    }
+
+
+
+
     // Stream operator for Point
     inline std::ostream& operator<<(std::ostream& os, const Point& point) {
         os << "point[" << point.x << ", " << point.y << "]";
         return os;
     }
 
-    // Stream operator for Point
+    // Stream operator for Vec2d
     inline std::ostream& operator<<(std::ostream& os, const Vec2d& vec) {
         os << "vec2d[" << vec.x << ", " << vec.y << "]";
         return os;
