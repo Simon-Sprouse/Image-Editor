@@ -2,6 +2,8 @@
 #include "../../../src/data/image/image.hpp"
 #include "../../../src/data/image/io.hpp"
 #include <iostream>
+#include <vector>
+
 
 using namespace logger;
 using namespace image;
@@ -58,6 +60,57 @@ namespace workbench {
 
 
 
+
+
+        Image<RGBA> original = io::loadImageFileSystem(image_path);
+        Image<HSV> hsv(original.size());
+
+        logger.start("hsv image conversion X 100");
+        {
+            int num_iterations = 100;
+            for (int i = 0; i < num_iterations; i++) {
+                for (int j = 0; j < original.linearSize(); j++) { 
+                    hsv.setPixel(j, RGBA2HSV(original.at(j)));
+                }
+            }
+            cout << "sum_iterations: " << original.linearSize() * num_iterations << endl;
+        }
+        logger.stop("hsv image conversion X 100");
+
+
+
+
+
+
+        cv::Mat original_mat = io::imageToCvMat(original);
+        cv::Mat hsv_mat = cv::Mat(original_mat.size(), CV_8UC3);
+
+        cv::Vec4b rgb_pixel;
+        cv::Vec3b hsv_pixel;
+
+        // used for passing to cvtColor
+        cv::Mat src_px = cv::Mat(1, 1, CV_8UC4, &rgb_pixel);
+        cv::Mat dst_px = cv::Mat(1, 1, CV_8UC3, &hsv_pixel);
+
+        cv::Vec4b* src_ptr = original_mat.ptr<cv::Vec4b>();
+        cv::Vec3b* dst_ptr = hsv_mat.ptr<cv::Vec3b>();
+        logger.start("cv hsv image conversion x 100");
+        {
+            int num_iterations = 100;
+            for (int i = 0; i < num_iterations; i++) {
+                for (int j = 0; j < original_mat.total(); j++) { 
+                    rgb_pixel = src_ptr[j];
+                    cv::cvtColor(src_px, dst_px, cv::COLOR_RGB2HSV);
+                    dst_ptr[j] = hsv_pixel;
+                }
+            }
+            cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
+        }
+        logger.stop("cv hsv image conversion x 100");
+
+
+
+
     }
 
 
@@ -75,25 +128,28 @@ namespace workbench {
     void runImage(string image_path, Logger logger) { 
 
 
-        logger.start("image load");
+
         Image<RGBA> original = io::loadImageFileSystem(image_path);
         
 
-        logger.stop("image load");
+
+        // todo multi hsv to rgb convert
 
 
-        logger.start("image read");
+      
 
-        int sum_r = 0;
-        for (auto px : original) { 
-            sum_r += px.r;
+
+        cv::Mat original_mat = io::imageToCvMat(original);
+        cv::Mat hsv_mat = cv::Mat(original_mat.size(), CV_8UC4);
+        logger.start("cv hsv image conversion x 100");
+        {
+            int num_iterations = 100;
+            for (int i = 0; i < num_iterations; i++) {
+                cv::cvtColor(original_mat, hsv_mat, cv::COLOR_RGB2HSV);
+            }
+            cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
         }
-        cout << "sum r: " << sum_r << endl;
-
-        logger.stop("image read");
-
-
-
+        logger.stop("cv hsv image conversion x 100");
 
 
 

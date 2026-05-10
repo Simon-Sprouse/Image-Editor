@@ -52,7 +52,7 @@ class Image {
     Px& at(Point pt);
     const Px& at(Point pt) const;
     Size size() const;
-    int getLinearSize() const;
+    int linearSize() const;
     int getHeight() const;
     int getWidth() const;
     uint8_t* rawData();
@@ -219,7 +219,7 @@ const Px& Image<Px>::at(Point pt) const {
 }
 
 template <typename Px>
-int Image<Px>::getLinearSize() const { 
+int Image<Px>::linearSize() const { 
     return height_ * width_;
 }
 

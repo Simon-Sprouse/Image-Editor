@@ -119,9 +119,9 @@ namespace image {
 
     inline HSV RGBA2HSV(const RGBA& px) { 
 
-        cout << "px.r: " << static_cast<int>(px.r) << endl;
-        cout << "px.g: " << static_cast<int>(px.g) << endl;
-        cout << "px.b: " << static_cast<int>(px.b) << endl;
+        // cout << "px.r: " << static_cast<int>(px.r) << endl;
+        // cout << "px.g: " << static_cast<int>(px.g) << endl;
+        // cout << "px.b: " << static_cast<int>(px.b) << endl;
 
         int r = static_cast<int>(px.r);
         int g = static_cast<int>(px.g);
@@ -131,9 +131,9 @@ namespace image {
         int cmin = std::min({r, g, b});
         int delta = cmax - cmin;
 
-        cout << "cmax: " << cmax << endl;
-        cout << "cmin: " << cmin << endl;
-        cout << "delta: " << delta << endl;
+        // cout << "cmax: " << cmax << endl;
+        // cout << "cmin: " << cmin << endl;
+        // cout << "delta: " << delta << endl;
 
 
         if(cmax == 0) { 
@@ -144,7 +144,7 @@ namespace image {
         uint8_t s = static_cast<uint8_t>((delta*256 / cmax));
 
         if (delta == 0) {
-            cout << "returning early on 0 delta" << endl;
+            // cout << "returning early on 0 delta" << endl;
             return HSV(0, 0, v);
         }
 
@@ -161,9 +161,9 @@ namespace image {
         }
         
 
-        cout << "px.g - px.b: " << static_cast<int>(px.g - px.b) << endl;
-        cout << "(px.g - px.b)*256: " << static_cast<int>((px.g - px.b)*256) << endl;
-        cout << "((px.g - px.b))*256/delta: " << static_cast<int>(((px.g - px.b)*256)/delta) << endl;
+        // cout << "px.g - px.b: " << static_cast<int>(px.g - px.b) << endl;
+        // cout << "(px.g - px.b)*256: " << static_cast<int>((px.g - px.b)*256) << endl;
+        // cout << "((px.g - px.b))*256/delta: " << static_cast<int>(((px.g - px.b)*256)/delta) << endl;
 
 
         return HSV((uint16_t)h, s, v);
