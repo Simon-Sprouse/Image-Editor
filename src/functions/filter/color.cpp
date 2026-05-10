@@ -47,8 +47,8 @@ namespace filter::color {
 
         // todo index iterator
         // todo subscript operator [] for image
-        for (int i = 0; i < dest.getFlatSize(); i++) { 
-            dest.setPixel(i, RGBA2GRAY(src.at(i)));
+        for (int i = 0; i < dest.getLinearSize(); i++) { 
+            dest.setPixel(i, src.at(i).toGray());
         }
         
     }

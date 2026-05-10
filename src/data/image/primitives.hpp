@@ -1,11 +1,17 @@
 #pragma once
 #include <algorithm>
+#include <iostream>
+
+using std::cout, std::endl;
 
 // todo: find a less ethnic name for this file
 
 namespace image { 
 
     // todo: move geometric stuff to shapes and expand on color theory here
+
+    struct GRAY;
+
 
     struct RGBA { 
 
@@ -50,10 +56,7 @@ namespace image {
             return !(*this == other);
         }
 
-        // todo: figure this out
-        // GRAY toGRAY() { 
-        //     return RGBA2GRAY(*this);
-        // }
+        GRAY toGray() const;
 
 
         private:
@@ -70,9 +73,9 @@ namespace image {
 
     struct HSV { 
 
-        uint16_t h;
-        uint8_t s;
-        uint8_t v;
+        uint16_t h;     // 0-1535
+        uint8_t s;      // 0-255 
+        uint8_t v;      // 0-255
 
         HSV() : h(0), s(0), v(0) {}
 
@@ -114,6 +117,72 @@ namespace image {
     }
 
 
+    inline HSV RGBA2HSV(const RGBA& px) { 
+
+        cout << "px.r: " << static_cast<int>(px.r) << endl;
+        cout << "px.g: " << static_cast<int>(px.g) << endl;
+        cout << "px.b: " << static_cast<int>(px.b) << endl;
+
+        int r = static_cast<int>(px.r);
+        int g = static_cast<int>(px.g);
+        int b = static_cast<int>(px.b);
+
+        int cmax = std::max({r, g, b});
+        int cmin = std::min({r, g, b});
+        int delta = cmax - cmin;
+
+        cout << "cmax: " << cmax << endl;
+        cout << "cmin: " << cmin << endl;
+        cout << "delta: " << delta << endl;
+
+
+        if(cmax == 0) { 
+            return HSV();
+        }
+
+        uint8_t v = static_cast<uint8_t>(cmax);
+        uint8_t s = static_cast<uint8_t>((delta*256 / cmax));
+
+        if (delta == 0) {
+            cout << "returning early on 0 delta" << endl;
+            return HSV(0, 0, v);
+        }
+
+        int h;
+        if (cmax == r) { 
+            h = ((g - b)*256)/delta;
+            if (h < 0) h += 1536;
+        }
+        else if (cmax == g) { 
+            h = ((b - r)*256)/delta + 512;
+        }
+        else { 
+            h = ((r - g)*256)/delta + 1024;
+        }
+        
+
+        cout << "px.g - px.b: " << static_cast<int>(px.g - px.b) << endl;
+        cout << "(px.g - px.b)*256: " << static_cast<int>((px.g - px.b)*256) << endl;
+        cout << "((px.g - px.b))*256/delta: " << static_cast<int>(((px.g - px.b)*256)/delta) << endl;
+
+
+        return HSV((uint16_t)h, s, v);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    inline GRAY RGBA::toGray() const { 
+        return RGBA2GRAY(*this);
+    }
 
 
 

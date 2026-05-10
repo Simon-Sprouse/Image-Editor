@@ -31,7 +31,7 @@ void PopArt::run() {
 
     // create histogram of grayscale values O(n)
     vector<int> value_counts_histogram(256, 0);
-    int num_pixels = original.getFlatSize();
+    int num_pixels = original.getLinearSize();
     for (int i = 0; i < num_pixels; i++) { 
         value_counts_histogram[gray.at(i).v] += 1;
     }
@@ -78,7 +78,7 @@ void PopArt::findBins_() {
 
     // count number of pixels for each grayscale value
     vector<int> value_counts_histogram(256, 0);
-    int num_pixels = original.getFlatSize();
+    int num_pixels = original.getLinearSize();
     for (int i = 0; i < num_pixels; i++) { 
         value_counts_histogram[gray.at(i).v] += 1;
     }
@@ -119,7 +119,7 @@ void PopArt::runPersistent() {
     // recolor image
     // extract bin_id from each pixel and recolor pixel based on bin_id
     canvas = Image<RGBA>(original.size());
-    for (int i = 0; i < bin_map.getFlatSize(); i++) { 
+    for (int i = 0; i < bin_map.getLinearSize(); i++) { 
         canvas.setPixel(i, colors[bin_map.at(i).r]);
     }   
 

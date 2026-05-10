@@ -12,9 +12,68 @@ using namespace std;
 
 
 namespace workbench { 
+
+    void runPrimitives(string image_path, Logger logger) { 
+
+
+        logger.start("constructors");
+        {
+            image::RGBA rgba(0);
+
+            image::HSV a(0);
+            cout << a << endl;
+
+            image::HSV b(1000, 20, 20);
+            cout << b << endl;
+
+            image::GRAY c(240);
+            cout << c << endl;
+        
+        }
+        logger.stop("constructors"); // todo make these legit
+
+
+
+        logger.start("conversions");
+        {
+
+            RGBA rgba(210, 42, 69);
+            HSV hsv(1234, 73, 21);
+            GRAY gray(93);
+
+            cout << "RGBA: " << rgba << endl;
+            cout << "RGBA.toGRAY(): " << rgba.toGray() << endl;
+            // cout << "RGBA.toHSV(): " << rgba.toHSV() << endl;
+
+
+
+            HSV test = RGBA2HSV(rgba);
+            cout << "HSV: " << test << endl;
+
+
+        }
+        logger.stop("conversions");
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     void runImage(string image_path, Logger logger) { 
 
-        
 
         logger.start("image load");
         Image<RGBA> original = io::loadImageFileSystem(image_path);
@@ -39,18 +98,7 @@ namespace workbench {
 
 
 
-        image::RGBA rgba(0);
-
-        image::HSV a(0);
-        cout << a << endl;
-
-        image::HSV b(1000, 20, 20);
-        cout << b << endl;
-
-        image::GRAY c(240);
-        cout << c << endl;
-
-
+       
 
 
 
