@@ -3,6 +3,7 @@
 #include "../../../src/data/image/io.hpp"
 #include <iostream>
 #include <vector>
+#include <cassert>
 
 
 using namespace logger;
@@ -107,6 +108,48 @@ namespace workbench {
             cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
         }
         logger.stop("cv hsv image conversion x 100");
+
+
+
+
+        cv::Mat rgb_mat(original_mat.size(), CV_8UC3);
+        cv::cvtColor(original_mat, rgb_mat, cv::COLOR_BGR2RGB);
+        logger.start("hsv conversion correctness test");
+        {
+            // gt 
+            cv::cvtColor(rgb_mat, hsv_mat, cv::COLOR_RGB2HSV);
+
+            // create test array for our conversion
+            for (int j = 0; j < original.linearSize(); j++) { 
+                hsv.setPixel(j, RGBA2HSV(original.at(j)));
+            }
+
+            // check test array against gt
+            for (int i = 0; i < hsv.linearSize(); i++) { 
+                // todo static assert would be bad here right? 
+
+                RGBA my_rgb = original.at(i);
+                HSV my_hsv = hsv.at(i);
+                float my_normalized_hue = static_cast<float>(my_hsv.h) / 1535.0f;
+
+                cv::Vec3b cv_rgb = rgb_mat.ptr<cv::Vec3b>()[i];
+                cv::Vec3b cv_hsv = hsv_mat.ptr<cv::Vec3b>()[i];
+                float cv_normalized_hue = static_cast<float>(cv_hsv[0]) / 180.0f;
+
+                cout << "i: " << i << endl;
+                cout << "rgb_image.at(" << i << "): " << my_rgb << endl;
+                cout << "rgb_mat.at(" << i << "): " << cv_rgb << endl;
+                cout << "hsv.at(" << i << "): " << my_hsv << endl;
+                cout << "hsv_mat.at(" << i << "): " << cv_hsv << endl;
+                cout << "my normal hue: " << my_normalized_hue << endl;
+                cout << "cv normal hue: " << cv_normalized_hue << endl;
+                cout << endl;
+            }
+            
+
+        }
+        logger.stop("hsv conversion correctness test");
+
 
 
 
