@@ -30,7 +30,7 @@ class PopArt {
     private: 
         Parameters params;
         Image<RGBA> original;
-        Image<RGBA> gray;
+        Image<GRAY> gray;
         Image<RGBA> canvas;
         Image<RGBA> bin_map;
 };

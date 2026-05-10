@@ -7,7 +7,6 @@ namespace image {
 
     // todo: move geometric stuff to shapes and expand on color theory here
 
-
     struct RGBA { 
 
         uint8_t r;
@@ -50,6 +49,11 @@ namespace image {
         bool operator!=(const RGBA& other) const {
             return !(*this == other);
         }
+
+        // todo: figure this out
+        // GRAY toGRAY() { 
+        //     return RGBA2GRAY(*this);
+        // }
 
 
         private:
@@ -95,10 +99,19 @@ namespace image {
     static_assert(sizeof(GRAY) == 1);
 
 
+    // todo MASK type
 
 
 
 
+
+
+    inline GRAY RGBA2GRAY(const RGBA& px) {
+
+        // todo clamp should solve this
+        uint8_t luminance = static_cast<uint8_t>(0.299 * px.r + 0.587 * px.g + 0.114 * px.b);
+        return GRAY(luminance);
+    }
 
 
 

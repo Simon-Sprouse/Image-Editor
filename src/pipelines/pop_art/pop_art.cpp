@@ -33,7 +33,7 @@ void PopArt::run() {
     vector<int> value_counts_histogram(256, 0);
     int num_pixels = original.getFlatSize();
     for (int i = 0; i < num_pixels; i++) { 
-        value_counts_histogram[gray.at(i).r] += 1;
+        value_counts_histogram[gray.at(i).v] += 1;
     }
 
     // walk through historgram and create bins O(256)
@@ -63,7 +63,7 @@ void PopArt::run() {
     // recolor image using map O(n)
     canvas = Image<RGBA>(original.size());
     for (int i = 0; i < num_pixels; i++) { 
-        canvas.setPixel(i, new_color_for_value[gray.at(i).r]);
+        canvas.setPixel(i, new_color_for_value[gray.at(i).v]);
     }   
 
 
@@ -80,7 +80,7 @@ void PopArt::findBins_() {
     vector<int> value_counts_histogram(256, 0);
     int num_pixels = original.getFlatSize();
     for (int i = 0; i < num_pixels; i++) { 
-        value_counts_histogram[gray.at(i).r] += 1;
+        value_counts_histogram[gray.at(i).v] += 1;
     }
 
     // walk through grayscale values histogram and assign bin_id to each value
@@ -102,7 +102,7 @@ void PopArt::findBins_() {
     bin_map = Image<RGBA>(original.size());
     int bin_id_for_pixel;
     for (int i = 0; i < num_pixels; i++) { 
-        bin_id_for_pixel = bin_id_for_value[gray.at(i).r];
+        bin_id_for_pixel = bin_id_for_value[gray.at(i).v];
         bin_map.setPixel(i, RGBA(bin_id_for_pixel));
     }
 }
@@ -130,14 +130,16 @@ void PopArt::runSlow() {
     canvas = original.clone();
     filter::color::toGrayscale(original, gray);
 
+
+    // todo this should be a defined type elsewhere
     struct Pixel { 
         Point point;
-        RGBA color;
+        GRAY color;
     };
 
     struct compGT { 
         // assuming the pixels are both grayscale, compare only r values (reason why RGBA in imag.hpp not overloaded)
-        bool operator()(const Pixel& lhs, const Pixel& rhs) { return lhs.color.r > rhs.color.r; }
+        bool operator()(const Pixel& lhs, const Pixel& rhs) { return lhs.color.v > rhs.color.v; }
     };
 
     int width = original.getWidth();

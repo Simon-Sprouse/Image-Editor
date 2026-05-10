@@ -41,19 +41,36 @@ namespace filter::color {
 
 
 
-    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest) { 
-        Size size = src.size();
-        dest = Image<RGBA>(size);  // reallocate dest image with same size
+    void toGrayscale(const Image<RGBA>& src, Image<GRAY>& dest) { 
 
-        for (int y = 0; y < size.height; ++y) {
-            for (int x = 0; x < size.width; ++x) {
+        dest = Image<GRAY>(src.size());  
+
+        // todo index iterator
+        // todo subscript operator [] for image
+        for (int i = 0; i < dest.getFlatSize(); i++) { 
+            dest.setPixel(i, RGBA2GRAY(src.at(i)));
+        }
+        
+    }
+
+
+
+
+
+    // TODO this will be removed at some point
+    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest) { 
+
+        dest = Image<RGBA>(src.size());  
+
+        for (int y = 0; y < src.getHeight(); ++y) {
+            for (int x = 0; x < src.getWidth(); ++x) {
                 const RGBA& pixel = src.at(x, y);
 
                 // Compute luminance (grayscale intensity)
                 uint8_t gray = static_cast<uint8_t>(
                     0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b
                 );
-                RGBA new_pixel(gray, gray, gray);
+                RGBA new_pixel(gray);
                 dest.setPixel(x, y, new_pixel);
             }
         }
