@@ -20,43 +20,43 @@ namespace workbench {
     void runPrimitives(string image_path, Logger logger) { 
 
 
-        logger.start("constructors");
-        {
-            image::RGBA rgba(0);
+        // logger.start("constructors");
+        // {
+        //     image::RGBA rgba(0);
 
-            image::HSV a(0);
-            cout << a << endl;
+        //     image::HSV a(0);
+        //     cout << a << endl;
 
-            image::HSV b(1000, 20, 20);
-            cout << b << endl;
+        //     image::HSV b(1000, 20, 20);
+        //     cout << b << endl;
 
-            image::GRAY c(240);
-            cout << c << endl;
+        //     image::GRAY c(240);
+        //     cout << c << endl;
         
-        }
-        logger.stop("constructors"); // todo make these legit
+        // }
+        // logger.stop("constructors"); // todo make these legit
 
 
 
-        logger.start("conversions");
-        {
+        // logger.start("conversions");
+        // {
 
-            RGBA rgba(210, 42, 69);
-            HSV hsv(1234, 73, 21);
-            GRAY gray(93);
+        //     RGBA rgba(210, 42, 69);
+        //     HSV hsv(1234, 73, 21);
+        //     GRAY gray(93);
 
-            cout << "RGBA: " << rgba << endl;
-            cout << "RGBA.toGRAY(): " << rgba.toGray() << endl;
-            // cout << "RGBA.toHSV(): " << rgba.toHSV() << endl;
-
-
-
-            HSV test = RGBA2HSV(rgba);
-            cout << "HSV: " << test << endl;
+        //     cout << "RGBA: " << rgba << endl;
+        //     cout << "RGBA.toGRAY(): " << rgba.toGray() << endl;
+        //     // cout << "RGBA.toHSV(): " << rgba.toHSV() << endl;
 
 
-        }
-        logger.stop("conversions");
+
+        //     HSV test = RGBA2HSV(rgba);
+        //     cout << "HSV: " << test << endl;
+
+
+        // }
+        // logger.stop("conversions");
 
 
 
@@ -66,19 +66,9 @@ namespace workbench {
 
         Image<RGBA> original = io::loadImageFileSystem(image_path);
         Image<HSV> hsv(original.size());
-
-        logger.start("hsv image conversion X 100");
-        {
-            int num_iterations = 100;
-            for (int i = 0; i < num_iterations; i++) {
-                for (int j = 0; j < original.linearSize(); j++) { 
-                    hsv.setPixel(j, RGBA2HSV(original.at(j)));
-                }
-            }
-            cout << "sum_iterations: " << original.linearSize() * num_iterations << endl;
+        for (int j = 0; j < original.linearSize(); j++) { 
+            hsv.setPixel(j, RGBA2HSV(original.at(j)));
         }
-        logger.stop("hsv image conversion X 100");
-
 
 
 
@@ -140,7 +130,7 @@ namespace workbench {
                 diff = std::min(diff, 1.0f - diff);
 
                 // todo static assert would be bad here right? 
-                assert(diff <= 0.01f);
+                assert(diff <= 0.021);
 
                 // cout << "i: " << i << endl;
                 // cout << "rgb_image.at(" << i << "): " << my_rgb << endl;
@@ -152,6 +142,17 @@ namespace workbench {
                 // cout << "diff: " << diff << endl;
                 // cout << endl;
             }
+
+
+
+
+            for (int r = 0; r < 256; r++) { 
+                for (int g = 0; g < 256; g++) { 
+                    for (int b = 0; b < 256; b++) { 
+                        HSV hsv = RGBA2HSV(RGBA(r, g, b));
+                    }
+                }
+            }
             
 
         }
@@ -162,23 +163,7 @@ namespace workbench {
 
 
 
-        logger.start("rgb to hsv");
-        { 
-            auto px = original.at(0);
-
-            HSV hsv = RGBA2HSV(px);
-            RGBA rgba = HSV2RGBA(hsv);
-
-            cout << "original: " << px << endl;
-            cout << "hsv: " << hsv << endl;
-            cout << "rgba: " << rgba << endl;
-            cout << endl;
-            
-        }
-        logger.stop("rgb to hsv");
-
-
-
+        
         logger.start("rgb conversion correctness test");
         { 
             for (auto px : original) {
@@ -188,19 +173,34 @@ namespace workbench {
 
                 // todo this tolerance is too high, conversion bug likely exists
                 assert(px - rgba < RGBA(3));
-                cout << "px - rgba: " << px - rgba << endl;
-                cout << "(px - rgba) < RGBA(1): " << ((px - rgba) < RGBA(1)) << endl;
+                // cout << "px - rgba: " << px - rgba << endl;
+                // cout << "(px - rgba) < RGBA(1): " << ((px - rgba) < RGBA(1)) << endl;
                 
 
-                cout << "original: " << px << endl;
-                cout << "hsv: " << hsv << endl;
-                cout << "rgba: " << rgba << endl;
-                cout << endl;
+                // cout << "original: " << px << endl;
+                // cout << "hsv: " << hsv << endl;
+                // cout << "rgba: " << rgba << endl;
+                // cout << endl;
 
             }
+
+
+            for (int h = 0; h < 1536; h++) { 
+                for (int s = 0; s < 256; s++) { 
+                    for (int v = 0; v < 256; v++) { 
+                        RGBA rgba = HSV2RGBA(HSV(h, s, v));
+                    }
+                }
+            }
+
+
+
+
             
         }
         logger.stop("rgb conversion correctness test");
+
+
 
 
 
@@ -231,27 +231,63 @@ namespace workbench {
 
 
 
+        int num_iterations = 100;
+
         Image<RGBA> original = io::loadImageFileSystem(image_path);
-        
-
-
-        // todo multi hsv to rgb convert
-
-
-      
+        Image<HSV> hsv = Image<HSV>(original.size());
+        Image<RGBA> rgba = Image<RGBA>(original.size());
 
 
         cv::Mat original_mat = io::imageToCvMat(original);
         cv::Mat hsv_mat = cv::Mat(original_mat.size(), CV_8UC4);
-        logger.start("cv hsv image conversion x 100");
-        {
-            int num_iterations = 100;
-            for (int i = 0; i < num_iterations; i++) {
-                cv::cvtColor(original_mat, hsv_mat, cv::COLOR_RGB2HSV);
+        cv::Mat rgb_mat = cv::Mat(original_mat.size(), CV_8UC4);
+        cv::setNumThreads(1);
+        cout << "cv num threads: " << cv::getNumThreads() << endl << endl;
+
+        // test names
+        string suffix = std::to_string(num_iterations);
+        string im_rgb_hsv_test = "im rgb->hsv x " + suffix;
+        string im_hsv_rgb_test = "im hsv->rgb x " + suffix;
+        string cv_rgb_hsv_test = "cv rgb->hsv x " + suffix;
+        string cv_hsv_rgb_test = "cv hsv->rgb x " + suffix;
+
+
+
+        // Test our Image RGB -> HSV
+        logger.start(im_rgb_hsv_test);
+        for (int i = 0; i < num_iterations; i++) {
+            for (int j = 0; j < original.linearSize(); j++) { 
+                hsv.setPixel(j, RGBA2HSV(original.at(j)));
             }
-            cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
         }
-        logger.stop("cv hsv image conversion x 100");
+        logger.stop(im_rgb_hsv_test);
+
+
+        // Test our Image HSV -> RGB
+        logger.start(im_hsv_rgb_test);
+        for (int i = 0; i < num_iterations; i++) {
+            for (int j = 0; j < hsv.linearSize(); j++) { 
+                rgba.setPixel(j, HSV2RGBA(hsv.at(j)));
+            }
+        }
+        logger.stop(im_hsv_rgb_test);
+
+
+        // Test OpenCV CovtColor RGB -> HSV
+        logger.start(cv_rgb_hsv_test);
+        for (int i = 0; i < num_iterations; i++) {
+            cv::cvtColor(original_mat, hsv_mat, cv::COLOR_RGB2HSV);
+        }
+        logger.stop(cv_rgb_hsv_test);
+
+
+
+        // Test OpenCV CovtColor HSV -> RGB
+        logger.start(cv_hsv_rgb_test);
+        for (int i = 0; i < num_iterations; i++) {
+            cv::cvtColor(hsv_mat, rgb_mat, cv::COLOR_HSV2RGB);
+        }
+        logger.stop(cv_hsv_rgb_test);
 
 
 

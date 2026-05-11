@@ -145,71 +145,71 @@ namespace image {
     }
 
 
+    // inline constexpr auto MAKE_RECIP { 
+    //     std::array<uint, 256> arr{};
+    //     for (int i = 0; i < 256; i++) { 
+    //         return 255 / i
+    //     }
+    //     return 
+    // }
+
+
     // note I tried using a LUT with minimal performance gains. 
     // todo can be SIMD optimized, no branches, blend statements, maybe LUT afterall? 
     inline HSV RGBA2HSV(const RGBA& px) { 
 
-        int r = static_cast<int>(px.r);
-        int g = static_cast<int>(px.g);
-        int b = static_cast<int>(px.b);
+        uint8_t r = px.r;
+        uint8_t g = px.g;
+        uint8_t b = px.b;
 
-        int cmax = std::max({r, g, b});
-        int cmin = std::min({r, g, b});
-        int delta = cmax - cmin;
+        // todo why does this break?? 
+        uint8_t cmax = std::max<uint8_t>(r, std::max<uint8_t>(g, b));
+        uint8_t cmin = std::min<uint8_t>(r, std::min<uint8_t>(g, b));
+
+        uint8_t delta = cmax - cmin;
 
         if(cmax == 0) return HSV();
-        uint8_t v = static_cast<uint8_t>(cmax);
+        uint8_t v = cmax;
 
         if (delta == 0) return HSV(0, 0, v);
 
-        uint8_t s = static_cast<uint8_t>((delta*255)/cmax); // (delta / cmax) * 256
+        uint8_t s = (uint8_t)(static_cast<uint16_t>(delta)*255/cmax); // (delta / cmax) * 256
 
-        int h;
+        int16_t h;
         if (cmax == r) { 
-            h = ((g - b)*256)/delta;
+            h = static_cast<int16_t>(g - b)*256/delta;
             if (h < 0) h += 1536;
         }
         else if (cmax == g) { 
-            h = ((b - r)*256)/delta + 512;
+            h = static_cast<int16_t>(b - r)*256/delta + 512;
         }
         else { 
-            h = ((r - g)*256)/delta + 1024;
+            h = static_cast<int16_t>(r - g)*256/delta + 1024;
         }
 
-        return HSV((uint16_t)h, s, v);
+        return HSV(h, s, v);
     }
 
 
     inline RGBA HSV2RGBA(const HSV& px) { 
 
-        int seg = px.h >> 8;
-        int off = px.h & 0xFF;
-        float off_normal = off / 256.0f;
-        int cmax = static_cast<int>(px.v);
-        int delta = static_cast<int>(px.v * px.s / 256.0f);
-        int cmin = static_cast<int>(cmax - delta);
+        uint8_t seg = px.h >> 8;
+        uint8_t off = px.h & 0xFF;
 
-        // cout << "seg: " << seg << endl;
-        // cout << "off: " << off << endl;
-        // cout << "off_normal: " << off_normal << endl;
-        // cout << "cmax: " << cmax << endl;
-        // cout << "cmin: " << cmin << endl;
-        // cout << "delta: " << delta << endl;
+        uint8_t cmax = px.v;
+        uint8_t delta = (uint8_t)((uint16_t)(px.v * px.s) >> 8);
+        uint8_t cmin = cmax - delta;
 
-        int fall = cmin + static_cast<int>(delta * (1.0f - off_normal));
-        // int fall = cmax - static_cast<int>((delta)*off);
-        int rise = cmin + static_cast<int>(delta * off_normal);
-
-        // cout << "fall: " << fall << endl;
-        // cout << "rise: " << rise << endl;
+        uint8_t fall = cmax - (uint8_t)((uint16_t)(delta * off) >> 8);
+        uint8_t rise = cmin + (uint8_t)((uint16_t)(delta * off) >> 8);
 
         switch (seg) {
-            case 0: return RGBA(cmax, rise, cmin, 255);
-            case 1: return RGBA(fall, cmax, cmin, 255);
-            case 2: return RGBA(cmin, cmax, rise, 255);
-            case 3: return RGBA(cmin, fall, cmax, 255);
-            case 4: return RGBA(rise, cmin, cmax, 255);
-            case 5: return RGBA(cmax, cmin, fall, 255);
+            case 0: return RGBA(cmax, rise, cmin);
+            case 1: return RGBA(fall, cmax, cmin);
+            case 2: return RGBA(cmin, cmax, rise);
+            case 3: return RGBA(cmin, fall, cmax);
+            case 4: return RGBA(rise, cmin, cmax);
+            case 5: return RGBA(cmax, cmin, fall);
             default: return RGBA();
         }
 
@@ -387,6 +387,36 @@ namespace image {
         os << "vec2d[" << vec.x << ", " << vec.y << "]";
         return os;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
