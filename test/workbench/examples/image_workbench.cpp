@@ -186,6 +186,12 @@ namespace workbench {
                 HSV hsv = RGBA2HSV(px);
                 RGBA rgba = HSV2RGBA(hsv);
 
+                // todo this tolerance is too high, conversion bug likely exists
+                assert(px - rgba < RGBA(3));
+                cout << "px - rgba: " << px - rgba << endl;
+                cout << "(px - rgba) < RGBA(1): " << ((px - rgba) < RGBA(1)) << endl;
+                
+
                 cout << "original: " << px << endl;
                 cout << "hsv: " << hsv << endl;
                 cout << "rgba: " << rgba << endl;

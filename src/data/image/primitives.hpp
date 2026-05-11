@@ -56,6 +56,34 @@ namespace image {
             return !(*this == other);
         }
 
+
+        // todo shoul this really be abs? 
+        RGBA operator-(const RGBA& other) const { 
+
+
+            // cout << "hello from operator-" << endl;
+
+            // cout << "r:" << static_cast<int>(r) << " g:" << g << " b:" << b << " a:" << a << endl;
+            // cout << "other.r:" << static_cast<int>(other.r) << " other.b:" << other.b << " other.g" << other.g << " other.a" << other.a << endl;
+
+            // cout << "static_cast<int>(r) - static_cast<int>(other.r):" << static_cast<int>(r) - static_cast<int>(other.r) << endl;
+
+
+            return 
+                RGBA(
+                    std::abs(r - other.r), 
+                    std::abs(g - other.g),
+                    std::abs(b - other.b), 
+                    std::abs(a - other.a)
+                );
+        }
+
+        bool operator<(const RGBA& other) const {
+            return r < other.r && g < other.g && b < other.b && a < other.a;
+        }
+
+        // todo overload int<
+
         GRAY toGray() const;
 
 
@@ -156,9 +184,9 @@ namespace image {
 
         int seg = px.h >> 8;
         int off = px.h & 0xFF;
-        float off_normal = off / 255.0f;
+        float off_normal = off / 256.0f;
         int cmax = static_cast<int>(px.v);
-        int delta = static_cast<int>(px.v * px.s / 255.0f);
+        int delta = static_cast<int>(px.v * px.s / 256.0f);
         int cmin = static_cast<int>(cmax - delta);
 
         // cout << "seg: " << seg << endl;
@@ -169,6 +197,7 @@ namespace image {
         // cout << "delta: " << delta << endl;
 
         int fall = cmin + static_cast<int>(delta * (1.0f - off_normal));
+        // int fall = cmax - static_cast<int>((delta)*off);
         int rise = cmin + static_cast<int>(delta * off_normal);
 
         // cout << "fall: " << fall << endl;
