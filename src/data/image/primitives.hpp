@@ -117,11 +117,9 @@ namespace image {
     }
 
 
+    // note I tried using a LUT with minimal performance gains. 
+    // todo can be SIMD optimized, no branches, blend statements, maybe LUT afterall? 
     inline HSV RGBA2HSV(const RGBA& px) { 
-
-        // cout << "px.r: " << static_cast<int>(px.r) << endl;
-        // cout << "px.g: " << static_cast<int>(px.g) << endl;
-        // cout << "px.b: " << static_cast<int>(px.b) << endl;
 
         int r = static_cast<int>(px.r);
         int g = static_cast<int>(px.g);
@@ -131,22 +129,12 @@ namespace image {
         int cmin = std::min({r, g, b});
         int delta = cmax - cmin;
 
-        // cout << "cmax: " << cmax << endl;
-        // cout << "cmin: " << cmin << endl;
-        // cout << "delta: " << delta << endl;
-
-
-        if(cmax == 0) { 
-            return HSV();
-        }
-
+        if(cmax == 0) return HSV();
         uint8_t v = static_cast<uint8_t>(cmax);
-        uint8_t s = static_cast<uint8_t>((delta*256 / cmax));
 
-        if (delta == 0) {
-            // cout << "returning early on 0 delta" << endl;
-            return HSV(0, 0, v);
-        }
+        if (delta == 0) return HSV(0, 0, v);
+
+        uint8_t s = static_cast<uint8_t>((delta*255)/cmax); // (delta / cmax) * 256
 
         int h;
         if (cmax == r) { 
@@ -159,15 +147,48 @@ namespace image {
         else { 
             h = ((r - g)*256)/delta + 1024;
         }
-        
-
-        // cout << "px.g - px.b: " << static_cast<int>(px.g - px.b) << endl;
-        // cout << "(px.g - px.b)*256: " << static_cast<int>((px.g - px.b)*256) << endl;
-        // cout << "((px.g - px.b))*256/delta: " << static_cast<int>(((px.g - px.b)*256)/delta) << endl;
-
 
         return HSV((uint16_t)h, s, v);
     }
+
+
+    inline RGBA HSV2RGBA(const HSV& px) { 
+
+        int seg = px.h >> 8;
+        int off = px.h & 0xFF;
+        float off_normal = off / 255.0f;
+        int cmax = static_cast<int>(px.v);
+        int delta = static_cast<int>(px.v * px.s / 255.0f);
+        int cmin = static_cast<int>(cmax - delta);
+
+        // cout << "seg: " << seg << endl;
+        // cout << "off: " << off << endl;
+        // cout << "off_normal: " << off_normal << endl;
+        // cout << "cmax: " << cmax << endl;
+        // cout << "cmin: " << cmin << endl;
+        // cout << "delta: " << delta << endl;
+
+        int fall = cmin + static_cast<int>(delta * (1.0f - off_normal));
+        int rise = cmin + static_cast<int>(delta * off_normal);
+
+        // cout << "fall: " << fall << endl;
+        // cout << "rise: " << rise << endl;
+
+        switch (seg) {
+            case 0: return RGBA(cmax, rise, cmin, 255);
+            case 1: return RGBA(fall, cmax, cmin, 255);
+            case 2: return RGBA(cmin, cmax, rise, 255);
+            case 3: return RGBA(cmin, fall, cmax, 255);
+            case 4: return RGBA(rise, cmin, cmax, 255);
+            case 5: return RGBA(cmax, cmin, fall, 255);
+            default: return RGBA();
+        }
+
+    }
+
+
+
+
 
 
 

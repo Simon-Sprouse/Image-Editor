@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <cmath>
 
 
 using namespace logger;
@@ -95,19 +96,19 @@ namespace workbench {
 
         cv::Vec4b* src_ptr = original_mat.ptr<cv::Vec4b>();
         cv::Vec3b* dst_ptr = hsv_mat.ptr<cv::Vec3b>();
-        logger.start("cv hsv image conversion x 100");
-        {
-            int num_iterations = 100;
-            for (int i = 0; i < num_iterations; i++) {
-                for (int j = 0; j < original_mat.total(); j++) { 
-                    rgb_pixel = src_ptr[j];
-                    cv::cvtColor(src_px, dst_px, cv::COLOR_RGB2HSV);
-                    dst_ptr[j] = hsv_pixel;
-                }
-            }
-            cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
-        }
-        logger.stop("cv hsv image conversion x 100");
+        // logger.start("cv hsv image conversion x 100");
+        // {
+        //     int num_iterations = 100;
+        //     for (int i = 0; i < num_iterations; i++) {
+        //         for (int j = 0; j < original_mat.total(); j++) { 
+        //             rgb_pixel = src_ptr[j];
+        //             cv::cvtColor(src_px, dst_px, cv::COLOR_RGB2HSV);
+        //             dst_ptr[j] = hsv_pixel;
+        //         }
+        //     }
+        //     cout << "sum_iterations: " << num_iterations * original_mat.total() << endl;
+        // }
+        // logger.stop("cv hsv image conversion x 100");
 
 
 
@@ -126,7 +127,6 @@ namespace workbench {
 
             // check test array against gt
             for (int i = 0; i < hsv.linearSize(); i++) { 
-                // todo static assert would be bad here right? 
 
                 RGBA my_rgb = original.at(i);
                 HSV my_hsv = hsv.at(i);
@@ -136,19 +136,72 @@ namespace workbench {
                 cv::Vec3b cv_hsv = hsv_mat.ptr<cv::Vec3b>()[i];
                 float cv_normalized_hue = static_cast<float>(cv_hsv[0]) / 180.0f;
 
-                cout << "i: " << i << endl;
-                cout << "rgb_image.at(" << i << "): " << my_rgb << endl;
-                cout << "rgb_mat.at(" << i << "): " << cv_rgb << endl;
-                cout << "hsv.at(" << i << "): " << my_hsv << endl;
-                cout << "hsv_mat.at(" << i << "): " << cv_hsv << endl;
-                cout << "my normal hue: " << my_normalized_hue << endl;
-                cout << "cv normal hue: " << cv_normalized_hue << endl;
-                cout << endl;
+                float diff = std::abs<float>((my_normalized_hue - cv_normalized_hue));
+                diff = std::min(diff, 1.0f - diff);
+
+                // todo static assert would be bad here right? 
+                assert(diff <= 0.01f);
+
+                // cout << "i: " << i << endl;
+                // cout << "rgb_image.at(" << i << "): " << my_rgb << endl;
+                // cout << "rgb_mat.at(" << i << "): " << cv_rgb << endl;
+                // cout << "hsv.at(" << i << "): " << my_hsv << endl;
+                // cout << "hsv_mat.at(" << i << "): " << cv_hsv << endl;
+                // cout << "my normal hue: " << my_normalized_hue << endl;
+                // cout << "cv normal hue: " << cv_normalized_hue << endl;
+                // cout << "diff: " << diff << endl;
+                // cout << endl;
             }
             
 
         }
         logger.stop("hsv conversion correctness test");
+
+
+        // todo display messed up hsv image at some point
+
+
+
+        logger.start("rgb to hsv");
+        { 
+            auto px = original.at(0);
+
+            HSV hsv = RGBA2HSV(px);
+            RGBA rgba = HSV2RGBA(hsv);
+
+            cout << "original: " << px << endl;
+            cout << "hsv: " << hsv << endl;
+            cout << "rgba: " << rgba << endl;
+            cout << endl;
+            
+        }
+        logger.stop("rgb to hsv");
+
+
+
+        logger.start("rgb conversion correctness test");
+        { 
+            for (auto px : original) {
+
+                HSV hsv = RGBA2HSV(px);
+                RGBA rgba = HSV2RGBA(hsv);
+
+                cout << "original: " << px << endl;
+                cout << "hsv: " << hsv << endl;
+                cout << "rgba: " << rgba << endl;
+                cout << endl;
+
+            }
+            
+        }
+        logger.stop("rgb conversion correctness test");
+
+
+
+
+
+
+
 
 
 
