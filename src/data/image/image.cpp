@@ -4,212 +4,52 @@
 namespace image { 
 
 
-// Default constructor
-Image::Image() : width_(0), height_(0) {}
-
-// Param constructors
-Image::Image(int width, int height)
-    : width_(width), height_(height), data_(std::vector<Color>(width_* height_, Color())) {}
-Image::Image(int width, int height, const Color& fill)
-    : width_(width), height_(height), data_(std::vector<Color>(width_* height_, fill)) {}
-Image::Image(Size size)
-    : width_(size.width), height_(size.height), data_(std::vector<Color>(size.width * size.height, Color())) {}
-Image::Image(Size size, const Color& fill)
-    : width_(size.width), height_(size.height), data_(std::vector<Color>(size.width * size.height, fill)) {}
-
-// Copy constructor
-Image::Image(const Image& other) 
-    : width_(other.width_), height_(other.height_), data_(other.data_) {}
-
-// Move constructor
-Image::Image(Image&& other) noexcept 
-    : width_(other.width_), height_(other.height_)  {
-    data_ = std::move(other.data_);
-    other.width_ = 0;
-    other.height_ = 0;
-}
-
-// Copy assignment
-Image& Image::operator=(const Image& other) {
-    if (this != &other) { 
-        data_.clear();
-
-        width_ = other.width_;
-        height_ = other.height_;
-        data_ = other.data_;
-    }
-    return *this;
-}
-
-// Move assignment
-
-Image& Image::operator=(Image&& other) noexcept {
-    if (this != &other) { 
-        data_.clear();
-
-        width_ = other.width_;
-        height_ = other.height_;
-        data_ = std::move(other.data_);
-
-        other.width_ = 0;
-        other.height_ = 0;
-    }
-    return *this;
-}
-
-// Destructor
-Image::~Image() {}
 
 
 
-int Image::getLinearIndex(Point pt) const { 
-    return getLinearIndex(pt.x, pt.y);
-}
+    // Conversions 
+    // todo swap these out with SIMD optimizations
+    
 
-int Image::getLinearIndex(int x, int y) const { 
-    return y * width_ + x;
-}
+    Image<HSV> toHSV(const Image<RGBA>& original) { 
+        Image<HSV> hsv(original.size());
 
-Color& Image::at(int index) { 
-    return data_[index];
-}
-const Color& Image::at(int index) const {
-    return data_[index];
-}
-Color& Image::at(int x, int y) {
-    return data_[getLinearIndex(x, y)];
-}
-const Color& Image::at(int x, int y) const {
-    return data_[getLinearIndex(x, y)];
-}
-Color& Image::at(Point pt) {
-    return data_[getLinearIndex(pt.x, pt.y)];
-}
-const Color& Image::at(Point pt) const {
-    return data_[getLinearIndex(pt.x, pt.y)];
-}
+        // --- FUTURE SIMD CODE ---
+        // int n = 4; // batch size
+        // int simd_ops = original.size() / n
+        // for (int i = 0; i < simd_ops; i += n) { 
+        //      RGBA2HSV_batch()
+        // }
+        // int remaining = original.size() - simd_ops * n;
+        // for (int i = 0; i < remaining; i++) {
+        //      RGBA2HSV();
+        // }
 
 
-int Image::getFlatSize() const { 
-    return height_ * width_;
-}
-
-Size Image::size() const { 
-    return Size(width_, height_);
-}
-
-int Image::getHeight() const {
-    return height_;
-}
-
-int Image::getWidth() const {
-    return width_;
-}
-
-
-bool Image::operator==(const Image& other) const {
-    if (this->size() != other.size()) return false;
-
-    for (int y = 0; y < getHeight(); ++y) {
-        for (int x = 0; x < getWidth(); ++x) {
-            if (this->at(x, y) != other.at(x, y))
-                return false;
+        // todo police usage of original as var name
+        for (int i = 0; i < original.linearSize(); i++) { 
+            hsv.setPixel(i, original.at(i).toHsv());
         }
+        return hsv;
     }
-    return true;
-}
 
+    Image<GRAY> toGRAY(const Image<RGBA>& original) { 
+        Image<GRAY> gray(original.size());
+        for (int i = 0; i < original.linearSize(); i++) { 
+            gray.setPixel(i, original.at(i).toGray());
+        }
+        return gray;
+    }
 
-bool Image::operator!=(const Image& other) const {
-    return !(*this==other);
-}
-
-
-
-uint8_t* Image::rawData() {
-    return reinterpret_cast<uint8_t*>(data_.data());
-}
-
-const uint8_t* Image::rawData() const {
-    return reinterpret_cast<const uint8_t*>(data_.data());
-}
-
-size_t Image::rawDataBytesSize() { 
-    return data_.size() * sizeof(Color);
-}
-
-const size_t Image::rawDataBytesSize() const { 
-    return data_.size() * sizeof (Color);
-}
-
-
-void Image::setPixel(int index, const Color& color) { 
-    data_.at(index) = color;
-}
-
-void Image::setPixel(int x, int y, const Color& color) {
-    setPixel(getLinearIndex(x, y), color);
-}
-
-void Image::setPixel(const Point& pt, const Color& color) { 
-    setPixel(getLinearIndex(pt.x, pt.y), color);
-}
-
-
-bool Image::empty() const { 
-    return data_.empty();
-}
-
-void Image::fill(const Color& color) {
-    std::fill(data_.begin(), data_.end(), color);
-}
-
-
-Image Image::clone() const {
-    Image copy(width_, height_);
-    copy.data_ = data_; // std::vector assignment performs a deep copy
-    return copy;
-}
-
-
-bool Image::inBounds(int x, int y) const {
-    return x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
-}
-
-
-Color* Image::rowPtr(int y) { 
-    return data() + (y * width_);
-}
-
-const Color* Image::rowPtr(int y) const {
-    return data() + (y * width_);
-}
-
-
-RowIterator Image::row(int y) { 
-    return RowIterator(rowPtr(y), width_);
-}
-
-
-RegionRowIterator Image::regionRows(const Rect& rect) { 
-    Color* start = data() + getLinearIndex(rect.tl);
-    return RegionRowIterator(start, rect.dx, rect.dy, width_);
-}
-
-const ConstRegionRowIterator Image::regionRows(const Rect& rect) const { 
-    const Color* start = data() + getLinearIndex(rect.tl);
-    return ConstRegionRowIterator(start, rect.dx, rect.dy, width_);
-}
-
-RegionIterator Image::region(const Rect& rect) { 
-    Color* start = data() + getLinearIndex(rect.tl);
-    return RegionIterator(start, rect.dx, rect.dy, width_);
-}
-
-
-
-
-
+    // todo polymorphic toRGBA needs to handle all types eventually
+    // todo should this function allocate memory?
+    Image<RGBA> toRGBA(const Image<HSV>& original) { 
+        Image<RGBA> rgba(original.size());
+        for (int i = 0; i < original.linearSize(); i++) { 
+            rgba.setPixel(i, original.at(i).toRgba());
+        }
+        return rgba;
+    }
 
 
 }

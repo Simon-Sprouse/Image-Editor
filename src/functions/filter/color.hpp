@@ -6,14 +6,16 @@
 #include <vector>
 
 
-using image::Image, image::Color, image::Point;
+using namespace image;
+
 using shapes::Rect;
 
 namespace filter::color { 
 
-    Color avgColor(const Image& image, const Rect& rect);
+    RGBA avgColor(const Image<RGBA>& image, const Rect& rect);
+    void toGrayscale(const Image<RGBA>& src, Image<GRAY>& dest);
 
+    // TODO: This is a BANDAID!!! finish committing to GRAY px type
+    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest);
 
-
-    void toGrayscale(const Image& src, Image& dest);
 }

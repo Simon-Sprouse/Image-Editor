@@ -1,16 +1,17 @@
 #include "resize.hpp"
 
-using image::Size, image::Image;
+using namespace image;
+
 
 namespace transform::resize {
 
-    Size resizeImage(Image& src, Image& dest, int w, int h) {
+    Size resizeImage(Image<RGBA>& src, Image<RGBA>& dest, int w, int h) {
         if (w <= 0 || h <= 0) {
             throw std::invalid_argument("resize: width and height must be positive");
         }
 
         Size newSize(w, h);
-        dest = Image(newSize);  // Reallocate destination image with new size
+        dest = Image<RGBA>(newSize);  // Reallocate destination image with new size
 
 
         const double scaleX = static_cast<double>(src.getWidth()) / w;
@@ -31,11 +32,11 @@ namespace transform::resize {
         return newSize;
     }
 
-    Size resizeImage(Image& src, Image& dest, Size size) { 
+    Size resizeImage(Image<RGBA>& src, Image<RGBA>& dest, Size size) { 
         return resizeImage(src, dest, size.width, size.height);
     }
 
-    Size resizeImage(Image& src, Image& dest, double ratio) { 
+    Size resizeImage(Image<RGBA>& src, Image<RGBA>& dest, double ratio) { 
         int new_width = static_cast<int>(src.getWidth() * ratio);
         int new_height = static_cast<int>(src.getHeight() * ratio);
 

@@ -7,14 +7,14 @@
 #include <string>
 
 using std::string;
-using image::Image;
+
 
 // TODO make this part of image namespace
 namespace image::io {
 
-    Image fromEncodedBuffer(const uint8_t* data, size_t size);
-    Image loadImageFileSystem(const string& path);
-    void saveImageFileSystem(const Image& img, const string& save_path);
-    cv::Mat imageToCvMat(const Image& source_image);
+    Image<RGBA> fromEncodedBuffer(const uint8_t* data, size_t size);
+    Image<RGBA> loadImageFileSystem(const string& path);
+    void saveImageFileSystem(const Image<RGBA>& img, const string& save_path);
+    cv::Mat imageToCvMat(const Image<RGBA>& source_image);
 
 }

@@ -7,16 +7,17 @@
 #include <algorithm>
 
 using std::vector, std::sort, std::cout, std::endl;
+using namespace image;
 
 namespace pop_art {
 
 
 
-void PopArt::loadExistingImage(const Image& img) { 
+void PopArt::loadExistingImage(const Image<RGBA>& img) { 
     original = img.clone();
 }
 
-Image PopArt::getCanvas() { 
+Image<RGBA> PopArt::getCanvas() { 
     return canvas.clone();
 }
 
@@ -30,9 +31,9 @@ void PopArt::run() {
 
     // create histogram of grayscale values O(n)
     vector<int> value_counts_histogram(256, 0);
-    int num_pixels = original.getFlatSize();
+    int num_pixels = original.linearSize();
     for (int i = 0; i < num_pixels; i++) { 
-        value_counts_histogram[gray.at(i).r] += 1;
+        value_counts_histogram[gray.at(i).v] += 1;
     }
 
     // walk through historgram and create bins O(256)
@@ -51,18 +52,18 @@ void PopArt::run() {
     }
 
     // generate random colors
-    vector<Color> colors = random_gen::randomColors(num_bins);
+    vector<RGBA> colors = random_gen::randomColors(num_bins);
 
     // map all possible grayscale values to new colors
-    vector<Color> new_color_for_value(256); 
+    vector<RGBA> new_color_for_value(256); 
     for (int value = 0; value < 256; value++) { 
         new_color_for_value[value] = colors[bin_id_for_value[value]];
     }
 
     // recolor image using map O(n)
-    canvas = Image(original.size());
+    canvas = Image<RGBA>(original.size());
     for (int i = 0; i < num_pixels; i++) { 
-        canvas.setPixel(i, new_color_for_value[gray.at(i).r]);
+        canvas.setPixel(i, new_color_for_value[gray.at(i).v]);
     }   
 
 
@@ -77,9 +78,9 @@ void PopArt::findBins_() {
 
     // count number of pixels for each grayscale value
     vector<int> value_counts_histogram(256, 0);
-    int num_pixels = original.getFlatSize();
+    int num_pixels = original.linearSize();
     for (int i = 0; i < num_pixels; i++) { 
-        value_counts_histogram[gray.at(i).r] += 1;
+        value_counts_histogram[gray.at(i).v] += 1;
     }
 
     // walk through grayscale values histogram and assign bin_id to each value
@@ -98,11 +99,11 @@ void PopArt::findBins_() {
     }
 
     // set all pixels in bin_map to store (bin_id, bin_id, bin_id) as color
-    bin_map = Image(original.size());
+    bin_map = Image<RGBA>(original.size());
     int bin_id_for_pixel;
     for (int i = 0; i < num_pixels; i++) { 
-        bin_id_for_pixel = bin_id_for_value[gray.at(i).r];
-        bin_map.setPixel(i, Color(bin_id_for_pixel));
+        bin_id_for_pixel = bin_id_for_value[gray.at(i).v];
+        bin_map.setPixel(i, RGBA(bin_id_for_pixel));
     }
 }
 
@@ -113,12 +114,12 @@ void PopArt::runPersistent() {
     }
 
     // collect vector of random colors
-    vector<Color> colors = random_gen::randomColors(params.num_splits); 
+    vector<RGBA> colors = random_gen::randomColors(params.num_splits); 
     
     // recolor image
     // extract bin_id from each pixel and recolor pixel based on bin_id
-    canvas = Image(original.size());
-    for (int i = 0; i < bin_map.getFlatSize(); i++) { 
+    canvas = Image<RGBA>(original.size());
+    for (int i = 0; i < bin_map.linearSize(); i++) { 
         canvas.setPixel(i, colors[bin_map.at(i).r]);
     }   
 
@@ -129,14 +130,16 @@ void PopArt::runSlow() {
     canvas = original.clone();
     filter::color::toGrayscale(original, gray);
 
+
+    // todo this should be a defined type elsewhere
     struct Pixel { 
         Point point;
-        Color color;
+        GRAY color;
     };
 
     struct compGT { 
-        // assuming the pixels are both grayscale, compare only r values (reason why Color in imag.hpp not overloaded)
-        bool operator()(const Pixel& lhs, const Pixel& rhs) { return lhs.color.r > rhs.color.r; }
+        // assuming the pixels are both grayscale, compare only r values (reason why RGBA in imag.hpp not overloaded)
+        bool operator()(const Pixel& lhs, const Pixel& rhs) { return lhs.color.v > rhs.color.v; }
     };
 
     int width = original.getWidth();
@@ -154,7 +157,7 @@ void PopArt::runSlow() {
     sort(pixels.begin(), pixels.end(), compGT());
 
 
-    vector<Color> colors;
+    vector<RGBA> colors;
     colors.reserve(num_bins);
     for (int i = 0; i < num_bins; i++) { 
         colors.push_back(random_gen::randomColor());
@@ -163,7 +166,7 @@ void PopArt::runSlow() {
 
     int pixels_per_bin = num_pixels / num_bins;
     int bin;
-    bin_map = Image(original.size());
+    bin_map = Image<RGBA>(original.size());
 
 
     for (int i = 0; i < pixels.size(); i++) { 

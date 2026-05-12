@@ -25,7 +25,7 @@ namespace workbench {
         cout << "hello from pixelate workbench" << endl;
 
         // --- load image ---
-        Image original_img = image::io::loadImageFileSystem(image_path);
+        Image<RGBA> original_img = image::io::loadImageFileSystem(image_path);
 
         // -- load params --- 
 
@@ -98,8 +98,8 @@ namespace workbench {
         using namespace grid;
 
         
-        Image original_img = io::loadImageFileSystem(image_path);
-        original_img.fill(Color(255, 240, 220)); // todo improve fill method
+        Image<RGBA> original_img = io::loadImageFileSystem(image_path);
+        original_img.fill(RGBA(255, 240, 220)); // todo improve fill method
 
         // todo - input validation / default values
         // note - this block is the biggest downside of our pattern

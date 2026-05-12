@@ -35,28 +35,28 @@ void Mosaic::runAll() {
     reconstructImage();
 }
 
-Image Mosaic::getCanvas() { 
+Image<RGBA> Mosaic::getCanvas() { 
     return canvas.clone();
 }
 
-Image* Mosaic::getCanvasPtr() { 
+Image<RGBA>* Mosaic::getCanvasPtr() { 
     return &canvas;
 }
 
-Image* Mosaic::getDebugCanvasPtr() { 
+Image<RGBA>* Mosaic::getDebugCanvasPtr() { 
     return &debugCanvas;
 }
 
-Image* Mosaic::getStrokesImagePtr() { 
+Image<RGBA>* Mosaic::getStrokesImagePtr() { 
     return &strokes_image;
 }
 
-Image* Mosaic::getOriginalImagePtr() { 
+Image<RGBA>* Mosaic::getOriginalImagePtr() { 
     return &resized;
 }
 
-Image Mosaic::getContourImage() {
-    Image output(resized.size());
+Image<RGBA> Mosaic::getContourImage() {
+    Image<RGBA> output(resized.size());
     Graphics::drawStrokesRandomColor(output, strokes);
     return output;
 }
@@ -89,7 +89,7 @@ void Mosaic::loadImageFromVector(const std::vector<uint8_t>& buffer){
 
 }
 
-void Mosaic::loadExistingImage(const Image& img) { 
+void Mosaic::loadExistingImage(const Image<RGBA>& img) { 
     original = img.clone();
     transform::resize::resizeImage(original, resized, params.resize_factor);
 }
@@ -103,8 +103,8 @@ void Mosaic::loadExistingImage(const Image& img) {
 void Mosaic::contourPipeline() {
 
     // helper side effects
-    Image gray;
-    Image blurred;
+    Image<RGBA> gray;
+    Image<RGBA> blurred;
 
     std::vector<std::vector<Point>> contours;
 
@@ -122,8 +122,8 @@ void Mosaic::contourPipeline() {
 
     // double canny_resize_factor = 0.25;
     double reverse_canny_resize_factor = 1 / params.canny_resize_factor;
-    Image resized_for_canny;
-    Image canny_downsampled;
+    Image<RGBA> resized_for_canny;
+    Image<RGBA> canny_downsampled;
     transform::resize::resizeImage(blurred, resized_for_canny, params.canny_resize_factor);
     filter::edge::cannyFilter(resized_for_canny, canny_downsampled, params.canny_threshold_1, params.canny_threshold_2);
     transform::resize::resizeImage(canny_downsampled, canny, reverse_canny_resize_factor);
@@ -132,16 +132,16 @@ void Mosaic::contourPipeline() {
     filter::edge::divideIntoStrokes(contours, strokes, canny.size(), params.segment_angle_window, params.max_segment_angle_rad, params.min_segment_length);
     Geometry::sortStrokesPCALength(strokes);
 
-    strokes_image = Image(resized.size());
+    strokes_image = Image<RGBA>(resized.size());
     Graphics::drawStrokesRandomColor(strokes_image, strokes);
 
     // could be separate function, this can run concurrent with stroke covering
     computeDistanceField();
 
     // TODO think about separate function for initialization
-    mask = Image(resized.size());
-    canvas = Image(resized.size());
-    debugCanvas = Image(resized.size());
+    mask = Image<RGBA>(resized.size());
+    canvas = Image<RGBA>(resized.size());
+    debugCanvas = Image<RGBA>(resized.size());
 
     // cout << "contour pipeline complete" << endl;
     // cout << "strokes_image: " << strokes_image << endl;
@@ -155,8 +155,8 @@ void Mosaic::selectStroke(int stroke_id) {
         return;
     }
 
-    Color color(255);
-    selected_stroke = Image(resized.size());
+    RGBA color(255);
+    selected_stroke = Image<RGBA>(resized.size());
     Graphics::drawStroke(selected_stroke, strokes[stroke_id], color);
 }
 
@@ -177,7 +177,7 @@ void Mosaic::selectStroke(int stroke_id) {
 bool Mosaic::isValidTile(Point center, double size, double theta_deg) {
 
     if (mask.empty()) { 
-        mask = Image(resized.size());
+        mask = Image<RGBA>(resized.size());
     }
 
 
@@ -276,12 +276,12 @@ TileInfo Mosaic::placeTile(Point center, double size, double theta_deg, int fron
 
 
 
-    Graphics::drawSquare(mask, center, size, theta_deg, Color(255), size);
+    Graphics::drawSquare(mask, center, size, theta_deg, RGBA(255), size);
 
 
     // TODO add tile metadata to the tiles_placed vector
     int order = tiles_placed.size();
-    Color color = sampleTileColor(center, size, theta_deg);
+    RGBA color = sampleTileColor(center, size, theta_deg);
     TileInfo current_tile = {
         center,
         size, 
@@ -364,7 +364,7 @@ double Mosaic::findBestTheta(Point center, double size) {
 }
 
 
-std::vector<Point> Mosaic::findNonZeroInRadius(const Image& src, const Point& center, int radius) {
+std::vector<Point> Mosaic::findNonZeroInRadius(const Image<RGBA>& src, const Point& center, int radius) {
     std::vector<Point> result;
 
     int cx = center.x;
@@ -381,7 +381,7 @@ std::vector<Point> Mosaic::findNonZeroInRadius(const Image& src, const Point& ce
             int dx = x - cx;
             int dy = y - cy;
             if (dx * dx + dy * dy <= r2) {
-                const Color& c = src.at(Point(x, y));
+                const RGBA& c = src.at(Point(x, y));
                 if (c.r > 0 || c.g > 0 || c.b > 0) {
                     result.emplace_back(x, y);
                 }
@@ -446,7 +446,7 @@ std::vector<Point> Mosaic::findRingIntersections(const Point& center, double rin
 
                 // // DEBUG
                 // // set every pixel in mask as marked where we checked
-                // Color color(108, 0, 210);
+                // RGBA color(108, 0, 210);
                 // canvas.setPixel(worldPt.x, worldPt.y, color);
 
                 if (worldPt.x >= 0 && worldPt.x < mask.getWidth() &&
@@ -465,7 +465,7 @@ std::vector<Point> Mosaic::findRingIntersections(const Point& center, double rin
     // std::vector<Point> pixels_in_stroke;
     // for (int x = 0; x < selected_stroke.getWidth(); x++) { 
     //     for (int y = 0; y < selected_stroke.getHeight(); y++) { 
-    //         Color pixel = selected_stroke.at(x, y);
+    //         RGBA pixel = selected_stroke.at(x, y);
     //         if (pixel.r > 0) { 
     //             pixels_in_stroke.emplace_back(Point(x, y));
     //         }
@@ -769,10 +769,10 @@ void Mosaic::gapFill() {
 void Mosaic::reconstructImage() { 
 
     // reset canvas
-    canvas = Image(resized.size());
+    canvas = Image<RGBA>(resized.size());
 
     for (TileInfo tile : tiles_placed) { 
-        // Color color = sampleTileColor(tile);
+        // RGBA color = sampleTileColor(tile);
         Graphics::drawSquare(canvas, tile.center, tile.size * 1.0, tile.theta_deg, tile.color, tile.size);
     }
 
@@ -803,16 +803,16 @@ void Mosaic::renderDebugImageRange(int start, int num_tiles) {
 
     for (int i = start; i < max_index; i++) { 
         TileInfo tile = tiles_placed[i];
-        Color color;
+        RGBA color;
         if (tile.frontier == 0) { 
-            color = Color(255, 0, 0);
+            color = RGBA(255, 0, 0);
             // cout << "using red" << endl;
         }
         else if (tile.frontier > 0) { 
-            color = Color(0, 255, 0);
+            color = RGBA(0, 255, 0);
         }
         else if (tile.frontier == -1) { 
-            color = Color(0, 100, 255);
+            color = RGBA(0, 100, 255);
         }
         else { 
             // cout << "tile stored incorrectly" << endl;
@@ -840,8 +840,8 @@ void Mosaic::setRenderPointer(int start) {
 }
 
 void Mosaic::resetCanvas() { 
-    canvas = Image(canvas.size());
-    debugCanvas = Image(debugCanvas.size());
+    canvas = Image<RGBA>(canvas.size());
+    debugCanvas = Image<RGBA>(debugCanvas.size());
 }
 
 
@@ -855,19 +855,19 @@ void Mosaic::setParameters(Parameters p) {
 void Mosaic::reconstructShowFrontiers() { 
 
     // reset canvas
-    canvas = Image(resized.size());
+    canvas = Image<RGBA>(resized.size());
 
     for (TileInfo tile : tiles_placed) { 
-        // Color color = sampleTileColor(tile);
-        Color color;
+        // RGBA color = sampleTileColor(tile);
+        RGBA color;
         if (tile.frontier == 0) { 
-            color = Color(255, 0, 0);
+            color = RGBA(255, 0, 0);
         }
         else if (tile.frontier > 0) { 
-            color = Color(0, 255, 0);
+            color = RGBA(0, 255, 0);
         }
         else if (tile.frontier == -1) {
-            color = Color(0, 0, 255);
+            color = RGBA(0, 0, 255);
         }
         Graphics::drawSquare(canvas, tile.center, tile.size * 1.0, tile.theta_deg, color, tile.size);
     }
@@ -880,7 +880,7 @@ void Mosaic::reconstructShowFrontiers() {
 
 
 
-Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
+RGBA Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
 
     size /= 2; // TODO make this tuneable
 
@@ -892,7 +892,7 @@ Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
 
     for (const Point& pt : points) {
         if (resized.inBounds(pt.x, pt.y)) {
-            Color sample = resized.at(pt);
+            RGBA sample = resized.at(pt);
             r_sum += sample.r;
             g_sum += sample.g;
             b_sum += sample.b;
@@ -900,13 +900,13 @@ Color Mosaic::sampleTileColor(Point center, double size, double theta_deg) {
         }
     }
 
-    if (count == 0) return Color(0, 0, 0);  // Avoid division by zero
+    if (count == 0) return RGBA(0, 0, 0);  // Avoid division by zero
 
     uint8_t r_avg = static_cast<uint8_t>(r_sum / count);
     uint8_t g_avg = static_cast<uint8_t>(g_sum / count);
     uint8_t b_avg = static_cast<uint8_t>(b_sum / count);
 
-    return Color(r_avg, g_avg, b_avg);
+    return RGBA(r_avg, g_avg, b_avg);
 }
 
 
@@ -1074,17 +1074,17 @@ void Mosaic::clearData() {
     
     // image data various purposes
    
-    resized = Image();
-    canny = Image();
+    resized = Image<RGBA>();
+    canny = Image<RGBA>();
     strokes.clear();
-    selected_stroke = Image();
+    selected_stroke = Image<RGBA>();
 
     grad_x.clear();
     grad_y.clear();
 
-    mask = Image();
-    canvas = Image();
-    debugCanvas = Image();
+    mask = Image<RGBA>();
+    canvas = Image<RGBA>();
+    debugCanvas = Image<RGBA>();
 
     std::stack<Point>().swap(strokePointsStack);
     std::queue<Point>().swap(floodPointsQueue);

@@ -41,6 +41,7 @@ add_executable(mosaic_tiler
     ../test/workbench/examples/pipeline_workbench.cpp
     ../test/workbench/examples/functions_workbench.cpp
     ../test/workbench/examples/variants_workbench.cpp
+    ../test/workbench/examples/image_workbench.cpp
     ../test/unit/unit_test_main.cpp
     ../test/unit/tests/iterator_unit_test.cpp
     
@@ -75,3 +76,4 @@ target_include_directories(mosaic_tiler PRIVATE
 
 # Link OpenCV
 target_link_libraries(mosaic_tiler ${OpenCV_LIBS})
+target_compile_options(mosaic_tiler PRIVATE -O3 -march=native)

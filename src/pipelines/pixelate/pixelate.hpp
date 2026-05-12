@@ -19,8 +19,8 @@ namespace pixelate {
     };
 
     struct Cache { 
-        Image original;
-        Image canvas;
+        Image<RGBA> original;
+        Image<RGBA> canvas;
         Axis_Table ax;
         vector<Rect> rect_table;
     };
@@ -38,7 +38,7 @@ namespace pixelate {
             
         private: 
 
-            void drawRectAreas(const Image& original, Image& canvas, const vector<Rect>& rect_table);
+            void drawRectAreas(const Image<RGBA>& original, Image<RGBA>& canvas, const vector<Rect>& rect_table);
 
             Parameters params;
 

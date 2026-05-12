@@ -20,11 +20,9 @@ namespace mosaic_gen::test {
 namespace mosaic_gen {
 
 
-using image::Image;
-using image::Size;
-using image::Point;
-using image::Color;
-using image::Vec2d;
+
+using namespace image;
+
 
 struct Parameters { 
 
@@ -62,7 +60,7 @@ struct TileInfo {
     Point center;
     double size;
     double theta_deg;
-    Color color;
+    RGBA color;
     int order;
     int frontier;
 
@@ -84,16 +82,16 @@ class Mosaic {
         void loadImageFromBuffer(const uint8_t* data, size_t size);
         void loadImageFromVector(const std::vector<uint8_t>& buffer);
 
-        void loadExistingImage(const Image& img);
+        void loadExistingImage(const Image<RGBA>& img);
 
         void contourPipeline();
         void runAll();
-        Image getCanvas();
-        Image* getCanvasPtr();
-        Image* getDebugCanvasPtr();
-        Image* getStrokesImagePtr();
-        Image* getOriginalImagePtr();
-        Image getContourImage();
+        Image<RGBA> getCanvas();
+        Image<RGBA>* getCanvasPtr();
+        Image<RGBA>* getDebugCanvasPtr();
+        Image<RGBA>* getStrokesImagePtr();
+        Image<RGBA>* getOriginalImagePtr();
+        Image<RGBA> getContourImage();
         uint8_t* getRawData();
         bool empty();
         Size size();
@@ -140,7 +138,7 @@ class Mosaic {
         Point getRandomPointOnStroke(int stroke_id);
 
         double findBestTheta(Point center, double size);
-        std::vector<Point> findNonZeroInRadius(const Image& src, const Point& center, int radius);
+        std::vector<Point> findNonZeroInRadius(const Image<RGBA>& src, const Point& center, int radius);
 
         std::vector<Point> findPointsMultipleRings(const Point& center, double theta_deg);
         std::vector<Point> findRingIntersections(const Point& center, double ring_size, double theta_deg, int thickness);
@@ -161,7 +159,7 @@ class Mosaic {
         
 
         void reconstructShowFrontiers();
-        Color sampleTileColor(Point center, double size, double theta_deg);
+        RGBA sampleTileColor(Point center, double size, double theta_deg);
 
         bool stepOnce();
         
@@ -182,19 +180,19 @@ class Mosaic {
         std::vector<TileInfo> tiles_placed;
         
         // image data various purposes
-        Image original;
-        Image resized;
-        Image canny;
-        Image strokes_image;
+        Image<RGBA> original;
+        Image<RGBA> resized;
+        Image<RGBA> canny;
+        Image<RGBA> strokes_image;
         std::vector<std::vector<Point>> strokes;
-        Image selected_stroke;
+        Image<RGBA> selected_stroke;
 
         std::vector<float> grad_x;
         std::vector<float> grad_y;
 
-        Image mask;
-        Image canvas;
-        Image debugCanvas; // TODO unify this logic with canvas somehow
+        Image<RGBA> mask;
+        Image<RGBA> canvas;
+        Image<RGBA> debugCanvas; // TODO unify this logic with canvas somehow
 
 
 

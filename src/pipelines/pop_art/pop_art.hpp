@@ -4,7 +4,9 @@
 
 namespace pop_art { 
 
-using image::Image, image::Color, image::Point;
+using image::RGBA, image::Point;
+using namespace image;
+
 
 
 struct Parameters { 
@@ -15,9 +17,9 @@ class PopArt {
     public: 
         PopArt(const Parameters& p) : params(p) {};
 
-        void loadExistingImage(const Image& img);
+        void loadExistingImage(const Image<RGBA>& img);
 
-        Image getCanvas();
+        Image<RGBA> getCanvas();
 
 
         void findBins_();
@@ -27,10 +29,10 @@ class PopArt {
 
     private: 
         Parameters params;
-        Image original;
-        Image gray;
-        Image canvas;
-        Image bin_map;
+        Image<RGBA> original;
+        Image<GRAY> gray;
+        Image<RGBA> canvas;
+        Image<RGBA> bin_map;
 };
 
 }

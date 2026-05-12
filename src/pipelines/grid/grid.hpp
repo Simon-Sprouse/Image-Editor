@@ -9,7 +9,7 @@ using std::vector;
 
 namespace grid { 
 
-using image::Image, image::Color, image::Point;
+using namespace image;
 using shapes::Rect, shapes::Axis_Table;
 
 
@@ -20,8 +20,8 @@ struct Parameters {
 };
 
 struct Cache { 
-    Image original;
-    Image canvas;
+    Image<RGBA> original;
+    Image<RGBA> canvas;
     Axis_Table ax;
 };
 
@@ -44,7 +44,7 @@ class Grid {
     private: 
         Parameters params;
 
-        void drawGridLines(Image& canvas, const Axis_Table& ax);
+        void drawGridLines(Image<RGBA>& canvas, const Axis_Table& ax);
 
 
 };

@@ -8,7 +8,8 @@
 #include <opencv2/opencv.hpp>
 
 using std::cout, std:: endl;
-using image::Color, image::Point, image::RowIterator, image::RegionRowIterator;
+
+using namespace image;
 
 namespace app {
 
@@ -19,7 +20,7 @@ namespace app {
 
 
 
-        Image image = image::io::loadImageFileSystem(image_path);
+        Image<RGBA> image = image::io::loadImageFileSystem(image_path);
         cout << "Loaded image from: " << image_path << endl;
         cout << "Original Dimensions: " << image.size() << endl;
 

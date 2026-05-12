@@ -2,11 +2,17 @@
 
 #include "../../data/image/image.hpp"
 
+
+using namespace image;
+
+
 namespace draw::line { 
 
-    using image::Image, image::Color, image::Point;
 
-    void drawCol(Image& image, int col_index, const Color& color, int thickness);
-    void drawRow(Image& image, int row_index, const Color& color, int thickness);
+
+
+
+    void drawCol(Image<RGBA>& image, int col_index, const RGBA& color, int thickness);
+    void drawRow(Image<RGBA>& image, int row_index, const RGBA& color, int thickness);
 
 }

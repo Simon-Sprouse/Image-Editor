@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "primitives.hpp"
+#include "iterator.hpp"
 #include "../shapes/shapes.hpp"
 
 namespace image { 
@@ -12,167 +13,7 @@ namespace image {
 using shapes::Rect;
 
 
-// The rowPtr function already returns a pointer to the first element in row
-// This iterator must expand beyond that existing functionality
-// there are two main advantages that justify this class
-// 1. This iterator tracks width - therefore it can implement begin() and end() for range iteration
-// 2. This iterator allows a direct fill() method enabling image.row(y).fill(color);
-class RowIterator { 
-    Color* ptr_;
-    int width_;
-
-    public:
-        RowIterator(Color* ptr, int width) : ptr_(ptr), width_(width) {}
-
-        Color* begin() { return ptr_; }
-        Color* end() { return ptr_ + width_; }
-
-        Color& operator[](int x) { return ptr_[x]; }
-        const Color& operator[](int x) const { return ptr_[x]; }
-        Color* data() { return ptr_; }
-        int size() { return width_; }
-        void fill(const Color& color) { std::fill_n(ptr_, width_, color); }
-
-};
-
-
-// Typically iterators are templatized to allow the pointer type to change. 
-// We will templatize the iterator later when we need to support other pixel types
-// Aside the point -- this templating trick can be used to achieve a const iterator
-// by passing in a const pointer as a template and writing two simple typedefs. 
-// Ai suggested this strongly
-// Here's the catch:
-// Our base RowIterator class supports a custom method fill() which modifies the data
-// A templated iterator with const pointer but also a fill() method is NINCOMPOOP CODE
-// Thank you. :)
-class ConstRowIterator { 
-    const Color* ptr_;
-    int width_;
-
-    public:
-        ConstRowIterator(const Color* ptr, int width) : ptr_(ptr), width_(width) {}
-
-        const Color* begin() const { return ptr_; }
-        const Color* end() const { return ptr_ + width_; }
-
-        const Color& operator[](int x) const { return ptr_[x]; }
-        const Color* data() const { return ptr_; }
-        int size() const { return width_; }
-
-};
-
-
-
-
-
-
-
-
-class RegionRowIterator {
-    Color* start_; // todo: color theory -- should Color* be the data type in image? Should image be SoA per each channel? 
-    int dx_;
-    int dy_;
-    int width_; // for image, not region
-
-    public: 
-
-        RegionRowIterator(Color* start, int dx, int dy, int width) : start_(start), 
-        dx_(dx), dy_(dy), width_(width) {}
-
-
-        RegionRowIterator begin() { return RegionRowIterator(start_, dx_, dy_, width_); }
-        RegionRowIterator end() { return RegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
-
-        RowIterator operator*() { return RowIterator(start_, dx_); }
-        RegionRowIterator& operator++() { 
-            dy_--;
-            start_ += width_;
-            return *this;
-        }
-        bool operator!=(const RegionRowIterator& other) {return start_ != other.start_; };
-
-        RowIterator row() { return RowIterator(start_, dx_); }
-
-
-};
-
-
-
-class ConstRegionRowIterator {
-    const Color* start_;
-    int dx_;
-    int dy_;
-    int width_; // for image, not region
-
-    public: 
-
-        ConstRegionRowIterator(const Color* start, int dx, int dy, int width) : start_(start), 
-        dx_(dx), dy_(dy), width_(width) {}
-
-        ConstRegionRowIterator begin() const { return ConstRegionRowIterator(start_, dx_, dy_, width_); }
-        ConstRegionRowIterator end() const { return ConstRegionRowIterator(start_ + (dy_*width_), dx_, 0, width_); }
-
-        ConstRowIterator operator*() const { return ConstRowIterator(start_, dx_); }
-        ConstRegionRowIterator& operator++() { 
-            dy_--;
-            start_ += width_;
-            return *this;
-        }
-        bool operator!=(const ConstRegionRowIterator& other) const {return start_ != other.start_; };
-
-        ConstRowIterator row() const { return ConstRowIterator(start_, dx_); }
-        
-};
-
-
-
-
-// this is a footgun likely
-class RegionIterator { 
-    Color* ptr_;
-    int dx_;
-    int dy_; 
-    int width_;
-    int x_remaining_;
-
-    public: 
-        RegionIterator(Color* ptr, int dx, int dy, int width) : ptr_(ptr),
-        dx_(dx), dy_(dy), width_(width), x_remaining_(dx-1) {}
-
-        RegionIterator begin() { return RegionIterator(ptr_, dx_, dy_, width_); }
-        RegionIterator end() { 
-            Color* end_ptr = ptr_ - (dx_ - x_remaining_ - 1) + (width_ * dy_);
-            return RegionIterator(end_ptr, dx_, 0, width_); 
-        }
-        Color& operator*() { return *ptr_; }
-
-        RegionIterator& operator++() { 
-            if (x_remaining_) { 
-                ptr_++;
-                x_remaining_--;
-            }
-            else { 
-                ptr_ += width_ - dx_ + 1;
-                x_remaining_ = dx_ - 1;
-                dy_--;
-            }
-            return *this;
-        }
-        bool operator!=(const RegionIterator& other) { return ptr_ != other.ptr_; }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
+template <typename Px>
 class Image {
 
 
@@ -184,9 +25,9 @@ class Image {
 
     // Param constructors
     Image(int width, int height);
-    Image(int width, int height, const Color& fill);
+    Image(int width, int height, const Px& fill);
     Image(Size size);
-    Image(Size size, const Color& fill);
+    Image(Size size, const Px& fill);
     Image(Size size, const std::vector<float>& vec);
 
     // Copy constructor
@@ -204,25 +45,25 @@ class Image {
     // Destructor
     ~Image();
 
-    Color& at(int index);
-    const Color& at(int index) const;
-    Color& at(int x, int y);
-    const Color& at(int x, int y) const;
-    Color& at(Point pt);
-    const Color& at(Point pt) const;
+    Px& at(int index);
+    const Px& at(int index) const;
+    Px& at(int x, int y);
+    const Px& at(int x, int y) const;
+    Px& at(Point pt);
+    const Px& at(Point pt) const;
     Size size() const;
-    int getFlatSize() const;
+    int linearSize() const;
     int getHeight() const;
     int getWidth() const;
     uint8_t* rawData();
     const uint8_t* rawData() const;
     size_t rawDataBytesSize();
     const size_t rawDataBytesSize() const;
-    void setPixel(int index, const Color& color);
-    void setPixel(int x, int y, const Color& color);
-    void setPixel(const Point& pt, const Color& color);
+    void setPixel(int index, const Px& color);
+    void setPixel(int x, int y, const Px& color);
+    void setPixel(const Point& pt, const Px& color);
     bool empty() const;
-    void fill(const Color& color);
+    void fill(const Px& color);
     Image clone() const;
     bool inBounds(int x, int y) const;
 
@@ -234,15 +75,15 @@ class Image {
 
     // TODO think about literal iterator overload
     // TODO cbegin() and cend() ? cdata()?
-    Color* data() { return data_.data(); }
-    const Color* data() const { return data_.data(); }
-    Color* begin() { return data(); }
-    const Color* begin() const { return data(); }
-    Color* end() { return data() + data_.size(); }
-    const Color* end() const { return data() + data_.size(); }
+    Px* data() { return data_.data(); }
+    const Px* data() const { return data_.data(); }
+    Px* begin() { return data(); }
+    const Px* begin() const { return data(); }
+    Px* end() { return data() + data_.size(); }
+    const Px* end() const { return data() + data_.size(); }
     
-    Color* rowPtr(int y);
-    const Color* rowPtr(int y) const;
+    Px* rowPtr(int y);
+    const Px* rowPtr(int y) const;
     RowIterator row(int y);
     // const ConstRowIterator row(int y); // TODO I don't need this right? 
     RegionRowIterator regionRows(const Rect& rect);
@@ -259,7 +100,7 @@ class Image {
 
         int width_;
         int height_;
-        std::vector<Color> data_;
+        std::vector<Px> data_;
 
 
 };
@@ -268,13 +109,265 @@ class Image {
 
 
 
+// Default constructor
+template <typename Px>
+Image<Px>::Image() : width_(0), height_(0) {}
+
+// Param constructors
+template <typename Px>
+Image<Px>::Image(int width, int height)
+    : width_(width), height_(height), data_(std::vector<Px>(width_* height_, Px())) {}
+
+template <typename Px>
+Image<Px>::Image(int width, int height, const Px& fill)
+    : width_(width), height_(height), data_(std::vector<Px>(width_* height_, fill)) {}
+
+template <typename Px>
+Image<Px>::Image(Size size)
+    : width_(size.width), height_(size.height), data_(std::vector<Px>(size.width * size.height, Px())) {}
+
+template <typename Px>
+Image<Px>::Image(Size size, const Px& fill)
+    : width_(size.width), height_(size.height), data_(std::vector<Px>(size.width * size.height, fill)) {}
+
+// Copy constructor
+template <typename Px>
+Image<Px>::Image(const Image<Px>& other) 
+    : width_(other.width_), height_(other.height_), data_(other.data_) {}
+
+// Move constructor
+template <typename Px>
+Image<Px>::Image(Image<Px>&& other) noexcept 
+    : width_(other.width_), height_(other.height_)  {
+    data_ = std::move(other.data_);
+    other.width_ = 0;
+    other.height_ = 0;
+}
+
+// Copy assignment
+template <typename Px>
+Image<Px>& Image<Px>::operator=(const Image<Px>& other) {
+    if (this != &other) { 
+        data_.clear();
+
+        width_ = other.width_;
+        height_ = other.height_;
+        data_ = other.data_;
+    }
+    return *this;
+}
+
+// Move assignment
+template <typename Px>
+Image<Px>& Image<Px>::operator=(Image<Px>&& other) noexcept {
+    if (this != &other) { 
+        data_.clear();
+
+        width_ = other.width_;
+        height_ = other.height_;
+        data_ = std::move(other.data_);
+
+        other.width_ = 0;
+        other.height_ = 0;
+    }
+    return *this;
+}
+
+// Destructor
+template <typename Px>
+Image<Px>::~Image() {}
+
+
+template <typename Px>
+int Image<Px>::getLinearIndex(Point pt) const { 
+    return getLinearIndex(pt.x, pt.y);
+}
+
+template <typename Px>
+int Image<Px>::getLinearIndex(int x, int y) const { 
+    return y * width_ + x;
+}
+
+template <typename Px>
+Px& Image<Px>::at(int index) { 
+    return data_[index];
+}
+
+template <typename Px>
+const Px& Image<Px>::at(int index) const {
+    return data_[index];
+}
+
+template <typename Px>
+Px& Image<Px>::at(int x, int y) {
+    return data_[getLinearIndex(x, y)];
+}
+
+template <typename Px>
+const Px& Image<Px>::at(int x, int y) const {
+    return data_[getLinearIndex(x, y)];
+}
+
+template <typename Px>
+Px& Image<Px>::at(Point pt) {
+    return data_[getLinearIndex(pt.x, pt.y)];
+}
+
+template <typename Px>
+const Px& Image<Px>::at(Point pt) const {
+    return data_[getLinearIndex(pt.x, pt.y)];
+}
+
+template <typename Px>
+int Image<Px>::linearSize() const { 
+    return height_ * width_;
+}
+
+template <typename Px>
+Size Image<Px>::size() const { 
+    return Size(width_, height_);
+}
+
+template <typename Px>
+int Image<Px>::getHeight() const {
+    return height_;
+}
+
+template <typename Px>
+int Image<Px>::getWidth() const {
+    return width_;
+}
+
+template <typename Px>
+bool Image<Px>::operator==(const Image<Px>& other) const {
+    if (this->size() != other.size()) return false;
+
+    for (int y = 0; y < getHeight(); ++y) {
+        for (int x = 0; x < getWidth(); ++x) {
+            if (this->at(x, y) != other.at(x, y))
+                return false;
+        }
+    }
+    return true;
+}
+
+template <typename Px>
+bool Image<Px>::operator!=(const Image<Px>& other) const {
+    return !(*this==other);
+}
+
+
+template <typename Px>
+uint8_t* Image<Px>::rawData() {
+    return reinterpret_cast<uint8_t*>(data_.data());
+}
+
+template <typename Px>
+const uint8_t* Image<Px>::rawData() const {
+    return reinterpret_cast<const uint8_t*>(data_.data());
+}
+
+template <typename Px>
+size_t Image<Px>::rawDataBytesSize() { 
+    return data_.size() * sizeof(Px);
+}
+
+template <typename Px>
+const size_t Image<Px>::rawDataBytesSize() const { 
+    return data_.size() * sizeof(Px);
+}
+
+template <typename Px>
+void Image<Px>::setPixel(int index, const Px& color) { 
+    data_.at(index) = color;
+}
+
+template <typename Px>
+void Image<Px>::setPixel(int x, int y, const Px& color) {
+    setPixel(getLinearIndex(x, y), color);
+}
+
+template <typename Px>
+void Image<Px>::setPixel(const Point& pt, const Px& color) { 
+    setPixel(getLinearIndex(pt.x, pt.y), color);
+}
+
+template <typename Px>
+bool Image<Px>::empty() const { 
+    return data_.empty();
+}
+
+template <typename Px>
+void Image<Px>::fill(const Px& color) {
+    std::fill(data_.begin(), data_.end(), color);
+}
+
+template <typename Px>
+Image<Px> Image<Px>::clone() const {
+    Image<Px> copy(width_, height_);
+    copy.data_ = data_; // std::vector assignment performs a deep copy
+    return copy;
+}
+
+template <typename Px>
+bool Image<Px>::inBounds(int x, int y) const {
+    return x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
+}
+
+template <typename Px>
+Px* Image<Px>::rowPtr(int y) { 
+    return data() + (y * width_);
+}
+
+template <typename Px>
+const Px* Image<Px>::rowPtr(int y) const {
+    return data() + (y * width_);
+}
+
+template <typename Px>
+RowIterator Image<Px>::row(int y) { 
+    return RowIterator(rowPtr(y), width_);
+}
+
+template <typename Px>
+RegionRowIterator Image<Px>::regionRows(const Rect& rect) { 
+    Px* start = data() + getLinearIndex(rect.tl);
+    return RegionRowIterator(start, rect.dx, rect.dy, width_);
+}
+
+template <typename Px>
+const ConstRegionRowIterator Image<Px>::regionRows(const Rect& rect) const { 
+    const Px* start = data() + getLinearIndex(rect.tl);
+    return ConstRegionRowIterator(start, rect.dx, rect.dy, width_);
+}
+
+template <typename Px>
+RegionIterator Image<Px>::region(const Rect& rect) { 
+    Px* start = data() + getLinearIndex(rect.tl);
+    return RegionIterator(start, rect.dx, rect.dy, width_);
+}
+
+
+
+
+
 
 
 // Stream operator for Image
-inline std::ostream& operator<<(std::ostream& os, const Image& image) {
+template <typename Px>
+inline std::ostream& operator<<(std::ostream& os, const Image<Px>& image) {
     os << "image[" << image.getWidth() << " x " << image.getHeight() << "]";
     return os;
 }
+
+
+
+
+
+Image<HSV> toHSV(const Image<RGBA>& original);
+Image<RGBA> toRGBA(const Image<HSV>& original);
+Image<GRAY> toGRAY(const Image<RGBA>& original);
+
 
 
 

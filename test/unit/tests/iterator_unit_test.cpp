@@ -13,7 +13,7 @@ namespace unit_test::iterator {
 
 
 
-    void testRegionIterator(Image image) { 
+    void testRegionIterator(Image<RGBA> image) { 
         cout << "hello from region iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 
@@ -37,7 +37,7 @@ namespace unit_test::iterator {
         // todo enforce gt, ts ordering
 
         // correctness
-        vector<Color> gt;
+        vector<RGBA> gt;
         gt.reserve(region_size);
         int pointer = image.getLinearIndex(tl);
         for (int y = 0; y < dy; y++) { 
@@ -50,7 +50,7 @@ namespace unit_test::iterator {
         // this absolutely screams for a RegionWithIndex iterator type
         // that way we could check subregion equality by running with iterator and then checking the indx of iterator
 
-        vector<Color> ts;
+        vector<RGBA> ts;
         ts.reserve(region_size);
         for (auto px : image.region(rect)) { 
             ts.push_back(px);
@@ -62,7 +62,7 @@ namespace unit_test::iterator {
     }
 
 
-    void testRowIterator(Image image) { 
+    void testRowIterator(Image<RGBA> image) { 
         cout << "hello from row iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 
@@ -80,14 +80,14 @@ namespace unit_test::iterator {
         assertEqual(width, num_iterations, "num iterations for row");
 
         // correctness
-        vector<Color> gt;
+        vector<RGBA> gt;
         gt.reserve(width);
         int row_start_index = image.getLinearIndex(0, y);
         for (int x = 0; x < width; x++) { 
             gt.push_back(image.at(row_start_index + x));
         }
 
-        vector<Color> ts;
+        vector<RGBA> ts;
         ts.reserve(width);
         for (auto px : image.row(y)) { 
             ts.push_back(px);
@@ -99,7 +99,7 @@ namespace unit_test::iterator {
 
     }
 
-    void testRegionRowIterator(Image image) { 
+    void testRegionRowIterator(Image<RGBA> image) { 
         cout << "hello from region row iterator unit test" << endl;
         cout << "image size: " << image.size() << endl;
 
@@ -131,13 +131,13 @@ namespace unit_test::iterator {
         // test individual row
         int row_number = 3;
 
-        vector<Color> gt;
+        vector<RGBA> gt;
         gt.reserve(dy);
         for (int x = 0; x < dx; x++) { 
             gt.push_back(image.at(tl.x + x, tl.y + row_number));
         }
 
-        vector<Color> ts;
+        vector<RGBA> ts;
         gt.reserve(dy);
         RegionRowIterator rri_row_test = image.regionRows(rect);
         for (int i = 0; i < row_number; i++) { 
@@ -152,7 +152,7 @@ namespace unit_test::iterator {
 
 
         // test region read
-        vector<Color> gt_region;
+        vector<RGBA> gt_region;
         gt_region.reserve(region_size);
         int pointer = image.getLinearIndex(tl);
         for (int y = 0; y < dy; y++) { 
@@ -162,7 +162,7 @@ namespace unit_test::iterator {
             pointer += image.getWidth();
         }
 
-        vector<Color> ts_region;
+        vector<RGBA> ts_region;
         ts_region.reserve(region_size);
         for (auto row : image.regionRows(rect)) { 
             for (auto px : row) { 

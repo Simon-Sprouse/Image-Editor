@@ -6,11 +6,13 @@
 
 
 using namespace std;
+using namespace image;
+
 
 namespace Geometry { 
 
-    using image::Point;
-    using image::Vec2d;
+
+
 
    
 
