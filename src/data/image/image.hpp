@@ -364,6 +364,15 @@ inline std::ostream& operator<<(std::ostream& os, const Image<Px>& image) {
 
 
 
+Image<HSV> toHSV(const Image<RGBA>& original);
+Image<RGBA> toRGBA(const Image<HSV>& original);
+Image<GRAY> toGRAY(const Image<RGBA>& original);
+
+
+
+
+
+
 
 
 

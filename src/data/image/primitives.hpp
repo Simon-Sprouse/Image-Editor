@@ -10,6 +10,8 @@ namespace image {
 
     // todo: move geometric stuff to shapes and expand on color theory here
 
+    struct RGBA;
+    struct HSV;
     struct GRAY;
 
 
@@ -84,7 +86,9 @@ namespace image {
 
         // todo overload int<
 
+        HSV toHsv() const;
         GRAY toGray() const;
+
 
 
         private:
@@ -115,6 +119,7 @@ namespace image {
 
 
         // todo need way more of these
+        RGBA toRgba() const;
 
     };
     static_assert(sizeof(HSV) == 4);
@@ -228,11 +233,25 @@ namespace image {
 
 
 
-
+    inline HSV RGBA::toHsv() const {
+        return RGBA2HSV(*this);
+    }
 
     inline GRAY RGBA::toGray() const { 
         return RGBA2GRAY(*this);
     }
+
+    inline RGBA HSV::toRgba() const { 
+        return HSV2RGBA(*this);
+    }
+
+
+
+
+
+
+
+
 
 
 

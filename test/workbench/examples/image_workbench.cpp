@@ -149,7 +149,7 @@ namespace workbench {
             for (int r = 0; r < 256; r++) { 
                 for (int g = 0; g < 256; g++) { 
                     for (int b = 0; b < 256; b++) { 
-                        HSV hsv = RGBA2HSV(RGBA(r, g, b));
+                        RGBA(r, g, b).toHsv();
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace workbench {
             for (int h = 0; h < 1536; h++) { 
                 for (int s = 0; s < 256; s++) { 
                     for (int v = 0; v < 256; v++) { 
-                        RGBA rgba = HSV2RGBA(HSV(h, s, v));
+                        HSV(h, s, v).toRgba();
                     }
                 }
             }
@@ -230,10 +230,49 @@ namespace workbench {
     void runImage(string image_path, Logger logger) { 
 
 
+        Image<RGBA> original = io::loadImageFileSystem(image_path);
+        logger.start("Image Converison Correctness Test");
+        {
+            Image<HSV> hsv = toHSV(original);
+            Image<RGBA> rgba = toRGBA(hsv);
+
+            // todo: overload subtraction and lt on image class
+            for (int i = 0; i < original.linearSize(); i++) {
+                // assert(original.at(i) - rgba.at(i) < RGBA(2));
+                assert((int)(original.at(i) - rgba.at(i) < RGBA(3)));
+
+                if (!((int)(original.at(i) - rgba.at(i) < RGBA(3)))) { 
+                    cout << "assertion faliure: " << endl; 
+                    cout << "i: " << i << endl;
+                    cout << "original.at(i): " << original.at(i) << endl;
+                    cout << "rgba.at(i): " << rgba.at(i) << endl;
+                    cout << "original.at(i) - rgba.at(i): " << original.at(i) - rgba.at(i) << endl;
+                    cout << "RGBA(3): " << RGBA(3) << endl;
+                    cout << "original.at(i) - rgba.at(i) < RGBA(3): " << (int)(original.at(i) - rgba.at(i) < RGBA(3)) << endl;
+                    cout << endl;
+                }
+
+
+                
+            }
+        }
+        logger.stop("Image Converison Correctness Test");
+
+
+
+
+
+
+
+
+
+
+
+
 
         int num_iterations = 100;
 
-        Image<RGBA> original = io::loadImageFileSystem(image_path);
+    
         Image<HSV> hsv = Image<HSV>(original.size());
         Image<RGBA> rgba = Image<RGBA>(original.size());
 
@@ -252,13 +291,16 @@ namespace workbench {
         string cv_hsv_rgb_test = "cv hsv->rgb x " + suffix;
 
 
+        
+
 
         // Test our Image RGB -> HSV
         logger.start(im_rgb_hsv_test);
         for (int i = 0; i < num_iterations; i++) {
-            for (int j = 0; j < original.linearSize(); j++) { 
-                hsv.setPixel(j, RGBA2HSV(original.at(j)));
-            }
+            // for (int j = 0; j < original.linearSize(); j++) { 
+            //     hsv.setPixel(j, RGBA2HSV(original.at(j)));
+            // }
+            toHSV(original);
         }
         logger.stop(im_rgb_hsv_test);
 
@@ -266,9 +308,10 @@ namespace workbench {
         // Test our Image HSV -> RGB
         logger.start(im_hsv_rgb_test);
         for (int i = 0; i < num_iterations; i++) {
-            for (int j = 0; j < hsv.linearSize(); j++) { 
-                rgba.setPixel(j, HSV2RGBA(hsv.at(j)));
-            }
+            // for (int j = 0; j < hsv.linearSize(); j++) { 
+                // rgba.setPixel(j, HSV2RGBA(hsv.at(j)));
+                toRGBA(hsv);
+            // }
         }
         logger.stop(im_hsv_rgb_test);
 
@@ -289,6 +332,10 @@ namespace workbench {
         }
         logger.stop(cv_hsv_rgb_test);
 
+
+
+
+        
 
 
 
