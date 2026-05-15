@@ -196,6 +196,15 @@ namespace image {
     }
 
 
+
+
+
+
+    // struct HSV { 
+    //      uint16_t H; // 0-1535
+    // 	    uint8_t S; // 0-255
+    // 	    uint8_t V; // 0-255
+    // }
     inline RGBA HSV2RGBA(const HSV& px) { 
 
         uint8_t seg = px.h >> 8;
@@ -219,6 +228,8 @@ namespace image {
         }
 
     }
+
+    
 
 
 

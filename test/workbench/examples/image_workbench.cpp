@@ -334,6 +334,9 @@ namespace workbench {
 
 
 
+       
+
+
 
         
 
@@ -351,4 +354,97 @@ namespace workbench {
 
 
     }
+
+
+
+
+
+
+    void runImageSIMD(string image_path, Logger logger) { 
+
+
+
+        Image<RGBA> original = io::loadImageFileSystem(image_path);
+        Image<RGBA> rgba = original.clone();
+        Image<HSV> hsv = toHSV(original);
+
+
+        logger.start("simd test");
+        HSV* hsv_ptr = hsv.data();
+        RGBA* rgba_ptr = rgba.data();
+        HSV2RGBA_simd(hsv_ptr, rgba_ptr);
+
+
+
+        cout << "hsv_ptr: " << hsv_ptr << endl;
+        cout << "*hsv_ptr: " << *hsv_ptr << endl;
+        cout << endl;
+
+
+        for (int i = 0; i < 16; i++) { 
+            cout << "i: " << i << endl;
+            cout << "hsv_ptr + i: " << hsv_ptr + i << endl;
+            cout << "hsv_ptr[i]" << hsv_ptr[i] << endl;
+            cout << endl;
+        }
+
+
+
+        cout << "rgba_ptr: " << rgba_ptr << endl;
+        cout << "*rgba_ptr: " << *rgba_ptr << endl;
+        cout << endl;
+
+
+        for (int i = 0; i < 16; i++) { 
+            cout << "i: " << i << endl;
+            cout << "rgba_ptr + i: " << rgba_ptr + i << endl;
+            cout << "rgba_ptr[i]" << rgba_ptr[i] << endl;
+            cout << endl;
+        }
+
+
+
+
+
+
+        logger.stop("simd test");
+
+
+
+        int num_iterations = 100;
+        logger.start("naive conversion");
+        for (int i = 0; i < num_iterations; i++) {
+            rgba = toRGBA(hsv);
+        }
+        logger.stop("naive conversion");
+
+        logger.start("simd conversion");
+        for (int i = 0; i < num_iterations; i++) {
+            rgba = toRGBA_simd(hsv);
+        }
+        logger.stop("simd conversion");
+
+
+
+    }
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

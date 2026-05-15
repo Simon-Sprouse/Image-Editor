@@ -369,8 +369,8 @@ Image<RGBA> toRGBA(const Image<HSV>& original);
 Image<GRAY> toGRAY(const Image<RGBA>& original);
 
 
-
-
+void HSV2RGBA_simd(HSV* ptr, RGBA* dest);
+Image<RGBA> toRGBA_simd(Image<HSV>& original); // todo this should be const
 
 
 
