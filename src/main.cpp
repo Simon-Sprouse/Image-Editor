@@ -18,7 +18,7 @@ int main() {
 
 
     // paths reletive to the build folder (where executable is built)
-    string file_system_image_path = "../images/flower.jpg";
+    string file_system_image_path = "../images/flower_2.jpg";
     string file_system_save_dir = "../results/";
 
 

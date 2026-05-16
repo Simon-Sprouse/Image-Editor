@@ -357,6 +357,101 @@ namespace workbench {
 
 
 
+    // todo unused so far 
+    bool hsvImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt) { 
+
+
+        for (int i = 0; i < test.linearSize(); i++) { 
+
+            float test_h_normal = static_cast<float>(test.at(i).h) / 1535.0f;
+            float test_s_normal = static_cast<float>(test.at(i).s) / 255.0f;
+            float test_v_normal = static_cast<float>(test.at(i).v) / 255.0f;
+
+            cv::Vec3b cv_ptr = gt.ptr<cv::Vec3b>()[i];
+            float cv_h_normal = static_cast<float>(cv_ptr[0]) / 180.0f;
+            float cv_s_normal = static_cast<float>(cv_ptr[1]) / 255.0f;
+            float cv_v_normal = static_cast<float>(cv_ptr[2]) / 255.0f;
+
+            float h_diff = std::abs<float>(test_h_normal - cv_h_normal);
+            h_diff = std::min(h_diff, 1.0f - h_diff); // handle potential wrap around
+            float s_diff = std::abs<float>(test_s_normal - cv_s_normal);
+            float v_diff = std::abs<float>(test_v_normal - cv_v_normal);
+
+            float tolerance = 0.02f;
+
+            assert(h_diff <= tolerance);
+            assert(s_diff <= tolerance);
+            assert(v_diff <= tolerance);
+
+        }
+
+        return true;
+
+
+    }
+
+
+
+
+
+
+
+    bool rgbImageCorrectnessTest(const Image<RGBA>& test, const cv::Mat& gt) { 
+
+
+        for (int i = 0; i < test.linearSize(); i++) { 
+
+            float test_r_normal = static_cast<float>(test.at(i).r) / 255.0f;
+            float test_g_normal = static_cast<float>(test.at(i).g) / 255.0f;
+            float test_b_normal = static_cast<float>(test.at(i).b) / 255.0f;
+
+            cv::Vec3b cv_ptr = gt.ptr<cv::Vec3b>()[i];
+            float cv_r_normal = static_cast<float>(cv_ptr[0]) / 255.0f;
+            float cv_g_normal = static_cast<float>(cv_ptr[1]) / 255.0f;
+            float cv_b_normal = static_cast<float>(cv_ptr[2]) / 255.0f;
+
+            float r_diff = std::abs<float>(test_r_normal - cv_r_normal);
+            float g_diff = std::abs<float>(test_g_normal - cv_g_normal);
+            float b_diff = std::abs<float>(test_b_normal - cv_b_normal);
+
+            float tolerance = 0.02f;
+
+            if (!(r_diff <= tolerance)) {
+                cout << "r_diff asertion failed: " << r_diff << endl;
+            }
+            if (!(g_diff <= tolerance)) {
+                cout << "g_diff asertion failed: " << g_diff << endl;
+            }
+            if (!(b_diff <= tolerance)) {
+                cout << "b_diff asertion failed: " << b_diff << endl;
+            }
+
+            if (!(r_diff <= tolerance) || !(g_diff <= tolerance) || !(b_diff <= tolerance)) { 
+                cout << "index: " << i << endl;
+                cout << "rgba from test: " << test.at(i) << endl;
+                cout << "rgb from cv: " << (int)cv_ptr[0] << ", " << (int)cv_ptr[1] << ", " << (int)cv_ptr[2] << endl;
+            }
+            
+
+            assert(r_diff <= tolerance);
+            assert(g_diff <= tolerance);
+            assert(b_diff <= tolerance);
+
+        }
+
+        return true;
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -369,6 +464,17 @@ namespace workbench {
         Image<HSV> hsv = toHSV(original);
 
 
+        cout << "original size: " << original.size() << endl;
+        cout << "original linear size: " << original.linearSize() << endl;
+
+        // for testing
+        cv::Mat original_mat = io::imageToCvMat(original);
+        cv::Mat rgb_mat(original_mat.size(), CV_8UC3);
+        cv::Mat hsv_mat(original_mat.size(), CV_8UC3);
+        cv::cvtColor(original_mat, rgb_mat, cv::COLOR_BGR2RGB);
+        cv::cvtColor(rgb_mat, hsv_mat, cv::COLOR_RGB2HSV);
+
+
         logger.start("simd test");
         HSV* hsv_ptr = hsv.data();
         RGBA* rgba_ptr = rgba.data();
@@ -376,31 +482,31 @@ namespace workbench {
 
 
 
-        cout << "hsv_ptr: " << hsv_ptr << endl;
-        cout << "*hsv_ptr: " << *hsv_ptr << endl;
-        cout << endl;
+        // cout << "hsv_ptr: " << hsv_ptr << endl;
+        // cout << "*hsv_ptr: " << *hsv_ptr << endl;
+        // cout << endl;
 
 
-        for (int i = 0; i < 16; i++) { 
-            cout << "i: " << i << endl;
-            cout << "hsv_ptr + i: " << hsv_ptr + i << endl;
-            cout << "hsv_ptr[i]" << hsv_ptr[i] << endl;
-            cout << endl;
-        }
+        // for (int i = 0; i < 16; i++) { 
+        //     cout << "i: " << i << endl;
+        //     cout << "hsv_ptr + i: " << hsv_ptr + i << endl;
+        //     cout << "hsv_ptr[i]" << hsv_ptr[i] << endl;
+        //     cout << endl;
+        // }
 
 
 
-        cout << "rgba_ptr: " << rgba_ptr << endl;
-        cout << "*rgba_ptr: " << *rgba_ptr << endl;
-        cout << endl;
+        // cout << "rgba_ptr: " << rgba_ptr << endl;
+        // cout << "*rgba_ptr: " << *rgba_ptr << endl;
+        // cout << endl;
 
 
-        for (int i = 0; i < 16; i++) { 
-            cout << "i: " << i << endl;
-            cout << "rgba_ptr + i: " << rgba_ptr + i << endl;
-            cout << "rgba_ptr[i]" << rgba_ptr[i] << endl;
-            cout << endl;
-        }
+        // for (int i = 0; i < 16; i++) { 
+        //     cout << "i: " << i << endl;
+        //     cout << "rgba_ptr + i: " << rgba_ptr + i << endl;
+        //     cout << "rgba_ptr[i]" << rgba_ptr[i] << endl;
+        //     cout << endl;
+        // }
 
 
 
@@ -422,7 +528,14 @@ namespace workbench {
         for (int i = 0; i < num_iterations; i++) {
             rgba = toRGBA_simd(hsv);
         }
-        logger.stop("simd conversion");
+        logger.stop("simd conversion", rgba);
+
+
+
+
+        logger.start("new correctness test");
+        rgbImageCorrectnessTest(rgba, rgb_mat);
+        logger.stop("new correctness test");
 
 
 

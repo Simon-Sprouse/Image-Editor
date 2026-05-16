@@ -192,7 +192,7 @@ namespace image {
         int linear_size = original.linearSize();
         int num_ops = linear_size / 16;
         int tail_ops = linear_size - (16 * num_ops);
-        for (int i = 0; i < num_ops; i += 16) { 
+        for (int i = 0; i < linear_size; i += 16) { 
             HSV2RGBA_simd(original.data() + i, rgba.data() + i);
         }
         for (int i = 0; i < tail_ops; i++) { 
