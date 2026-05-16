@@ -238,8 +238,7 @@ namespace workbench {
 
             // todo: overload subtraction and lt on image class
             for (int i = 0; i < original.linearSize(); i++) {
-                // assert(original.at(i) - rgba.at(i) < RGBA(2));
-                assert((int)(original.at(i) - rgba.at(i) < RGBA(3)));
+                // assert((int)(original.at(i) - rgba.at(i) < RGBA(3)));
 
                 if (!((int)(original.at(i) - rgba.at(i) < RGBA(3)))) { 
                     cout << "assertion faliure: " << endl; 

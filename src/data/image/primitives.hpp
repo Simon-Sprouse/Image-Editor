@@ -150,13 +150,17 @@ namespace image {
     }
 
 
-    // inline constexpr auto MAKE_RECIP { 
-    //     std::array<uint, 256> arr{};
-    //     for (int i = 0; i < 256; i++) { 
-    //         return 255 / i
-    //     }
-    //     return 
-    // }
+    inline constexpr auto MAKE_RECIP() { 
+        std::array<uint16_t, 256> arr{};
+        arr[0] = 0;
+        for (int i = 1; i < 256; i++) { 
+            arr[i] = static_cast<uint16_t>((1 << 16) / i);
+        }
+        return arr;
+    }
+    inline constexpr auto RECIP = MAKE_RECIP();
+
+
 
 
     // note I tried using a LUT with minimal performance gains. 
@@ -167,7 +171,6 @@ namespace image {
         uint8_t g = px.g;
         uint8_t b = px.b;
 
-        // todo why does this break?? 
         uint8_t cmax = std::max<uint8_t>(r, std::max<uint8_t>(g, b));
         uint8_t cmin = std::min<uint8_t>(r, std::min<uint8_t>(g, b));
 
@@ -180,19 +183,174 @@ namespace image {
 
         uint8_t s = (uint8_t)(static_cast<uint16_t>(delta)*255/cmax); // (delta / cmax) * 256
 
-        int16_t h;
+        // OPTION 1
+        // int16_t h;
+        // if (cmax == r) { 
+        //     h = static_cast<int16_t>(g - b)*256/delta;
+        //     if (h < 0) h += 1536;
+        // }
+        // else if (cmax == g) { 
+        //     h = static_cast<int16_t>(b - r)*256/delta + 512;
+        // }
+        // else { 
+        //     h = static_cast<int16_t>(r - g)*256/delta + 1024;
+        // }
+        
+
+        // OPTION 2
+        // int16_t h;
+        // int16_t diff;
+        // uint16_t add;
+        //
+        // if (cmax == r) {
+        //     diff = static_cast<int16_t>(g - b);
+        //     add = 0;
+        // }
+        // else if (cmax == g) { 
+        //     diff = static_cast<int16_t>(b - r);
+        //     add = 512;
+        // }
+        // else { 
+        //     diff = static_cast<int16_t>(r - g);
+        //     add = 1024;
+        // }
+
+        // h = diff * 256 / delta + add;
+        // if (h < 0) { 
+        //     h += 1536;
+        // }
+
+
+        // OPTION 3
+        // uint16_t h;
+        // uint16_t x;
+        // uint16_t add;
+        //
+        // if (cmax == r) { 
+        //
+        //     if (b > g) { 
+        //         // 5
+        //         x = 256 - static_cast<uint16_t>(b - g)*256/delta;
+        //         add = 1280;
+        //     }
+        //     else { 
+        //         // 0
+        //         x = static_cast<uint16_t>(g - b)*256/delta;
+        //         add = 0;
+        //     }
+        // }
+        // else if (cmax == g) { 
+        //     if (r > b) { 
+        //         // 1
+        //         x = 256 - static_cast<uint16_t>(r - b)*256/delta;
+        //         add = 256;
+        //     }
+        //     else { 
+        //         // 2
+        //         x = static_cast<uint16_t>(b - r)*256/delta;
+        //         add = 512;
+        //     }
+        // }
+        // else { 
+        //     if (g > r) { 
+        //         // 3
+        //         x = 256 - static_cast<uint16_t>(g - r)*256/delta;
+        //         add = 768;
+        //     }
+        //     else { 
+        //         // 4
+        //         x = static_cast<uint16_t>(r - g)*256/delta;
+        //         add = 1024;
+        //     }
+        // }
+        // h = x + add;
+
+
+        uint16_t h;
+        uint16_t x;
+        uint16_t add;
+        uint16_t diff;
+        bool odd;
+
         if (cmax == r) { 
-            h = static_cast<int16_t>(g - b)*256/delta;
-            if (h < 0) h += 1536;
+
+            if (b > g) { 
+                // 5
+                odd = true;
+                diff = b - g;
+                add = 1280;
+            }
+            else { 
+                // 0
+                odd = false;
+                diff = g - b;
+                add = 0;
+            }
         }
         else if (cmax == g) { 
-            h = static_cast<int16_t>(b - r)*256/delta + 512;
+            if (r > b) { 
+                // 1
+                odd = true;
+                diff = r - b;
+                add = 256;
+            }
+            else { 
+                // 2
+                odd = false;
+                diff = b - r;
+                add = 512;
+            }
         }
         else { 
-            h = static_cast<int16_t>(r - g)*256/delta + 1024;
+            if (g > r) { 
+                // 3
+                odd = true;
+                diff = g - r;
+                add = 768;
+            }
+            else { 
+                // 4
+                odd = false;
+                diff = r - g;
+                add = 1024;
+            }
         }
 
-        return HSV(h, s, v);
+        
+
+
+
+        
+
+
+        // x = static_cast<uint16_t>(diff)*256/delta;
+        // uint16_t gt = static_cast<uint16_t>(diff)*256/delta;
+
+        // todo: LUT is significantly slower for non-SIMD
+        x = static_cast<uint32_t>(diff * 256) * RECIP[delta] >> 16;
+        x = static_cast<uint16_t>(x);
+        if (odd) { 
+            x = 256 - x;
+        }
+        h = x + add;
+
+
+
+
+        // cout << "px: " << (int)px.r << ", " << (int)px.g << ", " << (int)px.b << endl;
+        // cout << "diff: " << (int)diff << endl;
+        // cout << "(diff*256): " << (int)(diff*256) << endl;
+        // cout << "delta: " << (int)delta << endl;
+        // cout << "RECIP[delta]: " << (int)RECIP[delta] << endl;
+        // cout << "(diff*256) * RECIP[delta]: " << (int)(diff*256*RECIP[delta]) << endl;
+        // cout << "[(diff*256) * RECIP[delta]]>>16: " << (int)((diff*256*RECIP[delta])>>16) << endl;
+        // cout << "gt: " << (int)gt << endl;
+        // cout << endl;
+
+
+      
+
+        return HSV((uint16_t)h, s, v);
     }
 
 
