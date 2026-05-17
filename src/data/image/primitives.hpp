@@ -149,16 +149,18 @@ namespace image {
         return GRAY(luminance);
     }
 
-
+    // todo bit shift size is a footgun bc you need to shift at callsite
     inline constexpr auto MAKE_RECIP() { 
         std::array<uint16_t, 256> arr{};
         arr[0] = 0;
-        for (int i = 1; i < 256; i++) { 
-            arr[i] = static_cast<uint16_t>((1 << 16) / i);
+        arr[1] = 65535; // Q16 can't fit into uint16_t without truncation I think
+        for (int i = 2; i < 256; i++) { 
+            arr[i] = static_cast<uint16_t>((1u << 16) / i);
         }
         return arr;
     }
     inline constexpr auto RECIP = MAKE_RECIP();
+
 
 
 
@@ -176,12 +178,18 @@ namespace image {
 
         uint8_t delta = cmax - cmin;
 
-        if(cmax == 0) return HSV();
+        
         uint8_t v = cmax;
 
-        if (delta == 0) return HSV(0, 0, v);
+        // TODO we need these if not using LUT
+        // if(cmax == 0) return HSV();
+        // if (delta == 0) return HSV(0, 0, v);
 
-        uint8_t s = (uint8_t)(static_cast<uint16_t>(delta)*255/cmax); // (delta / cmax) * 256
+        // todo LUT is still probably slower in non-SIMD case
+        // uint8_t s = (uint8_t)(static_cast<uint16_t>(delta)*255/cmax); // (delta / cmax) * 256
+        uint16_t recip_cmax = RECIP[cmax];
+        uint8_t s = static_cast<uint8_t>((static_cast<uint32_t>(delta)*255*recip_cmax)>>16);
+
 
         // OPTION 1
         // int16_t h;
@@ -327,7 +335,8 @@ namespace image {
         // uint16_t gt = static_cast<uint16_t>(diff)*256/delta;
 
         // todo: LUT is significantly slower for non-SIMD
-        x = static_cast<uint32_t>(diff * 256) * RECIP[delta] >> 16;
+        uint16_t recip = RECIP[delta];
+        x = static_cast<uint32_t>(diff * 256) * recip >> 16; // todo is right shift + cast down redundant? 
         x = static_cast<uint16_t>(x);
         if (odd) { 
             x = 256 - x;

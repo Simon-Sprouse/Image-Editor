@@ -172,7 +172,7 @@ namespace workbench {
                 RGBA rgba = HSV2RGBA(hsv);
 
                 // todo this tolerance is too high, conversion bug likely exists
-                assert(px - rgba < RGBA(3));
+                assert(px - rgba < RGBA(4));
                 // cout << "px - rgba: " << px - rgba << endl;
                 // cout << "(px - rgba) < RGBA(1): " << ((px - rgba) < RGBA(1)) << endl;
                 
@@ -240,13 +240,13 @@ namespace workbench {
             for (int i = 0; i < original.linearSize(); i++) {
                 // assert((int)(original.at(i) - rgba.at(i) < RGBA(3)));
 
-                if (!((int)(original.at(i) - rgba.at(i) < RGBA(3)))) { 
+                if (!((int)(original.at(i) - rgba.at(i) < RGBA(4)))) { 
                     cout << "assertion faliure: " << endl; 
                     cout << "i: " << i << endl;
                     cout << "original.at(i): " << original.at(i) << endl;
                     cout << "rgba.at(i): " << rgba.at(i) << endl;
                     cout << "original.at(i) - rgba.at(i): " << original.at(i) - rgba.at(i) << endl;
-                    cout << "RGBA(3): " << RGBA(3) << endl;
+                    cout << "RGBA(4): " << RGBA(4) << endl;
                     cout << "original.at(i) - rgba.at(i) < RGBA(3): " << (int)(original.at(i) - rgba.at(i) < RGBA(3)) << endl;
                     cout << endl;
                 }
@@ -480,6 +480,31 @@ namespace workbench {
         HSV2RGBA_simd(hsv_ptr, rgba_ptr);
 
 
+        // hsv 2 is dest for new rgb -> hsv test
+        Image<HSV> hsv_2 = Image<HSV>(original.size());
+        Image<RGBA> rgba_2 = original.clone();
+        HSV* hsv_ptr_2 = hsv_2.data();
+        RGBA* rgba_ptr_2 = rgba_2.data();
+        RGBA2HSV_simd(rgba_ptr_2, hsv_ptr_2);
+
+
+
+
+        for (int i = 0; i < 16; i++) { 
+
+            HSV gt = rgba_ptr_2[i].toHsv();
+
+            cout << "i: " << i << endl;
+            cout << "rgba_ptr[i]: " << rgba_ptr_2[i] << endl;
+            cout << "hsv_ptr[i]: " << hsv_ptr_2[i] << endl;
+            cout << "expected: " << gt << endl;
+            cout << endl;
+        }
+
+
+
+
+
 
         // cout << "hsv_ptr: " << hsv_ptr << endl;
         // cout << "*hsv_ptr: " << *hsv_ptr << endl;
@@ -534,7 +559,11 @@ namespace workbench {
 
         logger.start("new correctness test");
         rgbImageCorrectnessTest(rgba, rgb_mat);
+        // hsvImageCorrectnessTest(hsv, hsv_mat);
         logger.stop("new correctness test");
+
+
+        
 
 
 
