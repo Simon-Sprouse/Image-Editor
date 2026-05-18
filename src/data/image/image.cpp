@@ -206,7 +206,7 @@ namespace image {
     void RGBA2HSV_simd(RGBA* src, HSV* dest) { 
 
         // LOAD
-        uint8x16x3_t load = vld3q_u8(reinterpret_cast<uint8_t*>(src));
+        uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(src));
         uint8x16_t r = load.val[0];
         uint8x16_t g = load.val[1];
         uint8x16_t b = load.val[2];
@@ -223,22 +223,25 @@ namespace image {
         uint8x16_t b_r = vsubq_u8(b, r);
         uint8x16_t b_g = vsubq_u8(b, g);
 
+        uint8x16_t b_gt_g = vcgtq_u8(b, g);
+        uint8x16_t g_ge_b = vcgeq_u8(g, b);
+        uint8x16_t r_gt_b = vcgtq_u8(r, b);
+        uint8x16_t b_ge_r = vcgeq_u8(b, r);
+        uint8x16_t g_gt_r = vcgtq_u8(g, r);
+        uint8x16_t r_ge_g = vcgeq_u8(r, g);
+
 
         // MASKS
         uint8x16_t r_cmax = vceqq_u8(r, cmax);
         uint8x16_t g_cmax = vceqq_u8(g, cmax);
         uint8x16_t b_cmax = vceqq_u8(b, cmax);
 
-        uint8x16_t r_cmin = vceqq_u8(r, cmin);
-        uint8x16_t g_cmin = vceqq_u8(g, cmin);
-        uint8x16_t b_cmin = vceqq_u8(b, cmin);
-
-        uint8x16_t m5 = vandq_u8(r_cmax, g_cmin);
-        uint8x16_t m0 = vandq_u8(r_cmax, b_cmin);
-        uint8x16_t m1 = vandq_u8(g_cmax, b_cmin);
-        uint8x16_t m2 = vandq_u8(g_cmax, r_cmin);
-        uint8x16_t m3 = vandq_u8(b_cmax, r_cmin);
-        uint8x16_t m4 = vandq_u8(b_cmax, g_cmin);
+        uint8x16_t m5 = vandq_u8(r_cmax, b_gt_g);
+        uint8x16_t m0 = vandq_u8(r_cmax, g_ge_b);
+        uint8x16_t m1 = vandq_u8(g_cmax, r_gt_b);
+        uint8x16_t m2 = vandq_u8(g_cmax, b_ge_r);
+        uint8x16_t m3 = vandq_u8(b_cmax, g_gt_r);
+        uint8x16_t m4 = vandq_u8(b_cmax, r_ge_g);
 
         // SET VARS
         uint8x16_t diff = vdupq_n_u8(0);
@@ -281,6 +284,7 @@ namespace image {
         uint16x8_t delta_0_w = vmovl_u8(delta_0);
         uint16x8_t diff_0_w = vmovl_u8(diff_0);
         uint16x8_t odd_0_w = vmovl_u8(odd_0);
+        odd_0_w = vorrq_u16(vshlq_n_u16(odd_0_w, 8), odd_0_w); // extend mask
         uint16x8_t seg_0_w = vmovl_u8(seg_0);
 
         uint16x8_t cmax_0_w = vmovl_u8(cmax_0);
@@ -289,6 +293,7 @@ namespace image {
         uint16x8_t delta_1_w = vmovl_u8(delta_1);
         uint16x8_t diff_1_w = vmovl_u8(diff_1);
         uint16x8_t odd_1_w = vmovl_u8(odd_1);
+        odd_1_w = vorrq_u16(vshlq_n_u16(odd_1_w, 8), odd_1_w); // extend mask
         uint16x8_t seg_1_w = vmovl_u8(seg_1);
 
         uint16x8_t cmax_1_w = vmovl_u8(cmax_1);
@@ -434,19 +439,19 @@ namespace image {
         // for hue
         uint32x4_t diff_0_w_0_w_pre = vshlq_n_u32(diff_0_w_0_w, 8); // diff * 256
         uint32x4_t x_product_0_0 = vmulq_u32(diff_0_w_0_w_pre, recip_delta_0_w_0_w);
-        uint16x4_t x_0_0 = vget_high_u32(x_product_0_0); // >>16 and static_cast<uint16_t>
+        uint16x4_t x_0_0 = vshrn_n_u32(x_product_0_0, 16);
 
         uint32x4_t diff_0_w_1_w_pre = vshlq_n_u32(diff_0_w_1_w, 8);
         uint32x4_t x_product_0_1 = vmulq_u32(diff_0_w_1_w_pre, recip_delta_0_w_1_w);
-        uint16x4_t x_0_1 = vget_high_u32(x_product_0_1); // >>16
+        uint16x4_t x_0_1 = vshrn_n_u32(x_product_0_1, 16);
 
         uint32x4_t diff_1_w_0_w_pre = vshlq_n_u32(diff_1_w_0_w, 8); // diff * 256
         uint32x4_t x_product_1_0 = vmulq_u32(diff_1_w_0_w_pre, recip_delta_1_w_0_w);
-        uint16x4_t x_1_0 = vget_high_u32(x_product_1_0); // >>16 and static_cast<uint16_t>
+        uint16x4_t x_1_0 = vshrn_n_u32(x_product_1_0, 16);
 
         uint32x4_t diff_1_w_1_w_pre = vshlq_n_u32(diff_1_w_1_w, 8);
         uint32x4_t x_product_1_1 = vmulq_u32(diff_1_w_1_w_pre, recip_delta_1_w_1_w);
-        uint16x4_t x_1_1 = vget_high_u32(x_product_1_1); // >>16
+        uint16x4_t x_1_1 = vshrn_n_u32(x_product_1_1, 16);
 
 
         // for saturation
@@ -454,19 +459,19 @@ namespace image {
 
         uint32x4_t delta_0_w_0_w_pre = vmulq_u32(delta_0_w_0_w, const_255);
         uint32x4_t s_product_0_0 = vmulq_u32(delta_0_w_0_w_pre, recip_cmax_0_w_0_w);
-        uint16x4_t s_product_0_0_n = vget_high_u32(s_product_0_0); // >> 16
+        uint16x4_t s_product_0_0_n = vshrn_n_u32(s_product_0_0, 16); // >> 16
 
         uint32x4_t delta_0_w_1_w_pre = vmulq_u32(delta_0_w_1_w, const_255); // todo can do this before split
         uint32x4_t s_product_0_1 = vmulq_u32(delta_0_w_1_w_pre, recip_cmax_0_w_1_w);
-        uint16x4_t s_product_0_1_n = vget_high_u32(s_product_0_1); // >> 16
+        uint16x4_t s_product_0_1_n = vshrn_n_u32(s_product_0_1, 16); // >> 16
 
         uint32x4_t delta_1_w_0_w_pre = vmulq_u32(delta_1_w_0_w, const_255);
         uint32x4_t s_product_1_0 = vmulq_u32(delta_1_w_0_w_pre, recip_cmax_1_w_0_w);
-        uint16x4_t s_product_1_0_n = vget_high_u32(s_product_1_0); // >> 16
+        uint16x4_t s_product_1_0_n = vshrn_n_u32(s_product_1_0, 16); // >> 16
 
         uint32x4_t delta_1_w_1_w_pre = vmulq_u32(delta_1_w_1_w, const_255); // todo can do this before split
         uint32x4_t s_product_1_1 = vmulq_u32(delta_1_w_1_w_pre, recip_cmax_1_w_1_w);
-        uint16x4_t s_product_1_1_n = vget_high_u32(s_product_1_1); // >> 16
+        uint16x4_t s_product_1_1_n = vshrn_n_u32(s_product_1_1, 16); // >> 16
 
 
 
@@ -483,7 +488,7 @@ namespace image {
         // CALCULATE H
 
         uint16x8_t x_0 = vcombine_u16(x_0_0, x_0_1);
-        uint16x8_t x_1 = vcombine_u16(x_1_0, x_0_1);
+        uint16x8_t x_1 = vcombine_u16(x_1_0, x_1_1);
 
         uint16x8_t const_256 = vdupq_n_u16(256);
 
@@ -504,7 +509,7 @@ namespace image {
         uint8x8_t h_1_hi = vshrn_n_u16(h_1, 8);
 
         uint8x16_t h_lo = vcombine_u8(h_0_lo, h_1_lo);
-        uint8x16_t h_hi = vcombine_u8(h_1_lo, h_1_hi);
+        uint8x16_t h_hi = vcombine_u8(h_1_hi, h_1_hi);
 
 
         // STORE
