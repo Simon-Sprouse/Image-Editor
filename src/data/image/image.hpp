@@ -373,6 +373,7 @@ void HSV2RGBA_simd(HSV* ptr, RGBA* dest);
 Image<RGBA> toRGBA_simd(Image<HSV>& original); // todo this should be const
 
 void RGBA2HSV_simd(RGBA* src, HSV* dest);
+Image<HSV> toHSV_simd(Image<RGBA>& original);
 
 
 

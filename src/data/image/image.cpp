@@ -27,6 +27,8 @@ namespace image {
         // }
 
 
+
+
         // todo police usage of original as var name
         for (int i = 0; i < original.linearSize(); i++) { 
             hsv.setPixel(i, original.at(i).toHsv());
@@ -261,6 +263,7 @@ namespace image {
         seg = vbslq_u8(m3, vdupq_n_u8(3), seg);
         seg = vbslq_u8(m4, vdupq_n_u8(4), seg);
         seg = vbslq_u8(m5, vdupq_n_u8(5), seg);
+        
 
         // SPLIT
 
@@ -509,7 +512,9 @@ namespace image {
         uint8x8_t h_1_hi = vshrn_n_u16(h_1, 8);
 
         uint8x16_t h_lo = vcombine_u8(h_0_lo, h_1_lo);
-        uint8x16_t h_hi = vcombine_u8(h_1_hi, h_1_hi);
+        uint8x16_t h_hi = vcombine_u8(h_0_hi, h_1_hi);
+
+
 
 
         // STORE
@@ -527,7 +532,25 @@ namespace image {
 
 
 
+    Image<HSV> toHSV_simd(Image<RGBA>& original) { 
 
+        // todo now duplciated logic with toRGBA_simd
+        Image<HSV> hsv(original.size());
+        int linear_size = original.linearSize();
+        int num_ops = linear_size / 16;
+        int tail_ops = linear_size - (16 * num_ops);
+        for (int i = 0; i < linear_size; i += 16) { 
+            RGBA2HSV_simd(original.data() + i, hsv.data() + i);
+        }
+        for (int i = 0; i < tail_ops; i++) { 
+            hsv.setPixel(i, original.at(i).toHsv());
+        }
+        return hsv;
+
+
+
+
+    }
 
 
 
