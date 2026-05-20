@@ -13,7 +13,7 @@ namespace workbench {
     void runImageConversion(string image_path, Logger logger);
 
     // todo move this to unit tests
-    bool rgbImageCorrectnessTest(const Image<RGBA>& test, const cv::Mat& gt);
-    bool hsvImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt);
+    bool rgbImageCorrectnessTest(const Image<RGBA>& test, const cv::Mat& gt, float tolerance = 0.02f);
+    bool hsvImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt, float tolerance = 0.02f);
 
 }

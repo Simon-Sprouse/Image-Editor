@@ -32,6 +32,7 @@ namespace logger {
             void start(string task_name);
             void stop(string task_name); // todo maybe think about inversion?
             void stop(string task_name, const Image<RGBA>& output);
+            void stop(string task_name, const Image<HSV>& output);
         private: 
             string window_name_;
             string save_dir_;

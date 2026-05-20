@@ -49,7 +49,7 @@ namespace logger {
         "Task: " << task_name << setw(15) << 
         " time: " << elapsed.count() << "s " << setw(10) << 
         1.0f / elapsed.count() << " hz"
-        << endl << endl;
+        << endl;
     }
 
     void Logger::blockCV_() { 
@@ -67,6 +67,7 @@ namespace logger {
         blockCV_();
     }
 
+    // todo separate stop and imshow
     void Logger::stop(string task_name, const Image<RGBA>& output) { 
 
         stopTimer_(task_name);
@@ -90,6 +91,57 @@ namespace logger {
 
 
     }
+
+
+
+
+    void Logger::stop(string task_name, const Image<HSV>& output) { 
+
+        stopTimer_(task_name);
+        printTime_(task_name);
+
+
+        // intentionally bad conversion vvv
+        Image<RGBA> rgb_out = Image<RGBA>(output.size());
+        for (int i = 0; i < output.linearSize(); i++) { 
+            HSV px = output.at(i);
+            
+            float h_normal = static_cast<float>(px.h) / 1535.0f;
+            float s_normal = static_cast<float>(px.s) / 255.0f;
+            float v_normal = static_cast<float>(px.v) / 255.0f;
+
+            uint8_t r_dest = static_cast<uint8_t>(h_normal * 255);
+            uint8_t g_dest = static_cast<uint8_t>(s_normal * 255);
+            uint8_t b_dest = static_cast<uint8_t>(v_normal * 255);
+
+            rgb_out.setPixel(i, RGBA(r_dest, g_dest, b_dest));
+
+        }
+
+        
+        cv::setWindowTitle(window_name_, task_name);
+        cv::Mat output_mat = io::imageToCvMat(rgb_out);
+        cv::imshow(window_name_, output_mat);
+
+        int key = cv::waitKey(0);
+        if (key == 'q' || key == 27) { 
+            throw UserEscapeSignal();
+        }
+        else if (key == 's') { 
+            // todo: this is disgusting, fix dir, strip whitespace
+            // todo: probably best to invoke from image::io
+            // todo: write to console when saving
+            cv::imwrite("../results/" + task_name + ".jpg", output_mat);
+        }
+
+
+    }
+
+
+
+
+
+
 
 
 
