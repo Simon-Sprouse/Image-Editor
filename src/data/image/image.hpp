@@ -72,6 +72,7 @@ class Image {
 
     int getLinearIndex(Point pt) const;
     int getLinearIndex(int x, int y) const;
+    Size reverseLinearIndex(int i) const;
 
     // TODO think about literal iterator overload
     // TODO cbegin() and cend() ? cdata()?
@@ -186,6 +187,14 @@ int Image<Px>::getLinearIndex(Point pt) const {
 template <typename Px>
 int Image<Px>::getLinearIndex(int x, int y) const { 
     return y * width_ + x;
+}
+
+// todo name is misleading?
+template <typename Px>
+Size Image<Px>::reverseLinearIndex(int i) const { 
+    int y = i / width_;
+    int x = i - (y * width_);
+    return Size(x, y);
 }
 
 template <typename Px>

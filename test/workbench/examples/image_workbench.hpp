@@ -9,12 +9,11 @@ using namespace logger;
 
 namespace workbench { 
 
-    void runPrimitives(string image_path, Logger logger);
-    void runImage(string image_path, Logger logger);
-    void runImageSIMD(string image_path, Logger logger);
+    void runPixelConversion(string image_path, Logger logger);
+    void runImageConversion(string image_path, Logger logger);
 
     // todo move this to unit tests
-    bool rgbImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt);
+    bool rgbImageCorrectnessTest(const Image<RGBA>& test, const cv::Mat& gt);
     bool hsvImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt);
 
 }

@@ -27,9 +27,8 @@ namespace workbench {
         // sequenceVariant(image_path, logger);
         // runPixelate(image_path, logger);
         // runGrid(image_path, logger);
-        // runPrimitives(image_path, logger);
-        runImage(image_path, logger);
-        runImageSIMD(image_path, logger);
+        runPixelConversion(image_path, logger);
+        runImageConversion(image_path, logger);
         
     }
 

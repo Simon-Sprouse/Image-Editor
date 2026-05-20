@@ -28,6 +28,7 @@ namespace image::io {
             throw std::runtime_error("Failed to load image from memory");
         }
 
+        // todo there must be a more efficient way of doing this
         Image<RGBA> img(width, height);
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -40,6 +41,9 @@ namespace image::io {
             }
         }
 
+        cout << "original size: " << img.size() << endl;
+        cout << "original linear size: " << img.linearSize() << endl;
+
         stbi_image_free(pixels);
         return img;
     }
@@ -47,6 +51,7 @@ namespace image::io {
     Image<RGBA> loadImageFileSystem(const std::string& path) { 
         std::ifstream f(path, std::ios::binary);
         auto data = std::vector<uint8_t>((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+
         return fromEncodedBuffer(data.data(), data.size());
     }
 
@@ -82,6 +87,27 @@ namespace image::io {
         cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC4);
         std::memcpy(dest_mat.data, source_image.rawData(), source_image.rawDataBytesSize());
         cv::cvtColor(dest_mat, dest_mat, cv::COLOR_RGB2BGR);
+        return dest_mat;
+    }
+
+    cv::Mat imageToCvMat(const Image<HSV>& source_image) { 
+        cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC3);
+
+        // todo band-aid fix
+        for (int col = 0; col < source_image.getHeight(); col++) { 
+            for (int row = 0; row < source_image.getWidth(); row++) { 
+
+                HSV px = source_image.at(row, col);
+                
+                double h_norm = static_cast<double>(px.h) / 1535;
+                uint8_t cv_h = static_cast<uint8_t>(h_norm * 179);
+                bool valid_cv_h = (cv_h >= 0) && (cv_h < 180);
+                assert(valid_cv_h);
+                
+                dest_mat.at<cv::Vec3b>(col, row) = cv::Vec3b(cv_h, px.s, px.v);
+            }
+        }
+
         return dest_mat;
     }
 

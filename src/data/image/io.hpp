@@ -16,5 +16,6 @@ namespace image::io {
     Image<RGBA> loadImageFileSystem(const string& path);
     void saveImageFileSystem(const Image<RGBA>& img, const string& save_path);
     cv::Mat imageToCvMat(const Image<RGBA>& source_image);
+    cv::Mat imageToCvMat(const Image<HSV>& source_image);
 
 }
