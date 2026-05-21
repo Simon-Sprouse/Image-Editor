@@ -161,7 +161,7 @@ RECENT REVISION HISTORY:
 // *channels_in_file otherwise. If desired_channels is non-zero,
 // *channels_in_file has the number of components that _would_ have been
 // output otherwise. E.g. if you set desired_channels to 4, you will always
-// get RGBA output, but you can check *channels_in_file to see if it's trivially
+// get RGB output, but you can check *channels_in_file to see if it's trivially
 // opaque because e.g. there were only 3 channels in the source image.
 //
 // An output image with N components has the following components interleaved
@@ -1300,7 +1300,7 @@ static stbi__uint16 *stbi__load_and_postprocess_16bit(stbi__context *s, int *x, 
    }
 
    // @TODO: move stbi__convert_format16 to here
-   // @TODO: special case RGB-to-Y (and RGBA-to-YA) for 8-bit-to-16-bit case to keep more precision
+   // @TODO: special case RGB-to-Y (and RGB-to-YA) for 8-bit-to-16-bit case to keep more precision
 
    if (stbi__vertically_flip_on_load) {
       int channels = req_comp ? req_comp : *comp;
@@ -5738,7 +5738,7 @@ static void *stbi__bmp_load(stbi__context *s, int *x, int *y, int *comp, int req
 // returns STBI_rgb or whatever, 0 on error
 static int stbi__tga_get_comp(int bits_per_pixel, int is_grey, int* is_rgb16)
 {
-   // only RGB or RGBA (incl. 16bit) or grey allowed
+   // only RGB or RGB (incl. 16bit) or grey allowed
    if (is_rgb16) *is_rgb16 = 0;
    switch(bits_per_pixel) {
       case 8:  return STBI_grey;
@@ -6521,7 +6521,7 @@ static void *stbi__pic_load(stbi__context *s,int *px,int *py,int *comp,int req_c
    stbi__get16be(s); //skip `fields'
    stbi__get16be(s); //skip `pad'
 
-   // intermediate buffer is RGBA
+   // intermediate buffer is RGB
    result = (stbi_uc *) stbi__malloc_mad3(x, y, 4, 0);
    if (!result) return stbi__errpuc("outofmem", "Out of memory");
    memset(result, 0xff, x*y*4);
@@ -7797,7 +7797,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
                          info() for BMP to shares code instead of sloppy parse
                          can use STBI_REALLOC_SIZED if allocator doesn't support realloc
                          code cleanup
-      2.08  (2015-09-13) fix to 2.07 cleanup, reading RGB PSD as RGBA
+      2.08  (2015-09-13) fix to 2.07 cleanup, reading RGB PSD as RGB
       2.07  (2015-09-13) fix compiler warnings
                          partial animated GIF support
                          limited 16-bpc PSD support

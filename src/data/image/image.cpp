@@ -12,18 +12,18 @@ namespace image {
     // todo swap these out with SIMD optimizations
     
 
-    Image<HSV> toHSV(const Image<RGBA>& original) { 
+    Image<HSV> toHSV(const Image<RGB>& original) { 
         Image<HSV> hsv(original.size());
 
         // --- FUTURE SIMD CODE ---
         // int n = 4; // batch size
         // int simd_ops = original.size() / n
         // for (int i = 0; i < simd_ops; i += n) { 
-        //      RGBA2HSV_batch()
+        //      RGB2HSV_batch()
         // }
         // int remaining = original.size() - simd_ops * n;
         // for (int i = 0; i < remaining; i++) {
-        //      RGBA2HSV();
+        //      RGB2HSV();
         // }
 
 
@@ -36,7 +36,7 @@ namespace image {
         return hsv;
     }
 
-    Image<GRAY> toGRAY(const Image<RGBA>& original) { 
+    Image<GRAY> toGRAY(const Image<RGB>& original) { 
         Image<GRAY> gray(original.size());
         for (int i = 0; i < original.linearSize(); i++) { 
             gray.setPixel(i, original.at(i).toGray());
@@ -44,14 +44,14 @@ namespace image {
         return gray;
     }
 
-    // todo polymorphic toRGBA needs to handle all types eventually
+    // todo polymorphic toRGB needs to handle all types eventually
     // todo should this function allocate memory?
-    Image<RGBA> toRGBA(const Image<HSV>& original) { 
-        Image<RGBA> rgba(original.size());
+    Image<RGB> toRGB(const Image<HSV>& original) { 
+        Image<RGB> rgb(original.size());
         for (int i = 0; i < original.linearSize(); i++) { 
-            rgba.setPixel(i, original.at(i).toRgba());
+            rgb.setPixel(i, original.at(i).toRgba());
         }
-        return rgba;
+        return rgb;
     }
 
 
@@ -59,7 +59,7 @@ namespace image {
 
 
 
-    void HSV2RGBA_simd(HSV* ptr, RGBA* dest) { 
+    void HSV2RGB_simd(HSV* ptr, RGB* dest) { 
         
 
         // LOAD
@@ -189,23 +189,23 @@ namespace image {
 
     }
 
-    Image<RGBA> toRGBA_simd(Image<HSV>& original) { 
-        Image<RGBA> rgba(original.size());
+    Image<RGB> toRGB_simd(Image<HSV>& original) { 
+        Image<RGB> rgb(original.size());
         int linear_size = original.linearSize();
         int num_ops = linear_size / 16;
         int tail_ops = linear_size - (16 * num_ops);
         for (int i = 0; i < linear_size; i += 16) { 
-            HSV2RGBA_simd(original.data() + i, rgba.data() + i);
+            HSV2RGB_simd(original.data() + i, rgb.data() + i);
         }
         for (int i = 0; i < tail_ops; i++) { 
-            rgba.setPixel(i, original.at(i).toRgba());
+            rgb.setPixel(i, original.at(i).toRgba());
         }
-        return rgba;
+        return rgb;
     }
 
 
 
-    void RGBA2HSV_simd(RGBA* src, HSV* dest) { 
+    void RGB2HSV_simd(RGB* src, HSV* dest) { 
 
         // LOAD
         uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(src));
@@ -532,15 +532,15 @@ namespace image {
 
 
 
-    Image<HSV> toHSV_simd(Image<RGBA>& original) { 
+    Image<HSV> toHSV_simd(Image<RGB>& original) { 
 
-        // todo now duplciated logic with toRGBA_simd
+        // todo now duplciated logic with toRGB_simd
         Image<HSV> hsv(original.size());
         int linear_size = original.linearSize();
         int num_ops = linear_size / 16;
         int tail_ops = linear_size - (16 * num_ops);
         for (int i = 0; i < linear_size; i += 16) { 
-            RGBA2HSV_simd(original.data() + i, hsv.data() + i);
+            RGB2HSV_simd(original.data() + i, hsv.data() + i);
         }
         for (int i = 0; i < tail_ops; i++) { 
             hsv.setPixel(i, original.at(i).toHsv());

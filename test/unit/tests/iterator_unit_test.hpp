@@ -49,7 +49,7 @@ namespace unit_test::iterator {
 
 
 
-    void testRegionIterator(Image<RGBA> image);
-    void testRowIterator(Image<RGBA> imge);
-    void testRegionRowIterator(Image<RGBA> image);
+    void testRegionIterator(Image<RGB> image);
+    void testRowIterator(Image<RGB> imge);
+    void testRegionRowIterator(Image<RGB> image);
 }

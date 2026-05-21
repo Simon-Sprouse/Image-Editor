@@ -10,13 +10,13 @@ namespace random_gen {
 
     using image::Point;
     using image::Size;
-    using image::RGBA;
+    using image::RGB;
 
 
 
     double randomDouble(double min_val, double max_val); // TODO template this
-    RGBA randomColor();
-    std::vector<RGBA> randomColors(int num_colors);
+    RGB randomColor();
+    std::vector<RGB> randomColors(int num_colors);
 
     Point randomPoint(int w, int h);
     Point randomPoint(Size size);

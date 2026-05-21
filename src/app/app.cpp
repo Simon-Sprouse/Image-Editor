@@ -20,7 +20,7 @@ namespace app {
 
 
 
-        Image<RGBA> image = image::io::loadImageFileSystem(image_path);
+        Image<RGB> image = image::io::loadImageFileSystem(image_path);
         cout << "Loaded image from: " << image_path << endl;
         cout << "Original Dimensions: " << image.size() << endl;
 

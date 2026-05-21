@@ -15,7 +15,7 @@ namespace unit_test {
     }
 
     void runAllIterator(string image_path) { 
-        Image<RGBA> image = io::loadImageFileSystem(image_path);
+        Image<RGB> image = io::loadImageFileSystem(image_path);
         iterator::testRegionIterator(image.clone());
         iterator::testRowIterator(image.clone());
         iterator::testRegionRowIterator(image.clone());

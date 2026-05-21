@@ -12,10 +12,10 @@ using shapes::Rect;
 
 namespace filter::color { 
 
-    RGBA avgColor(const Image<RGBA>& image, const Rect& rect);
-    void toGrayscale(const Image<RGBA>& src, Image<GRAY>& dest);
+    RGB avgColor(const Image<RGB>& image, const Rect& rect);
+    void toGrayscale(const Image<RGB>& src, Image<GRAY>& dest);
 
     // TODO: This is a BANDAID!!! finish committing to GRAY px type
-    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest);
+    void toGrayscale(const Image<RGB>& src, Image<RGB>& dest);
 
 }

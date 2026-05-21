@@ -13,11 +13,11 @@ namespace pop_art {
 
 
 
-void PopArt::loadExistingImage(const Image<RGBA>& img) { 
+void PopArt::loadExistingImage(const Image<RGB>& img) { 
     original = img.clone();
 }
 
-Image<RGBA> PopArt::getCanvas() { 
+Image<RGB> PopArt::getCanvas() { 
     return canvas.clone();
 }
 
@@ -52,16 +52,16 @@ void PopArt::run() {
     }
 
     // generate random colors
-    vector<RGBA> colors = random_gen::randomColors(num_bins);
+    vector<RGB> colors = random_gen::randomColors(num_bins);
 
     // map all possible grayscale values to new colors
-    vector<RGBA> new_color_for_value(256); 
+    vector<RGB> new_color_for_value(256); 
     for (int value = 0; value < 256; value++) { 
         new_color_for_value[value] = colors[bin_id_for_value[value]];
     }
 
     // recolor image using map O(n)
-    canvas = Image<RGBA>(original.size());
+    canvas = Image<RGB>(original.size());
     for (int i = 0; i < num_pixels; i++) { 
         canvas.setPixel(i, new_color_for_value[gray.at(i).v]);
     }   
@@ -99,11 +99,11 @@ void PopArt::findBins_() {
     }
 
     // set all pixels in bin_map to store (bin_id, bin_id, bin_id) as color
-    bin_map = Image<RGBA>(original.size());
+    bin_map = Image<RGB>(original.size());
     int bin_id_for_pixel;
     for (int i = 0; i < num_pixels; i++) { 
         bin_id_for_pixel = bin_id_for_value[gray.at(i).v];
-        bin_map.setPixel(i, RGBA(bin_id_for_pixel));
+        bin_map.setPixel(i, RGB(bin_id_for_pixel));
     }
 }
 
@@ -114,11 +114,11 @@ void PopArt::runPersistent() {
     }
 
     // collect vector of random colors
-    vector<RGBA> colors = random_gen::randomColors(params.num_splits); 
+    vector<RGB> colors = random_gen::randomColors(params.num_splits); 
     
     // recolor image
     // extract bin_id from each pixel and recolor pixel based on bin_id
-    canvas = Image<RGBA>(original.size());
+    canvas = Image<RGB>(original.size());
     for (int i = 0; i < bin_map.linearSize(); i++) { 
         canvas.setPixel(i, colors[bin_map.at(i).r]);
     }   
@@ -138,7 +138,7 @@ void PopArt::runSlow() {
     };
 
     struct compGT { 
-        // assuming the pixels are both grayscale, compare only r values (reason why RGBA in imag.hpp not overloaded)
+        // assuming the pixels are both grayscale, compare only r values (reason why RGB in imag.hpp not overloaded)
         bool operator()(const Pixel& lhs, const Pixel& rhs) { return lhs.color.v > rhs.color.v; }
     };
 
@@ -157,7 +157,7 @@ void PopArt::runSlow() {
     sort(pixels.begin(), pixels.end(), compGT());
 
 
-    vector<RGBA> colors;
+    vector<RGB> colors;
     colors.reserve(num_bins);
     for (int i = 0; i < num_bins; i++) { 
         colors.push_back(random_gen::randomColor());
@@ -166,7 +166,7 @@ void PopArt::runSlow() {
 
     int pixels_per_bin = num_pixels / num_bins;
     int bin;
-    bin_map = Image<RGBA>(original.size());
+    bin_map = Image<RGB>(original.size());
 
 
     for (int i = 0; i < pixels.size(); i++) { 

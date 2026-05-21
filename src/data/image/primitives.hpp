@@ -10,12 +10,12 @@ namespace image {
 
     // todo: move geometric stuff to shapes and expand on color theory here
 
-    struct RGBA;
+    struct RGB;
     struct HSV;
     struct GRAY;
 
 
-    struct RGBA { 
+    struct RGB { 
 
         uint8_t r;
         uint8_t g;
@@ -23,44 +23,44 @@ namespace image {
         uint8_t a;
 
         // === Default Constructor === 
-        RGBA() : r(0), g(0), b(0), a(255) {}
+        RGB() : r(0), g(0), b(0), a(255) {}
 
         // === uint8 Constructor ===
-        RGBA(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) 
+        RGB(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) 
             : r(red), g(green), b(blue), a(alpha) {}
-        explicit RGBA(uint8_t value)
-            : RGBA(value, value, value) {}
+        explicit RGB(uint8_t value)
+            : RGB(value, value, value) {}
 
         // === int Constructor ===
-        RGBA(int red, int green, int blue, int alpha = 255) 
+        RGB(int red, int green, int blue, int alpha = 255) 
             : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
-        explicit RGBA(int value)
-            : RGBA(value, value, value) {}
+        explicit RGB(int value)
+            : RGB(value, value, value) {}
 
         // === float Constructor ===
-        RGBA(float red, float green, float blue, float alpha = 255) 
+        RGB(float red, float green, float blue, float alpha = 255) 
             : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
-        explicit RGBA(float value)
-            : RGBA(value, value, value) {}
+        explicit RGB(float value)
+            : RGB(value, value, value) {}
 
         // === double Constructor ===
-        RGBA(double red, double green, double blue, double alpha = 255) 
+        RGB(double red, double green, double blue, double alpha = 255) 
             : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
-        explicit RGBA(double value)
-            : RGBA(value, value, value) {}
+        explicit RGB(double value)
+            : RGB(value, value, value) {}
 
 
-        bool operator==(const RGBA& other) const {
+        bool operator==(const RGB& other) const {
             return r == other.r && g == other.g && b == other.b && a == other.a;
         }
 
-        bool operator!=(const RGBA& other) const {
+        bool operator!=(const RGB& other) const {
             return !(*this == other);
         }
 
 
         // todo shoul this really be abs? 
-        RGBA operator-(const RGBA& other) const { 
+        RGB operator-(const RGB& other) const { 
 
 
             // cout << "hello from operator-" << endl;
@@ -72,7 +72,7 @@ namespace image {
 
 
             return 
-                RGBA(
+                RGB(
                     std::abs(r - other.r), 
                     std::abs(g - other.g),
                     std::abs(b - other.b), 
@@ -80,7 +80,7 @@ namespace image {
                 );
         }
 
-        bool operator<(const RGBA& other) const {
+        bool operator<(const RGB& other) const {
             return r < other.r && g < other.g && b < other.b && a < other.a;
         }
 
@@ -100,7 +100,7 @@ namespace image {
 
 
     };
-    static_assert(sizeof(RGBA) == 4);
+    static_assert(sizeof(RGB) == 4);
 
 
     struct HSV { 
@@ -119,7 +119,7 @@ namespace image {
 
 
         // todo need way more of these
-        RGBA toRgba() const;
+        RGB toRgba() const;
 
     };
     static_assert(sizeof(HSV) == 4);
@@ -142,7 +142,7 @@ namespace image {
 
 
 
-    inline GRAY RGBA2GRAY(const RGBA& px) {
+    inline GRAY RGB2GRAY(const RGB& px) {
 
         // todo clamp should solve this
         uint8_t luminance = static_cast<uint8_t>(0.299 * px.r + 0.587 * px.g + 0.114 * px.b);
@@ -167,7 +167,7 @@ namespace image {
 
     // note I tried using a LUT with minimal performance gains. 
     // todo can be SIMD optimized, no branches, blend statements, maybe LUT afterall? 
-    inline HSV RGBA2HSV(const RGBA& px) { 
+    inline HSV RGB2HSV(const RGB& px) { 
 
         uint8_t r = px.r;
         uint8_t g = px.g;
@@ -364,7 +364,7 @@ namespace image {
     }
 
     // // TODO: temp refactor for prompting
-    // inline HSV RGBA2HSV(const RGBA& px) { 
+    // inline HSV RGB2HSV(const RGB& px) { 
 
     //     uint8_t r = px.r;
     //     uint8_t g = px.g;
@@ -446,7 +446,7 @@ namespace image {
     // 	    uint8_t S; // 0-255
     // 	    uint8_t V; // 0-255
     // }
-    inline RGBA HSV2RGBA(const HSV& px) { 
+    inline RGB HSV2RGB(const HSV& px) { 
 
         uint8_t seg = px.h >> 8;
         uint8_t off = px.h & 0xFF;
@@ -459,13 +459,13 @@ namespace image {
         uint8_t rise = cmin + (uint8_t)((uint16_t)(delta * off) >> 8);
 
         switch (seg) {
-            case 0: return RGBA(cmax, rise, cmin);
-            case 1: return RGBA(fall, cmax, cmin);
-            case 2: return RGBA(cmin, cmax, rise);
-            case 3: return RGBA(cmin, fall, cmax);
-            case 4: return RGBA(rise, cmin, cmax);
-            case 5: return RGBA(cmax, cmin, fall);
-            default: return RGBA();
+            case 0: return RGB(cmax, rise, cmin);
+            case 1: return RGB(fall, cmax, cmin);
+            case 2: return RGB(cmin, cmax, rise);
+            case 3: return RGB(cmin, fall, cmax);
+            case 4: return RGB(rise, cmin, cmax);
+            case 5: return RGB(cmax, cmin, fall);
+            default: return RGB();
         }
 
     }
@@ -485,16 +485,16 @@ namespace image {
 
 
 
-    inline HSV RGBA::toHsv() const {
-        return RGBA2HSV(*this);
+    inline HSV RGB::toHsv() const {
+        return RGB2HSV(*this);
     }
 
-    inline GRAY RGBA::toGray() const { 
-        return RGBA2GRAY(*this);
+    inline GRAY RGB::toGray() const { 
+        return RGB2GRAY(*this);
     }
 
-    inline RGBA HSV::toRgba() const { 
-        return HSV2RGBA(*this);
+    inline RGB HSV::toRgba() const { 
+        return HSV2RGB(*this);
     }
 
 
@@ -612,10 +612,10 @@ namespace image {
         return std::to_string(width) + "," + std::to_string(height);
     }
 
-    // Stream operator for RGBA
-    inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
+    // Stream operator for RGB
+    inline std::ostream& operator<<(std::ostream& os, const RGB& color) {
 
-        os << "rgba[" << static_cast<int>(color.r) << ", "
+        os << "rgb[" << static_cast<int>(color.r) << ", "
                     << static_cast<int>(color.g) << ", "
                     << static_cast<int>(color.b) << ", "
                     << static_cast<int>(color.a) << "]";

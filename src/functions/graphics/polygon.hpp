@@ -12,7 +12,7 @@ namespace draw::polygon {
 
 
 
-    void drawRect(Image<RGBA>& image, const Rect& rect, const RGBA& color);
+    void drawRect(Image<RGB>& image, const Rect& rect, const RGB& color);
 
 
 

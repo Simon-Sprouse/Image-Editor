@@ -12,7 +12,7 @@ namespace draw::line {
 
 
 
-    void drawCol(Image<RGBA>& image, int col_index, const RGBA& color, int thickness);
-    void drawRow(Image<RGBA>& image, int row_index, const RGBA& color, int thickness);
+    void drawCol(Image<RGB>& image, int col_index, const RGB& color, int thickness);
+    void drawRow(Image<RGB>& image, int row_index, const RGB& color, int thickness);
 
 }

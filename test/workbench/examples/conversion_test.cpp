@@ -1,4 +1,4 @@
-#include "image_workbench.hpp"
+#include "conversion_test.hpp"
 #include "../../../src/data/image/image.hpp"
 #include "../../../src/data/image/io.hpp"
 #include <iostream>
@@ -16,8 +16,68 @@ using namespace std;
 
 namespace workbench { 
 
+
+
+
+    void conversionUsage(string image_path, Logger logger) { 
+
+
+        cout << "Call site testing for conversions" << endl;
+
+
+        // ----------------
+        // FREE functions
+
+        // free functions scalar
+        // names are esoteric on purpose. these are helpers for .to<Px>()
+        // RGB2HSV(const RGB& src)
+        // RGB2GRAY(const RGB& src)
+        // HSV2RGB(const HSV& src)
+
+        // free functions vector
+        // RGB2HSV_simd_batcn(RGB* src, HSV* dest)
+        // HSV2RBG_simd_batch(HSV* src, RGB* src)
+        
+        // vector with scalar tail
+        // RGB2HSV_simd(const Image<RGB>& original)
+        // HSV2RGB_simd(const Image<HSV>& original)
+        
+        
+        // ----------------------------------
+        // STRUCT owned conversion functions
+        // need to make these nodiscard
+
+        // rgb.to<HSV>()
+        // rgb.to<GRAY>()
+        // hsv.to<RGB>()
+
+        // -----------------------------------
+        // IMAGE owned conversion functions
+        // also need to make these nodiscard
+
+        // rgb_img.to<HSV>()
+        // rgb_img.to<GRAY>()
+        // hsv_img.to<RGB>()
+
+        // rgb_img.to_simd<HSV>()
+        // hsv_img.to_simd<RGB>()
+
+
+
+
+
+
+
+        
+        
+
+
+    }
+
+
+
     // Test all possilble pixel combinations
-    void runPixelConversion(string image_path, Logger logger) { 
+    void conversionUnitTest(string image_path, Logger logger) { 
 
         cout << "Testing all permutations for correctness" << endl;
 
@@ -30,14 +90,14 @@ namespace workbench {
     
         // Create Images for testing
         int rgb_linear_size = 256 * 256 * 256;
-        Image<RGBA> rgb = Image<RGBA>(rgb_linear_size, 1); // size all in one row
+        Image<RGB> rgb = Image<RGB>(rgb_linear_size, 1); // size all in one row
 
         // todo permutation library
         int rgb_index = 0;
         for (int r = 0; r < 256; r++) { 
             for (int g = 0; g < 256; g++) { 
                 for (int b = 0; b < 256; b++) { 
-                    rgb.setPixel(rgb_index, RGBA(r, g, b));
+                    rgb.setPixel(rgb_index, RGB(r, g, b));
                     rgb_index++;
                 }
             }
@@ -48,12 +108,14 @@ namespace workbench {
         cv::Mat hsv_mat = cv::Mat(rgb_mat_temp.size(), CV_8UC3);
         cv::cvtColor(rgb_mat_temp, hsv_mat, cv::COLOR_BGR2HSV);
 
+        // run tests
         Image<HSV> hsv_dest_base = toHSV(rgb); // todo higher order call
         hsvImageCorrectnessTest(hsv_dest_base, hsv_mat, tolerance);
 
         Image<HSV> hsv_dest_simd = toHSV_simd(rgb);
         hsvImageCorrectnessTest(hsv_dest_simd, hsv_mat, tolerance);
 
+        // todo test RGB -> GRAY
 
         // ----------------------------
         //   HSV -> RGB CORRECTNESS
@@ -73,10 +135,11 @@ namespace workbench {
         cv::Mat rgb_mat = cv::Mat(hsv_mat_temp.size(), CV_8UC3);
         cv::cvtColor(hsv_mat_temp, rgb_mat, cv::COLOR_HSV2RGB);
 
-        Image<RGBA> rgb_dest_base = toRGBA(hsv);
+        // run tests
+        Image<RGB> rgb_dest_base = toRGB(hsv);
         rgbImageCorrectnessTest(rgb_dest_base, rgb_mat, tolerance);
 
-        Image<RGBA> rgb_dest_simd = toRGBA(hsv);
+        Image<RGB> rgb_dest_simd = toRGB(hsv);
         rgbImageCorrectnessTest(rgb_dest_simd, rgb_mat, tolerance);
 
         cout << endl;
@@ -85,17 +148,24 @@ namespace workbench {
 
 
 
-    void runImageConversion(string image_path, Logger logger) { 
+    void conversionBenchmark(string image_path, Logger logger) { 
 
 
-        int num_iterations = 100;
+        // ----------------------------
+        //     PRE - TEST CONFIG
+        // ----------------------------
+
+
+        int num_iterations = 1;
 
         // Set up Images before tests
-        Image<RGBA> original = io::loadImageFileSystem(image_path);
-        Image<RGBA> rgba = original.clone();
-        Image<HSV> hsv = toHSV(original);
+        Image<RGB> original = io::loadImageFileSystem(image_path);
+        Image<RGB> rgb_src = original.clone();
+        Image<HSV> hsv_src = toHSV(original);
+        Image<RGB> rgb_dest(original.size());
+        Image<HSV> hsv_dest(original.size());
 
-        // Set up cv::Mat before tests
+        // Set cv threads to ensure fairness
         cv::setNumThreads(1);
         cout << "cv num threads: " << cv::getNumThreads() << endl;
         cout << endl;
@@ -103,10 +173,10 @@ namespace workbench {
         cv::Mat original_mat = io::imageToCvMat(original);
         cv::Mat rgb_mat(original_mat.size(), CV_8UC3);
         cv::Mat hsv_mat(original_mat.size(), CV_8UC3);
+
         cv::cvtColor(original_mat, rgb_mat, cv::COLOR_BGR2RGB);
         cv::cvtColor(rgb_mat, hsv_mat, cv::COLOR_RGB2HSV);
 
-        
         // test names
         string suffix = std::to_string(num_iterations);
         string base_2_hsv_test = "base - rgb->hsv x " + suffix;
@@ -115,7 +185,6 @@ namespace workbench {
         string simd_2_rgb_test = "SIMD - hsv->rgb x " + suffix;
         string cv_2_hsv_test = "cv   - rgb->hsv x " + suffix;
         string cv_2_rgb_test = "cv   - hsv->rgb x " + suffix;
-
 
 
         // ----------------------------
@@ -128,16 +197,16 @@ namespace workbench {
         // Base
         logger.start(base_2_hsv_test);
         for (int i = 0; i < num_iterations; i++) {
-            hsv = toHSV(original);
+            hsv_dest = toHSV(rgb_src);
         }
-        logger.stop(base_2_hsv_test, hsv);
+        logger.stop(base_2_hsv_test, hsv_dest);
 
         // SIMD todo - bug seems to be different visually from base
         logger.start(simd_2_hsv_test);
         for (int i = 0; i < num_iterations; i++) { 
-            hsv = toHSV_simd(original);
+            hsv_dest = toHSV_simd(rgb_src);
         }
-        logger.stop(simd_2_hsv_test, hsv);
+        logger.stop(simd_2_hsv_test, hsv_dest);
 
         // OpenCV
         logger.start(cv_2_hsv_test);
@@ -158,16 +227,16 @@ namespace workbench {
         // Base
         logger.start(base_2_rgb_test);
         for (int i = 0; i < num_iterations; i++) {
-            rgba = toRGBA(hsv);
+            rgb_dest = toRGB(hsv_src);
         }
-        logger.stop(base_2_rgb_test, rgba);
+        logger.stop(base_2_rgb_test, rgb_dest);
 
         // SIMD
         logger.start(simd_2_rgb_test);
         for (int i = 0; i < num_iterations; i++) { 
-            rgba = toRGBA_simd(hsv);
+            rgb_dest = toRGB_simd(hsv_src);
         }
-        logger.stop(simd_2_rgb_test, rgba);
+        logger.stop(simd_2_rgb_test, rgb_dest);
 
         // OpenCV
         logger.start(cv_2_rgb_test);
@@ -182,7 +251,7 @@ namespace workbench {
 
 
 
-    // TODO: move correctness tests elsewhere
+
     bool hsvPixelCorrectnessTest(const HSV& test, const cv::Vec3b& gt, float tolerance) { 
 
         float test_h_normal = static_cast<float>(test.h) / 1535.0f;
@@ -225,7 +294,7 @@ namespace workbench {
 
 
 
-    bool rgbPixelCorrectnessTest(const RGBA& test, const cv::Vec3b gt, float tolerance) { 
+    bool rgbPixelCorrectnessTest(const RGB& test, const cv::Vec3b gt, float tolerance) { 
 
         float test_r_normal = static_cast<float>(test.r) / 255.0f;
         float test_g_normal = static_cast<float>(test.g) / 255.0f;
@@ -275,7 +344,7 @@ namespace workbench {
     }
 
 
-    bool rgbImageCorrectnessTest(const Image<RGBA>& test, const cv::Mat& gt, float tolerance) { 
+    bool rgbImageCorrectnessTest(const Image<RGB>& test, const cv::Mat& gt, float tolerance) { 
 
         int sum_passing = 0;
 

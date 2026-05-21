@@ -60,7 +60,7 @@ struct TileInfo {
     Point center;
     double size;
     double theta_deg;
-    RGBA color;
+    RGB color;
     int order;
     int frontier;
 
@@ -82,16 +82,16 @@ class Mosaic {
         void loadImageFromBuffer(const uint8_t* data, size_t size);
         void loadImageFromVector(const std::vector<uint8_t>& buffer);
 
-        void loadExistingImage(const Image<RGBA>& img);
+        void loadExistingImage(const Image<RGB>& img);
 
         void contourPipeline();
         void runAll();
-        Image<RGBA> getCanvas();
-        Image<RGBA>* getCanvasPtr();
-        Image<RGBA>* getDebugCanvasPtr();
-        Image<RGBA>* getStrokesImagePtr();
-        Image<RGBA>* getOriginalImagePtr();
-        Image<RGBA> getContourImage();
+        Image<RGB> getCanvas();
+        Image<RGB>* getCanvasPtr();
+        Image<RGB>* getDebugCanvasPtr();
+        Image<RGB>* getStrokesImagePtr();
+        Image<RGB>* getOriginalImagePtr();
+        Image<RGB> getContourImage();
         uint8_t* getRawData();
         bool empty();
         Size size();
@@ -138,7 +138,7 @@ class Mosaic {
         Point getRandomPointOnStroke(int stroke_id);
 
         double findBestTheta(Point center, double size);
-        std::vector<Point> findNonZeroInRadius(const Image<RGBA>& src, const Point& center, int radius);
+        std::vector<Point> findNonZeroInRadius(const Image<RGB>& src, const Point& center, int radius);
 
         std::vector<Point> findPointsMultipleRings(const Point& center, double theta_deg);
         std::vector<Point> findRingIntersections(const Point& center, double ring_size, double theta_deg, int thickness);
@@ -159,7 +159,7 @@ class Mosaic {
         
 
         void reconstructShowFrontiers();
-        RGBA sampleTileColor(Point center, double size, double theta_deg);
+        RGB sampleTileColor(Point center, double size, double theta_deg);
 
         bool stepOnce();
         
@@ -180,19 +180,19 @@ class Mosaic {
         std::vector<TileInfo> tiles_placed;
         
         // image data various purposes
-        Image<RGBA> original;
-        Image<RGBA> resized;
-        Image<RGBA> canny;
-        Image<RGBA> strokes_image;
+        Image<RGB> original;
+        Image<RGB> resized;
+        Image<RGB> canny;
+        Image<RGB> strokes_image;
         std::vector<std::vector<Point>> strokes;
-        Image<RGBA> selected_stroke;
+        Image<RGB> selected_stroke;
 
         std::vector<float> grad_x;
         std::vector<float> grad_y;
 
-        Image<RGBA> mask;
-        Image<RGBA> canvas;
-        Image<RGBA> debugCanvas; // TODO unify this logic with canvas somehow
+        Image<RGB> mask;
+        Image<RGB> canvas;
+        Image<RGB> debugCanvas; // TODO unify this logic with canvas somehow
 
 
 

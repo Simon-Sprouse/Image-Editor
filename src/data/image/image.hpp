@@ -373,16 +373,16 @@ inline std::ostream& operator<<(std::ostream& os, const Image<Px>& image) {
 
 
 
-Image<HSV> toHSV(const Image<RGBA>& original);
-Image<RGBA> toRGBA(const Image<HSV>& original);
-Image<GRAY> toGRAY(const Image<RGBA>& original);
+Image<HSV> toHSV(const Image<RGB>& original);
+Image<RGB> toRGB(const Image<HSV>& original);
+Image<GRAY> toGRAY(const Image<RGB>& original);
 
 
-void HSV2RGBA_simd(HSV* ptr, RGBA* dest);
-Image<RGBA> toRGBA_simd(Image<HSV>& original); // todo this should be const
+void HSV2RGB_simd(HSV* ptr, RGB* dest);
+Image<RGB> toRGB_simd(Image<HSV>& original); // todo this should be const
 
-void RGBA2HSV_simd(RGBA* src, HSV* dest);
-Image<HSV> toHSV_simd(Image<RGBA>& original);
+void RGB2HSV_simd(RGB* src, HSV* dest);
+Image<HSV> toHSV_simd(Image<RGB>& original);
 
 
 

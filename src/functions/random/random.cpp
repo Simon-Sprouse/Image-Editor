@@ -19,20 +19,20 @@ namespace random_gen {
         return dist(rng);
     }
 
-    RGBA randomColor() {
+    RGB randomColor() {
         static std::random_device rd;
         static std::mt19937 gen(rd());
         static std::uniform_int_distribution<int> dist(0, 255);
     
-        return RGBA{
+        return RGB{
             static_cast<uint8_t>(dist(gen)),  // red
             static_cast<uint8_t>(dist(gen)),  // green
             static_cast<uint8_t>(dist(gen))   // blue
         };
     }
 
-    std::vector<RGBA> randomColors(int num_colors) { 
-        std::vector<RGBA> colors;
+    std::vector<RGB> randomColors(int num_colors) { 
+        std::vector<RGB> colors;
         colors.reserve(num_colors);
         for (int i = 0; i < num_colors; i++) { 
             colors.push_back(randomColor());

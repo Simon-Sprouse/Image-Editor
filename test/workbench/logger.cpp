@@ -68,7 +68,7 @@ namespace logger {
     }
 
     // todo separate stop and imshow
-    void Logger::stop(string task_name, const Image<RGBA>& output) { 
+    void Logger::stop(string task_name, const Image<RGB>& output) { 
 
         stopTimer_(task_name);
         printTime_(task_name);
@@ -102,7 +102,7 @@ namespace logger {
 
 
         // intentionally bad conversion vvv
-        Image<RGBA> rgb_out = Image<RGBA>(output.size());
+        Image<RGB> rgb_out = Image<RGB>(output.size());
         for (int i = 0; i < output.linearSize(); i++) { 
             HSV px = output.at(i);
             
@@ -114,7 +114,7 @@ namespace logger {
             uint8_t g_dest = static_cast<uint8_t>(s_normal * 255);
             uint8_t b_dest = static_cast<uint8_t>(v_normal * 255);
 
-            rgb_out.setPixel(i, RGBA(r_dest, g_dest, b_dest));
+            rgb_out.setPixel(i, RGB(r_dest, g_dest, b_dest));
 
         }
 
