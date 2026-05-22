@@ -30,8 +30,8 @@ namespace workbench {
 
 
         conversionUsage(image_path, logger);
-        // conversionUnitTest(image_path, logger);
-        // conversionBenchmark(image_path, logger);
+        conversionUnitTest(image_path, logger);
+        conversionBenchmark(image_path, logger);
         
     }
 

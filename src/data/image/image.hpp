@@ -95,6 +95,9 @@ class Image {
     // const ConstRegionRowIterator regionRows(const Point& tl, int dx, int dy) const;
     // RegionIterator region(Point tl, int dx, int dy);
 
+    template<typename To_Px>
+    Image<To_Px> to() const;
+
 
     private:
 
@@ -378,12 +381,30 @@ Image<RGB> toRGB(const Image<HSV>& original);
 Image<GRAY> toGRAY(const Image<RGB>& original);
 
 
-void HSV2RGB_simd(HSV* ptr, RGB* dest);
-Image<RGB> toRGB_simd(Image<HSV>& original); // todo this should be const
+void HSV2RGB_simd(const HSV* ptr, RGB* dest);
+Image<RGB> toRGB_simd(const Image<HSV>& original); // todo this should be const
 
 void RGB2HSV_simd(const RGB* src, HSV* dest); 
 Image<HSV> toHSV_simd(const Image<RGB>& original);
 
+// todo converter pattern
+template<>
+template<>
+inline Image<HSV> Image<RGB>::to<HSV>() const { 
+    return toHSV_simd(*this);
+}
+
+template<>
+template<>
+inline Image<GRAY> Image<RGB>::to<GRAY>() const { 
+    return toGRAY(*this);
+}
+
+template<>
+template<>
+inline Image<RGB> Image<HSV>::to<RGB>() const {
+    return toRGB_simd(*this);
+}
 
 
 

@@ -59,11 +59,11 @@ namespace image {
 
 
 
-    void HSV2RGB_simd(HSV* ptr, RGB* dest) { 
+    void HSV2RGB_simd(const HSV* ptr, RGB* dest) { 
         
 
         // LOAD
-        uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(ptr));
+        uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(const_cast<HSV*>(ptr)));
         uint8x16_t off = load.val[0];
         uint8x16_t seg = load.val[1]; // msb stored later do to little-end
         uint8x16_t s = load.val[2];
@@ -189,7 +189,7 @@ namespace image {
 
     }
 
-    Image<RGB> toRGB_simd(Image<HSV>& original) { 
+    Image<RGB> toRGB_simd(const Image<HSV>& original) { 
         Image<RGB> rgb(original.size());
         int linear_size = original.linearSize();
         int num_ops = linear_size / 16;

@@ -10,6 +10,7 @@ namespace image {
 
     // todo: move geometric stuff to shapes and expand on color theory here
 
+    // forward declare
     struct RGB;
     struct HSV;
     struct GRAY;
@@ -86,6 +87,9 @@ namespace image {
 
         // todo overload int<
 
+        template <typename Px>
+        Px to() const;
+
         HSV toHsv() const;
         GRAY toGray() const;
 
@@ -120,6 +124,9 @@ namespace image {
 
         // todo need way more of these
         RGB toRgba() const;
+
+        template<typename Px>
+        Px to() const;
 
     };
     static_assert(sizeof(HSV) == 4);
@@ -497,8 +504,21 @@ namespace image {
         return HSV2RGB(*this);
     }
 
+    // todo add converter<to, from> eventually for cleaner routing
+    template<>
+    inline HSV RGB::to<HSV>() const { 
+        return RGB2HSV(*this);
+    }
 
+    template<>
+    inline GRAY RGB::to<GRAY>() const {
+        return RGB2GRAY(*this);
+    }
 
+    template<>
+    inline RGB HSV::to<RGB>() const {
+        return HSV2RGB(*this);
+    }
 
 
 

@@ -172,8 +172,8 @@ namespace workbench {
 
         {
             RGB rgb_px = RGB(42, 69, 210);
-            HSV rgb_px_2_hsv_px = rgb_px.toHsv();
-            GRAY rgb_px_2_gray_px = rgb_px.toGray();
+            HSV rgb_px_2_hsv_px = rgb_px.to<HSV>();
+            GRAY rgb_px_2_gray_px = rgb_px.to<GRAY>();
             cout << "rgb_px: " << rgb_px << endl;
             cout << "to hsv px: " << rgb_px_2_hsv_px << endl;
             cout << "to gray px: " << rgb_px_2_gray_px << endl;
@@ -185,6 +185,14 @@ namespace workbench {
             cout << "hsv_px: " << hsv_px << endl;
             cout << "to rgb_px: " << hsv_px_2_rgb_px << endl;
             cout << endl;
+
+
+            // just for fun - chaining
+            GRAY rgb_px_chain = RGB(0, 100, 200).to<HSV>().to<RGB>().to<GRAY>();
+            cout << "chain: " << rgb_px_chain << endl;
+
+            cout << endl;
+
         }
 
 
@@ -193,7 +201,18 @@ namespace workbench {
         cout << "Image Functions" << endl << endl;
 
         {
-            // TODO we don't have these yet
+            Image<HSV> rgb_img_2_hsv_img = original.to<HSV>();
+            cout << "rgb_img.to<HSV>(): " << rgb_img_2_hsv_img << endl;
+            cout << ".at(0): " << rgb_img_2_hsv_img.at(0) << endl;
+
+            Image<GRAY> rgb_img_2_gray_img = original.to<GRAY>();
+            cout << "rgb_img.to<GRAY>(): " << rgb_img_2_gray_img << endl;
+            cout << ".at(0): " << rgb_img_2_gray_img.at(0) << endl;
+
+            Image<HSV> hsv_img = original.to<HSV>();
+            Image<RGB> hsv_img_2_rgb_img = hsv_img.to<RGB>(); 
+            cout << "hsv_img.to<RGB>(): " << hsv_img_2_rgb_img << endl;
+            cout << ".at(0): " << hsv_img_2_rgb_img.at(0) << endl;
         }
 
 
