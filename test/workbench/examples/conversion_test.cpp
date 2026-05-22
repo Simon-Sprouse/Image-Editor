@@ -22,25 +22,22 @@ namespace workbench {
     void conversionUsage(string image_path, Logger logger) { 
 
 
-        cout << "Call site testing for conversions" << endl;
-
-
         // ----------------
         // FREE functions
 
         // free functions scalar
         // names are esoteric on purpose. these are helpers for .to<Px>()
-        // RGB2HSV(const RGB& src)
-        // RGB2GRAY(const RGB& src)
-        // HSV2RGB(const HSV& src)
+        // RGB2HSV(const RGB& px)
+        // RGB2GRAY(const RGB& px)
+        // HSV2RGB(const HSV& px)
 
         // free functions vector
-        // RGB2HSV_simd_batcn(RGB* src, HSV* dest)
-        // HSV2RBG_simd_batch(HSV* src, RGB* src)
+        // RGB2HSV_simd(RGB* src, HSV* dest)
+        // HSV2RBG_simd(HSV* src, RGB* src)
         
         // vector with scalar tail
-        // RGB2HSV_simd(const Image<RGB>& original)
-        // HSV2RGB_simd(const Image<HSV>& original)
+        // toHSV_simd(const Image<HSV>& original)
+        // toRGB_simd(Image<RGB>& original)
         
         
         // ----------------------------------
@@ -55,23 +52,168 @@ namespace workbench {
         // IMAGE owned conversion functions
         // also need to make these nodiscard
 
-        // rgb_img.to<HSV>()
+        // rgb_img.to<HSV>() 
         // rgb_img.to<GRAY>()
         // hsv_img.to<RGB>()
 
-        // rgb_img.to_simd<HSV>()
+        // rgb_img.to_simd<HSV>() // add into to function with branching
         // hsv_img.to_simd<RGB>()
 
 
+        cout << endl;
+        cout << "Hello from Usage test" << endl << endl;
+
+        const Image<RGB> original = io::loadImageFileSystem(image_path);
+
+
+        // Scalar functions
+        cout << "--------------" << endl;
+        cout << "Free functions: 1a Scalar Pixel" << endl << endl;
+
+        // RGB2HSV() RGB2GRAY()
+        {
+            RGB rgb_px = RGB(42, 69, 210);
+            HSV rgb_px_2_hsv_px = RGB2HSV(rgb_px);
+            GRAY rgb_px_2_gray_px = RGB2GRAY(rgb_px);
+            cout << "rgb_px: " << rgb_px << endl;
+            cout << "to hsv px: " << rgb_px_2_hsv_px << endl;
+            cout << "to gray px: " << rgb_px_2_gray_px << endl;
+            cout << endl;
+        }
+
+        // HSV2RGB()
+        {
+            HSV hsv_px = HSV(1224, 255, 100);
+            RGB hsv_px_2_rgb_px = HSV2RGB(hsv_px);
+            cout << "hsv_px: " << hsv_px << endl;
+            cout << "to rgb_px: " << hsv_px_2_rgb_px << endl;
+            cout << endl;
+        }
+
+
+        // Vector functions
+        cout << "--------------" << endl;
+        cout << "Free functions: 1b Vector Pixel" << endl << endl;
+
+        // RGB2HSV_simd()
+        {
+            const RGB* rgb_ptr = original.data(); // todo make this .ptr()
+            Image<HSV> hsv_img_buf = Image<HSV>(original.size()); // todo original.copySize();
+            HSV* hsv_ptr = hsv_img_buf.data();
+            RGB2HSV_simd(rgb_ptr, hsv_ptr);
+            cout << "rgb_ptr (src): " << rgb_ptr << endl;
+            cout << "hsv px (dst): " << hsv_ptr << endl;
+
+            cout << "rgb data (src)" << endl;
+            for (int i = 0; i < 16; i++) { 
+                cout << rgb_ptr[i] << endl;
+            }
+            cout << "hsv data (cvt)" << endl;
+            for (int i = 0; i < 16; i++) { 
+                cout << hsv_ptr[i] << endl;
+            }
+            cout << endl;
+        }
+
+        // HSV2RGB_simd()
+        {
+            Image<HSV> hsv_img_buf = Image<HSV>(original.size()); // todo original.copySize();
+            HSV* hsv_ptr = hsv_img_buf.data();
+            RGB2HSV_simd(original.data(), hsv_ptr);
+
+            Image<RGB> rgb_img_buf = Image<RGB>(original.size());
+            RGB* rgb_ptr = rgb_img_buf.data();
+            HSV2RGB_simd(hsv_ptr, rgb_ptr);
+
+            cout << "hsv_ptr (src): " << hsv_ptr << endl;
+            cout << "rgb px (dst): " << rgb_ptr << endl;
+
+            cout << "hsv data (src)" << endl; // todo duplicated print functions
+            for (int i = 0; i < 16; i++) { 
+                cout << hsv_ptr[i] << endl;
+            }
+            cout << "rgb data (cvt)" << endl;
+            for (int i = 0; i < 16; i++) { 
+                cout << rgb_ptr[i] << endl;
+            }
+            cout << endl;
+        }
+
+
+        // Image functions
+        cout << "--------------" << endl;
+        cout << "Free functions: 1c Image" << endl << endl;
+
+        // todo consolidate toHSV() and toRGB() scalar functions with SIMD auto detect
+
+        // toHSV_simd()
+        {
+            Image<HSV> rgb_img_2_hsv_img = toHSV_simd(original);
+            cout << "rgb img -> hsv img" << endl;
+            cout << rgb_img_2_hsv_img << endl;
+            cout << endl;
+        }
+
+        // toRGB_simd()
+        {
+            Image<HSV> rgb_img_2_hsv_img = toHSV_simd(original);
+            Image<RGB> hsv_img_2_rgb_img = toRGB_simd(rgb_img_2_hsv_img);
+            cout << "hsv img -> rgb img" << endl;
+            cout << hsv_img_2_rgb_img << endl;
+            cout << endl;
+        }
+
+
+
+
+        // Struct Owned Functions
+        cout << "--------------" << endl;
+        cout << "Struct Functions" << endl << endl;
+
+        {
+            RGB rgb_px = RGB(42, 69, 210);
+            HSV rgb_px_2_hsv_px = rgb_px.toHsv();
+            GRAY rgb_px_2_gray_px = rgb_px.toGray();
+            cout << "rgb_px: " << rgb_px << endl;
+            cout << "to hsv px: " << rgb_px_2_hsv_px << endl;
+            cout << "to gray px: " << rgb_px_2_gray_px << endl;
+            cout << endl;
+
+            HSV hsv_px = HSV(1224, 255, 100);
+            RGB hsv_px_2_rgb_px = hsv_px.toRgba();
+            // TODO: COLOR PRINTING IN TERMINAL FOR OUR COLORS!!!!
+            cout << "hsv_px: " << hsv_px << endl;
+            cout << "to rgb_px: " << hsv_px_2_rgb_px << endl;
+            cout << endl;
+        }
+
+
+        // Image Ownded Functions
+        cout << "--------------" << endl;
+        cout << "Image Functions" << endl << endl;
+
+        {
+            // TODO we don't have these yet
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
         
-        
 
-
+        cout << endl;
     }
 
 
@@ -104,16 +246,18 @@ namespace workbench {
         }
 
         // OpenCV as gt for testing
-        cv::Mat rgb_mat_temp = io::imageToCvMat(rgb);
-        cv::Mat hsv_mat = cv::Mat(rgb_mat_temp.size(), CV_8UC3);
-        cv::cvtColor(rgb_mat_temp, hsv_mat, cv::COLOR_BGR2HSV);
+        cv::Mat rgb_mat_src = io::imageToCvMat(rgb);
+        cv::Mat hsv_mat_gt = cv::Mat(rgb_mat_src.size(), CV_8UC3);
+        cv::cvtColor(rgb_mat_src, hsv_mat_gt, cv::COLOR_BGR2HSV);
 
         // run tests
-        Image<HSV> hsv_dest_base = toHSV(rgb); // todo higher order call
-        hsvImageCorrectnessTest(hsv_dest_base, hsv_mat, tolerance);
+        cout << "test rgb->hsv base" << endl;
+        Image<HSV> hsv_test_base = toHSV(rgb); // todo higher order call
+        hsvImageCorrectnessTest(hsv_test_base, hsv_mat_gt, tolerance);
 
-        Image<HSV> hsv_dest_simd = toHSV_simd(rgb);
-        hsvImageCorrectnessTest(hsv_dest_simd, hsv_mat, tolerance);
+        cout << "test rgb->hsv simd" << endl;
+        Image<HSV> hsv_test_simd = toHSV_simd(rgb);
+        hsvImageCorrectnessTest(hsv_test_simd, hsv_mat_gt, tolerance);
 
         // todo test RGB -> GRAY
 
@@ -123,24 +267,32 @@ namespace workbench {
         
         int hsv_linear_size = 1536 * 256 * 256;
         Image<HSV> hsv = Image<HSV>(hsv_linear_size, 1);
+
+        int hsv_index = 0;
         for (int h = 0; h < 1536; h++) { 
             for (int s = 0; s < 256; s++) { 
                 for (int v = 0; v < 256; v++) { 
-
+                    hsv.setPixel(hsv_index, HSV(h, s, v));
+                    hsv_index++;
                 }
             }
         }
 
-        cv::Mat hsv_mat_temp = io::imageToCvMat(hsv);
-        cv::Mat rgb_mat = cv::Mat(hsv_mat_temp.size(), CV_8UC3);
-        cv::cvtColor(hsv_mat_temp, rgb_mat, cv::COLOR_HSV2RGB);
+        cv::Mat hsv_mat_src = io::imageToCvMat(hsv);
+        cv::Mat rgb_mat_gt = cv::Mat(hsv_mat_src.size(), CV_8UC3);
+        cv::cvtColor(hsv_mat_src, rgb_mat_gt, cv::COLOR_HSV2RGB);
 
+        // todo, these tests are bad because of low preceision on OpenCV's part
+        // the best fix is to use our already tested rgb conversion to backwards
+        // compare. Ie run hsv->rgb and compare (our rgb, our rgb(from conversion))
         // run tests
-        Image<RGB> rgb_dest_base = toRGB(hsv);
-        rgbImageCorrectnessTest(rgb_dest_base, rgb_mat, tolerance);
+        cout << "test hsv -> rgb base" << endl;
+        Image<RGB> rgb_test_base = toRGB(hsv);
+        rgbImageCorrectnessTest(rgb_test_base, rgb_mat_gt, tolerance);
 
-        Image<RGB> rgb_dest_simd = toRGB(hsv);
-        rgbImageCorrectnessTest(rgb_dest_simd, rgb_mat, tolerance);
+        cout << "test rgb -> hsv simd" << endl;
+        Image<RGB> rgb_test_simd = toRGB_simd(hsv);
+        rgbImageCorrectnessTest(rgb_test_simd, rgb_mat_gt, tolerance);
 
         cout << endl;
     }
@@ -279,14 +431,14 @@ namespace workbench {
 
         bool isValid = (test_h && test_s && test_v);
 
-        if (!isValid) { 
-            cout << "assertion failure hsv correctness" << endl;
-            cout << "expected: " 
-            << static_cast<int>(cv_h_normal*1535) << ", " 
-            << static_cast<int>(cv_s_normal*255) << ", "
-            << static_cast<int>(cv_v_normal*255) << endl;
-            cout << "got: " << test << endl;
-        }
+        // if (!isValid) { 
+        //     cout << "assertion failure hsv correctness" << endl;
+        //     cout << "expected: " 
+        //     << static_cast<int>(cv_h_normal*1535) << ", " 
+        //     << static_cast<int>(cv_s_normal*255) << ", "
+        //     << static_cast<int>(cv_v_normal*255) << endl;
+        //     cout << "got: " << test << endl;
+        // }
 
         return isValid;
 
@@ -310,14 +462,14 @@ namespace workbench {
 
         bool isValid = (r_diff < tolerance) && (g_diff < tolerance) && (b_diff < tolerance);
 
-        if (!isValid) { 
-            cout << "assertion failure hsv correctness" << endl;
-            cout << "expected: " 
-            << static_cast<int>(cv_r_normal*255) << ", " 
-            << static_cast<int>(cv_g_normal*255) << ", "
-            << static_cast<int>(cv_b_normal*255) << endl;
-            cout << "got: " << test << endl;
-        }
+        // if (!isValid) { 
+        //     cout << "assertion failure hsv correctness" << endl;
+        //     cout << "expected: " 
+        //     << static_cast<int>(cv_r_normal*255) << ", " 
+        //     << static_cast<int>(cv_g_normal*255) << ", "
+        //     << static_cast<int>(cv_b_normal*255) << endl;
+        //     cout << "got: " << test << endl;
+        // }
 
         return isValid;
 

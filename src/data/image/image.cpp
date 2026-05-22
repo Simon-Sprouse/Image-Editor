@@ -205,10 +205,10 @@ namespace image {
 
 
 
-    void RGB2HSV_simd(RGB* src, HSV* dest) { 
+    void RGB2HSV_simd(const RGB* src, HSV* dest) { 
 
         // LOAD
-        uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(src));
+        uint8x16x4_t load = vld4q_u8(reinterpret_cast<uint8_t*>(const_cast<RGB*>(src))); // const cast fine, not my api
         uint8x16_t r = load.val[0];
         uint8x16_t g = load.val[1];
         uint8x16_t b = load.val[2];
@@ -532,7 +532,7 @@ namespace image {
 
 
 
-    Image<HSV> toHSV_simd(Image<RGB>& original) { 
+    Image<HSV> toHSV_simd(const Image<RGB>& original) { 
 
         // todo now duplciated logic with toRGB_simd
         Image<HSV> hsv(original.size());

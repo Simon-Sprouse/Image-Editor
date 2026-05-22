@@ -93,13 +93,12 @@ namespace image::io {
     cv::Mat imageToCvMat(const Image<HSV>& source_image) { 
         cv::Mat dest_mat(source_image.getHeight(), source_image.getWidth(), CV_8UC3);
 
-        // todo band-aid fix
         for (int col = 0; col < source_image.getHeight(); col++) { 
             for (int row = 0; row < source_image.getWidth(); row++) { 
 
                 HSV px = source_image.at(row, col);
                 
-                double h_norm = static_cast<double>(px.h) / 1535;
+                double h_norm = static_cast<double>(px.h) / 1535.0f;
                 uint8_t cv_h = static_cast<uint8_t>(h_norm * 179);
                 bool valid_cv_h = (cv_h >= 0) && (cv_h < 180);
                 assert(valid_cv_h);

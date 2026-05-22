@@ -381,8 +381,8 @@ Image<GRAY> toGRAY(const Image<RGB>& original);
 void HSV2RGB_simd(HSV* ptr, RGB* dest);
 Image<RGB> toRGB_simd(Image<HSV>& original); // todo this should be const
 
-void RGB2HSV_simd(RGB* src, HSV* dest);
-Image<HSV> toHSV_simd(Image<RGB>& original);
+void RGB2HSV_simd(const RGB* src, HSV* dest); 
+Image<HSV> toHSV_simd(const Image<RGB>& original);
 
 
 
