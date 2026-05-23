@@ -1,6 +1,7 @@
 #include "conversion_test.hpp"
 #include "../../../src/data/image/image.hpp"
 #include "../../../src/data/image/primitives.hpp"
+#include "../../../src/data/image/pixel.hpp"
 #include "../../../src/data/image/io.hpp"
 #include <iostream>
 #include <vector>

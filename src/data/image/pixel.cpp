@@ -1,4 +1,4 @@
-#include "primitives.hpp"
+#include "pixel.hpp"
 #include <arm_neon.h>
 
 namespace image { 

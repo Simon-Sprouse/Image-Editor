@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "primitives.hpp"
+#include "pixel.hpp"
 #include "iterator.hpp"
 #include "../shapes/shapes.hpp"
 

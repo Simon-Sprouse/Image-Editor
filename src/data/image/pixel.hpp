@@ -1,0 +1,464 @@
+#pragma once
+
+#include <algorithm>
+#include <array>
+#include <iostream>
+
+using std::cout, std::endl;
+
+namespace image { 
+
+
+    // forward declare
+    struct RGB;
+    struct HSV;
+    struct GRAY;
+
+
+    struct RGB { 
+
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+        uint8_t a;
+
+        // === Default Constructor === 
+        RGB() : r(0), g(0), b(0), a(255) {}
+
+        // === uint8 Constructor ===
+        RGB(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) 
+            : r(red), g(green), b(blue), a(alpha) {}
+        explicit RGB(uint8_t value)
+            : RGB(value, value, value) {}
+
+        // === int Constructor ===
+        RGB(int red, int green, int blue, int alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGB(int value)
+            : RGB(value, value, value) {}
+
+        // === float Constructor ===
+        RGB(float red, float green, float blue, float alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGB(float value)
+            : RGB(value, value, value) {}
+
+        // === double Constructor ===
+        RGB(double red, double green, double blue, double alpha = 255) 
+            : r(clamp_8b(red)), g(clamp_8b(green)), b(clamp_8b(blue)), a(clamp_8b(alpha)) {}
+        explicit RGB(double value)
+            : RGB(value, value, value) {}
+
+
+        bool operator==(const RGB& other) const {
+            return r == other.r && g == other.g && b == other.b && a == other.a;
+        }
+
+        bool operator!=(const RGB& other) const {
+            return !(*this == other);
+        }
+
+
+        // todo shoul this really be abs? 
+        RGB operator-(const RGB& other) const { 
+
+
+            // cout << "hello from operator-" << endl;
+
+            // cout << "r:" << static_cast<int>(r) << " g:" << g << " b:" << b << " a:" << a << endl;
+            // cout << "other.r:" << static_cast<int>(other.r) << " other.b:" << other.b << " other.g" << other.g << " other.a" << other.a << endl;
+
+            // cout << "static_cast<int>(r) - static_cast<int>(other.r):" << static_cast<int>(r) - static_cast<int>(other.r) << endl;
+
+
+            return 
+                RGB(
+                    std::abs(r - other.r), 
+                    std::abs(g - other.g),
+                    std::abs(b - other.b), 
+                    std::abs(a - other.a)
+                );
+        }
+
+        bool operator<(const RGB& other) const {
+            return r < other.r && g < other.g && b < other.b && a < other.a;
+        }
+
+        // todo overload int<
+
+        template <typename Px>
+        Px to() const;
+
+
+
+
+        private:
+
+            // todo more elegant solution here: limits, widening, templatizing
+            static constexpr uint8_t clamp_8b(int value) { 
+                return static_cast<uint8_t>(std::clamp(value, 0, 255));
+            }
+
+
+    };
+    static_assert(sizeof(RGB) == 4);
+
+
+    struct HSV { 
+
+        uint16_t h;     // 0-1535
+        uint8_t s;      // 0-255 
+        uint8_t v;      // 0-255
+
+        HSV() : h(0), s(0), v(0) {}
+
+        HSV(uint16_t hue) 
+            : h(hue), s(255), v(255) {}
+
+        HSV(uint16_t hue, uint8_t saturation, uint8_t value)
+            : h(hue), s(saturation), v(value) {}
+
+
+
+        template<typename Px>
+        Px to() const;
+
+    };
+    static_assert(sizeof(HSV) == 4);
+
+
+    struct GRAY { 
+        uint8_t v;
+
+        GRAY() : v(0) {}
+        GRAY(uint8_t value) : v(value) {}
+
+    };
+    static_assert(sizeof(GRAY) == 1);
+
+
+    // todo MASK type
+
+
+
+
+
+
+    inline GRAY RGB2GRAY(const RGB& px) {
+
+        // todo clamp should solve this
+        uint8_t luminance = static_cast<uint8_t>(0.299 * px.r + 0.587 * px.g + 0.114 * px.b);
+        return GRAY(luminance);
+    }
+
+    // todo bit shift size is a footgun bc you need to shift at callsite
+    inline constexpr auto MAKE_RECIP() { 
+        std::array<uint16_t, 256> arr{};
+        arr[0] = 0;
+        arr[1] = 65535; // Q16 can't fit into uint16_t without truncation I think
+        for (int i = 2; i < 256; i++) { 
+            arr[i] = static_cast<uint16_t>((1u << 16) / i);
+        }
+        return arr;
+    }
+    inline constexpr auto RECIP = MAKE_RECIP();
+
+
+
+
+
+    // note I tried using a LUT with minimal performance gains. 
+    // todo can be SIMD optimized, no branches, blend statements, maybe LUT afterall? 
+    inline HSV RGB2HSV(const RGB& px) { 
+
+        uint8_t r = px.r;
+        uint8_t g = px.g;
+        uint8_t b = px.b;
+
+        uint8_t cmax = std::max<uint8_t>(r, std::max<uint8_t>(g, b));
+        uint8_t cmin = std::min<uint8_t>(r, std::min<uint8_t>(g, b));
+
+        uint8_t delta = cmax - cmin;
+
+        
+        uint8_t v = cmax;
+
+        // TODO we need these if not using LUT
+        // if(cmax == 0) return HSV();
+        // if (delta == 0) return HSV(0, 0, v);
+
+        // todo LUT is still probably slower in non-SIMD case
+        // uint8_t s = (uint8_t)(static_cast<uint16_t>(delta)*255/cmax); // (delta / cmax) * 256
+        uint16_t recip_cmax = RECIP[cmax];
+        uint8_t s = static_cast<uint8_t>((static_cast<uint32_t>(delta)*255*recip_cmax)>>16);
+
+
+        // OPTION 1
+        // int16_t h;
+        // if (cmax == r) { 
+        //     h = static_cast<int16_t>(g - b)*256/delta;
+        //     if (h < 0) h += 1536;
+        // }
+        // else if (cmax == g) { 
+        //     h = static_cast<int16_t>(b - r)*256/delta + 512;
+        // }
+        // else { 
+        //     h = static_cast<int16_t>(r - g)*256/delta + 1024;
+        // }
+        
+
+        // OPTION 2
+        // int16_t h;
+        // int16_t diff;
+        // uint16_t add;
+        //
+        // if (cmax == r) {
+        //     diff = static_cast<int16_t>(g - b);
+        //     add = 0;
+        // }
+        // else if (cmax == g) { 
+        //     diff = static_cast<int16_t>(b - r);
+        //     add = 512;
+        // }
+        // else { 
+        //     diff = static_cast<int16_t>(r - g);
+        //     add = 1024;
+        // }
+
+        // h = diff * 256 / delta + add;
+        // if (h < 0) { 
+        //     h += 1536;
+        // }
+
+
+        // OPTION 3
+        // uint16_t h;
+        // uint16_t x;
+        // uint16_t add;
+        //
+        // if (cmax == r) { 
+        //
+        //     if (b > g) { 
+        //         // 5
+        //         x = 256 - static_cast<uint16_t>(b - g)*256/delta;
+        //         add = 1280;
+        //     }
+        //     else { 
+        //         // 0
+        //         x = static_cast<uint16_t>(g - b)*256/delta;
+        //         add = 0;
+        //     }
+        // }
+        // else if (cmax == g) { 
+        //     if (r > b) { 
+        //         // 1
+        //         x = 256 - static_cast<uint16_t>(r - b)*256/delta;
+        //         add = 256;
+        //     }
+        //     else { 
+        //         // 2
+        //         x = static_cast<uint16_t>(b - r)*256/delta;
+        //         add = 512;
+        //     }
+        // }
+        // else { 
+        //     if (g > r) { 
+        //         // 3
+        //         x = 256 - static_cast<uint16_t>(g - r)*256/delta;
+        //         add = 768;
+        //     }
+        //     else { 
+        //         // 4
+        //         x = static_cast<uint16_t>(r - g)*256/delta;
+        //         add = 1024;
+        //     }
+        // }
+        // h = x + add;
+
+
+        uint16_t h;
+        uint16_t x;
+        uint16_t seg;
+        uint16_t diff;
+        bool odd;
+
+        if (cmax == r) { 
+
+            if (b > g) { 
+                // 5
+                odd = true;
+                diff = b - g;
+                seg = 5;
+            }
+            else { 
+                // 0
+                odd = false;
+                diff = g - b;
+                seg = 0;
+            }
+        }
+        else if (cmax == g) { 
+            if (r > b) { 
+                // 1
+                odd = true;
+                diff = r - b;
+                seg = 1;
+            }
+            else { 
+                // 2
+                odd = false;
+                diff = b - r;
+                seg = 2;
+            }
+        }
+        else { 
+            if (g > r) { 
+                // 3
+                odd = true;
+                diff = g - r;
+                seg = 3;
+            }
+            else { 
+                // 4
+                odd = false;
+                diff = r - g;
+                seg = 4;
+            }
+        }
+
+    
+
+        // x = static_cast<uint16_t>(diff)*256/delta;
+        // uint16_t gt = static_cast<uint16_t>(diff)*256/delta;
+
+        // todo: LUT is significantly slower for non-SIMD
+        uint16_t recip = RECIP[delta];
+        x = static_cast<uint32_t>(diff * 256) * recip >> 16; // todo is right shift + cast down redundant? 
+        x = static_cast<uint16_t>(x);
+        if (odd) { 
+            x = 256 - x;
+        }
+        uint16_t add = seg << 8;
+        h = x + add;
+
+
+
+
+        // cout << "px: " << (int)px.r << ", " << (int)px.g << ", " << (int)px.b << endl;
+        // cout << "diff: " << (int)diff << endl;
+        // cout << "(diff*256): " << (int)(diff*256) << endl;
+        // cout << "delta: " << (int)delta << endl;
+        // cout << "RECIP[delta]: " << (int)RECIP[delta] << endl;
+        // cout << "(diff*256) * RECIP[delta]: " << (int)(diff*256*RECIP[delta]) << endl;
+        // cout << "[(diff*256) * RECIP[delta]]>>16: " << (int)((diff*256*RECIP[delta])>>16) << endl;
+        // cout << "gt: " << (int)gt << endl;
+        // cout << endl;
+
+
+      
+
+        return HSV((uint16_t)h, s, v);
+    }
+
+    
+    // todo move these to .cpp files
+    inline RGB HSV2RGB(const HSV& px) { 
+
+        uint8_t seg = px.h >> 8;
+        uint8_t off = px.h & 0xFF;
+
+        uint8_t cmax = px.v;
+        uint8_t delta = (uint8_t)((uint16_t)(px.v * px.s) >> 8);
+        uint8_t cmin = cmax - delta;
+
+        uint8_t fall = cmax - (uint8_t)((uint16_t)(delta * off) >> 8);
+        uint8_t rise = cmin + (uint8_t)((uint16_t)(delta * off) >> 8);
+
+        switch (seg) {
+            case 0: return RGB(cmax, rise, cmin);
+            case 1: return RGB(fall, cmax, cmin);
+            case 2: return RGB(cmin, cmax, rise);
+            case 3: return RGB(cmin, fall, cmax);
+            case 4: return RGB(rise, cmin, cmax);
+            case 5: return RGB(cmax, cmin, fall);
+            default: return RGB();
+        }
+
+    }
+
+    
+
+
+
+
+
+
+
+
+    void HSV2RGB_simd(const HSV* ptr, RGB* dest);
+    void RGB2HSV_simd(const RGB* src, HSV* dest); 
+
+
+
+
+
+
+    // todo add converter<to, from> eventually for cleaner routing
+    template<>
+    inline HSV RGB::to<HSV>() const { 
+        return RGB2HSV(*this);
+    }
+
+    template<>
+    inline GRAY RGB::to<GRAY>() const {
+        return RGB2GRAY(*this);
+    }
+
+    template<>
+    inline RGB HSV::to<RGB>() const {
+        return HSV2RGB(*this);
+    }
+
+
+
+
+    // Stream operator for RGB
+    inline std::ostream& operator<<(std::ostream& os, const RGB& color) {
+
+        os << "rgb[" << static_cast<int>(color.r) << ", "
+                    << static_cast<int>(color.g) << ", "
+                    << static_cast<int>(color.b) << ", "
+                    << static_cast<int>(color.a) << "]";
+
+
+        return os;
+    }
+
+
+    // Stream operator for HSV
+    inline std::ostream& operator<<(std::ostream& os, const HSV& color) {
+
+        os << "hsv[" << static_cast<int>(color.h) << ", "
+                    << static_cast<int>(color.s) << ", "
+                    << static_cast<int>(color.v) << "]";
+
+
+        return os;
+    }
+
+    // Stream operator for GRAY
+    inline std::ostream& operator<<(std::ostream& os, const GRAY& color) {
+
+        os << "gray[" << static_cast<int>(color.v) << "]";
+
+        return os;
+    }
+
+
+
+
+
+
+
+
+}
