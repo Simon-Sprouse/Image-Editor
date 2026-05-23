@@ -41,6 +41,7 @@ add_executable(mosaic_tiler
     ../test/workbench/workbench_main.cpp
     ../test/workbench/logger.cpp
     ../test/workbench/examples/conversion_test.cpp
+    ../test/workbench/examples/color_map_test.cpp
 
 
     ../test/workbench/examples/iterator_examples.cpp
