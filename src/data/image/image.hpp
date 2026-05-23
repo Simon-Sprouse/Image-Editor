@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "primitives.hpp"
+#include "pixel.hpp"
 #include "iterator.hpp"
 #include "../shapes/shapes.hpp"
 
@@ -72,6 +73,7 @@ class Image {
 
     int getLinearIndex(Point pt) const;
     int getLinearIndex(int x, int y) const;
+    Size reverseLinearIndex(int i) const;
 
     // TODO think about literal iterator overload
     // TODO cbegin() and cend() ? cdata()?
@@ -93,6 +95,9 @@ class Image {
     // RegionRowIterator regionRows(Point tl, int dx, int dy);
     // const ConstRegionRowIterator regionRows(const Point& tl, int dx, int dy) const;
     // RegionIterator region(Point tl, int dx, int dy);
+
+    template<typename To_Px>
+    Image<To_Px> to() const;
 
 
     private:
@@ -186,6 +191,14 @@ int Image<Px>::getLinearIndex(Point pt) const {
 template <typename Px>
 int Image<Px>::getLinearIndex(int x, int y) const { 
     return y * width_ + x;
+}
+
+// todo name is misleading?
+template <typename Px>
+Size Image<Px>::reverseLinearIndex(int i) const { 
+    int y = i / width_;
+    int x = i - (y * width_);
+    return Size(x, y);
 }
 
 template <typename Px>
@@ -364,14 +377,63 @@ inline std::ostream& operator<<(std::ostream& os, const Image<Px>& image) {
 
 
 
-Image<HSV> toHSV(const Image<RGBA>& original);
-Image<RGBA> toRGBA(const Image<HSV>& original);
-Image<GRAY> toGRAY(const Image<RGBA>& original);
+
+
+// todo converter pattern
+template<>
+template<>
+inline Image<HSV> Image<RGB>::to<HSV>() const { 
+
+
+    // TODO determine if we use SIMD based on benchmarks + image size
+
+    Image<HSV> hsv(this->size());
+    int linear_size = this->linearSize();
+    int num_ops = linear_size / 16;
+    int tail_ops = linear_size - (16 * num_ops);
+
+    for (int i = 0; i < linear_size; i += 16) { 
+        RGB2HSV_simd(this->data() + i, hsv.data() + i);
+    }
+    for (int i = 0; i < tail_ops; i++) { 
+        hsv.setPixel(i, this->at(i).to<HSV>());
+    }
+    return hsv;
+}
+
+template<>
+template<>
+inline Image<GRAY> Image<RGB>::to<GRAY>() const { 
+    Image<GRAY> gray(this->size());
+        for (int i = 0; i < this->linearSize(); i++) { 
+            gray.setPixel(i, this->at(i).to<GRAY>());
+        }
+    return gray;
+}
+
+template<>
+template<>
+inline Image<RGB> Image<HSV>::to<RGB>() const {
+
+
+    Image<RGB> rgb(this->size());
+    int linear_size = this->linearSize();
+    int num_ops = linear_size / 16;
+    int tail_ops = linear_size - (16 * num_ops);
 
 
 
+    for (int i = 0; i < linear_size; i += 16) { 
+        HSV2RGB_simd(this->data() + i, rgb.data() + i);
+    }
+    for (int i = 0; i < tail_ops; i++) { 
+        rgb.setPixel(i, this->at(i).to<RGB>());
+    }
+    return rgb;
 
 
+
+}
 
 
 

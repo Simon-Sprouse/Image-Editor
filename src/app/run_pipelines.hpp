@@ -5,10 +5,10 @@ using namespace image;
 
 namespace app {
 
-    ImageResult runMosaic(const Image<RGBA>& image);
-    ImageResult runPopArt(const Image<RGBA>& image);
-    ImageResult runPopArtSlow(const Image<RGBA>& image);
-    ImageResult runGrid(const Image<RGBA>& image);
-    ImageResult runPixelate(const Image<RGBA>& image);
+    ImageResult runMosaic(const Image<RGB>& image);
+    ImageResult runPopArt(const Image<RGB>& image);
+    ImageResult runPopArtSlow(const Image<RGB>& image);
+    ImageResult runGrid(const Image<RGB>& image);
+    ImageResult runPixelate(const Image<RGB>& image);
 
 }

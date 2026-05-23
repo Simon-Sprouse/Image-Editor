@@ -29,7 +29,7 @@ namespace {
 
 namespace draw::line { 
 
-    void drawCol(Image<RGBA>& image, int col_index, const RGBA& color, int thickness) {
+    void drawCol(Image<RGB>& image, int col_index, const RGB& color, int thickness) {
 
     
         int start_col = std::max(0, col_index - thickness/2);
@@ -43,7 +43,7 @@ namespace draw::line {
 
 
 
-    void drawRow(Image<RGBA>& image, int row_index, const RGBA& color, int thickness) {
+    void drawRow(Image<RGB>& image, int row_index, const RGB& color, int thickness) {
 
         int start_row = std::max(0, row_index - (thickness/2));
         int end_row = std::min(image.getHeight()-1, start_row + (thickness-1));

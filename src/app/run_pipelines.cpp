@@ -28,7 +28,7 @@ namespace app {
     ---------------
     */
 
-    ImageResult runMosaic(const Image<RGBA>& image) { 
+    ImageResult runMosaic(const Image<RGB>& image) { 
 
         mosaic_gen::Parameters params;
         params.resize_factor = 0.5;
@@ -77,7 +77,7 @@ namespace app {
     ---------------
     */
 
-    ImageResult runPopArt(const Image<RGBA>& image) { 
+    ImageResult runPopArt(const Image<RGB>& image) { 
 
         pop_art::Parameters params;
         params.num_splits = 4;
@@ -94,7 +94,7 @@ namespace app {
 
     }
 
-    ImageResult runPopArtSlow(const Image<RGBA>& image) { 
+    ImageResult runPopArtSlow(const Image<RGB>& image) { 
 
         pop_art::Parameters params;
         params.num_splits = 4;
@@ -111,7 +111,7 @@ namespace app {
 
     }
 
-    ImageResult runGrid(const Image<RGBA>& image) { 
+    ImageResult runGrid(const Image<RGB>& image) { 
 
         seq_common seq_x;
         seq_x.mode = seq_mode::uniform;
@@ -149,7 +149,7 @@ namespace app {
     }
 
 
-    ImageResult runPixelate(const Image<RGBA>& image) { 
+    ImageResult runPixelate(const Image<RGB>& image) { 
 
         seq_common seq_x;
         seq_x.mode = seq_mode::uniform;

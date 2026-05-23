@@ -12,7 +12,7 @@ namespace app {
 
 
     struct ImageResult { 
-        Image<RGBA> image;
+        Image<RGB> image;
         string label;
 
         bool empty() const {return image.empty();}

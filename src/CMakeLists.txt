@@ -4,6 +4,8 @@ project(MosaicTiler)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set (CMAKE C_COMPILER "clang" CACHE STRING "" FORCE)
+set(CMAKE CXX_COMPILER "clang++" CACHE STRING "" FORCE)
 
 
 find_package(OpenCV REQUIRED)
@@ -14,7 +16,8 @@ add_executable(mosaic_tiler
     app/run_pipelines.cpp
     app/app.cpp
     
-    data/image/image.cpp
+
+    data/image/pixel.cpp
     data/image/io.cpp
 
     pipelines/mosaic/mosaic.cpp
@@ -37,11 +40,13 @@ add_executable(mosaic_tiler
 
     ../test/workbench/workbench_main.cpp
     ../test/workbench/logger.cpp
+    ../test/workbench/examples/conversion_test.cpp
+
+
     ../test/workbench/examples/iterator_examples.cpp
     ../test/workbench/examples/pipeline_workbench.cpp
     ../test/workbench/examples/functions_workbench.cpp
     ../test/workbench/examples/variants_workbench.cpp
-    ../test/workbench/examples/image_workbench.cpp
     ../test/unit/unit_test_main.cpp
     ../test/unit/tests/iterator_unit_test.cpp
     

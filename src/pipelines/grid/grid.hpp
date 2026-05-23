@@ -20,8 +20,8 @@ struct Parameters {
 };
 
 struct Cache { 
-    Image<RGBA> original;
-    Image<RGBA> canvas;
+    Image<RGB> original;
+    Image<RGB> canvas;
     Axis_Table ax;
 };
 
@@ -44,7 +44,7 @@ class Grid {
     private: 
         Parameters params;
 
-        void drawGridLines(Image<RGBA>& canvas, const Axis_Table& ax);
+        void drawGridLines(Image<RGB>& canvas, const Axis_Table& ax);
 
 
 };

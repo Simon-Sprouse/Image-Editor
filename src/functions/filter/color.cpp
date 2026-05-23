@@ -14,7 +14,7 @@ namespace filter::color {
 
     // todo maybe extend this function to take a vector (although this implies copy in caller syntax)
     // todo maybe perform sampling of grid pixels not whole image
-    RGBA avgColor(const Image<RGBA>& image, const Rect& rect) { 
+    RGB avgColor(const Image<RGB>& image, const Rect& rect) { 
 
         
         // todo get iterator to work with const image and const point
@@ -34,21 +34,21 @@ namespace filter::color {
             }
         }
         int num_pixels = rect.dx * rect.dy;
-        return RGBA(total_r / num_pixels, total_g / num_pixels, total_b / num_pixels);
+        return RGB(total_r / num_pixels, total_g / num_pixels, total_b / num_pixels);
 
     }
 
 
 
 
-    void toGrayscale(const Image<RGBA>& src, Image<GRAY>& dest) { 
+    void toGrayscale(const Image<RGB>& src, Image<GRAY>& dest) { 
 
         dest = Image<GRAY>(src.size());  
 
         // todo index iterator
         // todo subscript operator [] for image
         for (int i = 0; i < dest.linearSize(); i++) { 
-            dest.setPixel(i, src.at(i).toGray());
+            dest.setPixel(i, src.at(i).to<GRAY>());
         }
         
     }
@@ -58,19 +58,19 @@ namespace filter::color {
 
 
     // TODO this will be removed at some point
-    void toGrayscale(const Image<RGBA>& src, Image<RGBA>& dest) { 
+    void toGrayscale(const Image<RGB>& src, Image<RGB>& dest) { 
 
-        dest = Image<RGBA>(src.size());  
+        dest = Image<RGB>(src.size());  
 
         for (int y = 0; y < src.getHeight(); ++y) {
             for (int x = 0; x < src.getWidth(); ++x) {
-                const RGBA& pixel = src.at(x, y);
+                const RGB& pixel = src.at(x, y);
 
                 // Compute luminance (grayscale intensity)
                 uint8_t gray = static_cast<uint8_t>(
                     0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b
                 );
-                RGBA new_pixel(gray);
+                RGB new_pixel(gray);
                 dest.setPixel(x, y, new_pixel);
             }
         }

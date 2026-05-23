@@ -12,7 +12,7 @@ using namespace image;
 namespace Graphics { 
 
 
-    void drawLine(Image<RGBA>& image, const Point& point_a, const Point& point_b, int thickness, const RGBA& color) {
+    void drawLine(Image<RGB>& image, const Point& point_a, const Point& point_b, int thickness, const RGB& color) {
         if (thickness <= 0) return;
     
         int x0 = point_a.x;
@@ -51,7 +51,7 @@ namespace Graphics {
     }
 
 
-    void drawArrow(Image<RGBA>& image, const Point& center, int length, int thickness, double angle_deg, const RGBA& color) {
+    void drawArrow(Image<RGB>& image, const Point& center, int length, int thickness, double angle_deg, const RGB& color) {
         if (image.empty()) {
             std::cerr << "drawArrow: Input image is empty." << std::endl;
             return;
@@ -96,7 +96,7 @@ namespace Graphics {
     
 
 
-    void drawFilledPolygon(Image<RGBA>& image, const std::vector<Point>& polygon, const RGBA& color) {
+    void drawFilledPolygon(Image<RGB>& image, const std::vector<Point>& polygon, const RGB& color) {
         if (polygon.size() < 3) return;
     
         // Find vertical bounds of the polygon
@@ -147,7 +147,7 @@ namespace Graphics {
 
 
 
-    void drawSquare(Image<RGBA>& image, const Point& center, double size, double angle_deg, const RGBA& color, int border_width) {
+    void drawSquare(Image<RGB>& image, const Point& center, double size, double angle_deg, const RGB& color, int border_width) {
         if (size <= 0 || border_width < 0) {
             std::cerr << "drawSquare: Invalid size or border width.\n";
             return;
@@ -232,7 +232,7 @@ namespace Graphics {
 
 
 
-    void drawStroke(Image<RGBA>& image, const std::vector<Point>& stroke, const RGBA& color) {
+    void drawStroke(Image<RGB>& image, const std::vector<Point>& stroke, const RGB& color) {
         for (const Point& pt : stroke) {
             if (pt.y >= 0 && pt.y < image.getHeight() && pt.x >= 0 && pt.x < image.getWidth()) {
                 image.setPixel(pt.x, pt.y, color);
@@ -241,13 +241,13 @@ namespace Graphics {
     }
 
 
-    void drawStrokesRandomColor(Image<RGBA>& image, const std::vector<std::vector<Point>>& strokes) { 
+    void drawStrokesRandomColor(Image<RGB>& image, const std::vector<std::vector<Point>>& strokes) { 
 
-        std::vector<image::RGBA> colors_used;
+        std::vector<image::RGB> colors_used;
         
 
         for (std::vector<Point> stroke : strokes) { 
-            RGBA color;
+            RGB color;
             do {
                 color = random_gen::randomColor();
             } while (std::find(colors_used.begin(), colors_used.end(), color) != colors_used.end());
