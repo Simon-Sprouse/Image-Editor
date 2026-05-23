@@ -376,34 +376,62 @@ inline std::ostream& operator<<(std::ostream& os, const Image<Px>& image) {
 
 
 
-Image<HSV> toHSV(const Image<RGB>& original);
-Image<RGB> toRGB(const Image<HSV>& original);
-Image<GRAY> toGRAY(const Image<RGB>& original);
 
-
-void HSV2RGB_simd(const HSV* ptr, RGB* dest);
-Image<RGB> toRGB_simd(const Image<HSV>& original); // todo this should be const
-
-void RGB2HSV_simd(const RGB* src, HSV* dest); 
-Image<HSV> toHSV_simd(const Image<RGB>& original);
 
 // todo converter pattern
 template<>
 template<>
 inline Image<HSV> Image<RGB>::to<HSV>() const { 
-    return toHSV_simd(*this);
+
+
+    // TODO determine if we use SIMD based on benchmarks + image size
+
+    Image<HSV> hsv(this->size());
+    int linear_size = this->linearSize();
+    int num_ops = linear_size / 16;
+    int tail_ops = linear_size - (16 * num_ops);
+
+    for (int i = 0; i < linear_size; i += 16) { 
+        RGB2HSV_simd(this->data() + i, hsv.data() + i);
+    }
+    for (int i = 0; i < tail_ops; i++) { 
+        hsv.setPixel(i, this->at(i).to<HSV>());
+    }
+    return hsv;
 }
 
 template<>
 template<>
 inline Image<GRAY> Image<RGB>::to<GRAY>() const { 
-    return toGRAY(*this);
+    Image<GRAY> gray(this->size());
+        for (int i = 0; i < this->linearSize(); i++) { 
+            gray.setPixel(i, this->at(i).to<GRAY>());
+        }
+    return gray;
 }
 
 template<>
 template<>
 inline Image<RGB> Image<HSV>::to<RGB>() const {
-    return toRGB_simd(*this);
+
+
+    Image<RGB> rgb(this->size());
+    int linear_size = this->linearSize();
+    int num_ops = linear_size / 16;
+    int tail_ops = linear_size - (16 * num_ops);
+
+
+
+    for (int i = 0; i < linear_size; i += 16) { 
+        HSV2RGB_simd(this->data() + i, rgb.data() + i);
+    }
+    for (int i = 0; i < tail_ops; i++) { 
+        rgb.setPixel(i, this->at(i).to<RGB>());
+    }
+    return rgb;
+
+
+
 }
 
 

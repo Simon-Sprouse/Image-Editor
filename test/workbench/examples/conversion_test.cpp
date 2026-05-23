@@ -1,5 +1,6 @@
 #include "conversion_test.hpp"
 #include "../../../src/data/image/image.hpp"
+#include "../../../src/data/image/primitives.hpp"
 #include "../../../src/data/image/io.hpp"
 #include <iostream>
 #include <vector>
@@ -35,11 +36,7 @@ namespace workbench {
         // RGB2HSV_simd(RGB* src, HSV* dest)
         // HSV2RBG_simd(HSV* src, RGB* src)
         
-        // vector with scalar tail
-        // toHSV_simd(const Image<HSV>& original)
-        // toRGB_simd(Image<RGB>& original)
-        
-        
+
         // ----------------------------------
         // STRUCT owned conversion functions
         // need to make these nodiscard
@@ -140,28 +137,6 @@ namespace workbench {
         }
 
 
-        // Image functions
-        cout << "--------------" << endl;
-        cout << "Free functions: 1c Image" << endl << endl;
-
-        // todo consolidate toHSV() and toRGB() scalar functions with SIMD auto detect
-
-        // toHSV_simd()
-        {
-            Image<HSV> rgb_img_2_hsv_img = toHSV_simd(original);
-            cout << "rgb img -> hsv img" << endl;
-            cout << rgb_img_2_hsv_img << endl;
-            cout << endl;
-        }
-
-        // toRGB_simd()
-        {
-            Image<HSV> rgb_img_2_hsv_img = toHSV_simd(original);
-            Image<RGB> hsv_img_2_rgb_img = toRGB_simd(rgb_img_2_hsv_img);
-            cout << "hsv img -> rgb img" << endl;
-            cout << hsv_img_2_rgb_img << endl;
-            cout << endl;
-        }
 
 
 
@@ -180,7 +155,7 @@ namespace workbench {
             cout << endl;
 
             HSV hsv_px = HSV(1224, 255, 100);
-            RGB hsv_px_2_rgb_px = hsv_px.toRgba();
+            RGB hsv_px_2_rgb_px = hsv_px.to<RGB>();
             // TODO: COLOR PRINTING IN TERMINAL FOR OUR COLORS!!!!
             cout << "hsv_px: " << hsv_px << endl;
             cout << "to rgb_px: " << hsv_px_2_rgb_px << endl;
@@ -269,13 +244,17 @@ namespace workbench {
         cv::Mat hsv_mat_gt = cv::Mat(rgb_mat_src.size(), CV_8UC3);
         cv::cvtColor(rgb_mat_src, hsv_mat_gt, cv::COLOR_BGR2HSV);
 
-        // run tests
-        cout << "test rgb->hsv base" << endl;
-        Image<HSV> hsv_test_base = toHSV(rgb); // todo higher order call
-        hsvImageCorrectnessTest(hsv_test_base, hsv_mat_gt, tolerance);
+        // Test scalar conversion (NOTE - not supported as API)
+        cout << "test rgb->hsv scalar" << endl;
+        Image<HSV> hsv_test_scalar = Image<HSV>(rgb.size()); // todo copySize()
+        for (int i = 0; i < hsv_test_scalar.linearSize(); i++) { 
+            hsv_test_scalar.setPixel(i, rgb.at(i).to<HSV>());
+        }
+        hsvImageCorrectnessTest(hsv_test_scalar, hsv_mat_gt, tolerance);
 
+        // Test simd conversion
         cout << "test rgb->hsv simd" << endl;
-        Image<HSV> hsv_test_simd = toHSV_simd(rgb);
+        Image<HSV> hsv_test_simd = rgb.to<HSV>();
         hsvImageCorrectnessTest(hsv_test_simd, hsv_mat_gt, tolerance);
 
         // todo test RGB -> GRAY
@@ -301,16 +280,20 @@ namespace workbench {
         cv::Mat rgb_mat_gt = cv::Mat(hsv_mat_src.size(), CV_8UC3);
         cv::cvtColor(hsv_mat_src, rgb_mat_gt, cv::COLOR_HSV2RGB);
 
+        // Test Scalar conversion (NOTE - not supported as API)
         // todo, these tests are bad because of low preceision on OpenCV's part
         // the best fix is to use our already tested rgb conversion to backwards
         // compare. Ie run hsv->rgb and compare (our rgb, our rgb(from conversion))
         // run tests
         cout << "test hsv -> rgb base" << endl;
-        Image<RGB> rgb_test_base = toRGB(hsv);
-        rgbImageCorrectnessTest(rgb_test_base, rgb_mat_gt, tolerance);
+        Image<RGB> rgb_test_scalar = Image<RGB>(hsv.size());
+        for (int i = 0; i < rgb_test_scalar.linearSize(); i++) { 
+            rgb_test_scalar.setPixel(i, hsv.at(i).to<RGB>());
+        }
+        rgbImageCorrectnessTest(rgb_test_scalar, rgb_mat_gt, tolerance);
 
         cout << "test rgb -> hsv simd" << endl;
-        Image<RGB> rgb_test_simd = toRGB_simd(hsv);
+        Image<RGB> rgb_test_simd = hsv.to<RGB>();
         rgbImageCorrectnessTest(rgb_test_simd, rgb_mat_gt, tolerance);
 
         cout << endl;
@@ -332,7 +315,7 @@ namespace workbench {
         // Set up Images before tests
         Image<RGB> original = io::loadImageFileSystem(image_path);
         Image<RGB> rgb_src = original.clone();
-        Image<HSV> hsv_src = toHSV(original);
+        Image<HSV> hsv_src = rgb_src.to<HSV>();
         Image<RGB> rgb_dest(original.size());
         Image<HSV> hsv_dest(original.size());
 
@@ -368,14 +351,16 @@ namespace workbench {
         // Base
         logger.start(base_2_hsv_test);
         for (int i = 0; i < num_iterations; i++) {
-            hsv_dest = toHSV(rgb_src);
+            for (int j = 0; j < rgb_src.linearSize(); j++) { 
+                hsv_dest.setPixel(j, rgb_src.at(j).to<HSV>());
+            }
         }
         logger.stop(base_2_hsv_test, hsv_dest);
 
         // SIMD todo - bug seems to be different visually from base
         logger.start(simd_2_hsv_test);
         for (int i = 0; i < num_iterations; i++) { 
-            hsv_dest = toHSV_simd(rgb_src);
+            hsv_dest = rgb_src.to<HSV>();
         }
         logger.stop(simd_2_hsv_test, hsv_dest);
 
@@ -398,14 +383,16 @@ namespace workbench {
         // Base
         logger.start(base_2_rgb_test);
         for (int i = 0; i < num_iterations; i++) {
-            rgb_dest = toRGB(hsv_src);
+            for (int j = 0; j < hsv_src.linearSize(); j++) { 
+                rgb_dest.setPixel(j, hsv_src.at(j).to<RGB>());
+            }
         }
         logger.stop(base_2_rgb_test, rgb_dest);
 
         // SIMD
         logger.start(simd_2_rgb_test);
         for (int i = 0; i < num_iterations; i++) { 
-            rgb_dest = toRGB_simd(hsv_src);
+            rgb_dest = hsv_src.to<RGB>();
         }
         logger.stop(simd_2_rgb_test, rgb_dest);
 

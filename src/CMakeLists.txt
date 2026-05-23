@@ -16,7 +16,8 @@ add_executable(mosaic_tiler
     app/run_pipelines.cpp
     app/app.cpp
     
-    data/image/image.cpp
+
+    data/image/primitives.cpp
     data/image/io.cpp
 
     pipelines/mosaic/mosaic.cpp

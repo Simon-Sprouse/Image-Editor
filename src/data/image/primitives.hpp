@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <array>
 #include <iostream>
 
 using std::cout, std::endl;
@@ -90,8 +91,6 @@ namespace image {
         template <typename Px>
         Px to() const;
 
-        HSV toHsv() const;
-        GRAY toGray() const;
 
 
 
@@ -122,8 +121,6 @@ namespace image {
             : h(hue), s(saturation), v(value) {}
 
 
-        // todo need way more of these
-        RGB toRgba() const;
 
         template<typename Px>
         Px to() const;
@@ -447,12 +444,6 @@ namespace image {
 
 
 
-
-    // struct HSV { 
-    //      uint16_t H; // 0-1535
-    // 	    uint8_t S; // 0-255
-    // 	    uint8_t V; // 0-255
-    // }
     inline RGB HSV2RGB(const HSV& px) { 
 
         uint8_t seg = px.h >> 8;
@@ -486,23 +477,13 @@ namespace image {
 
 
 
+    void HSV2RGB_simd(const HSV* ptr, RGB* dest);
+    void RGB2HSV_simd(const RGB* src, HSV* dest); 
 
 
 
 
 
-
-    inline HSV RGB::toHsv() const {
-        return RGB2HSV(*this);
-    }
-
-    inline GRAY RGB::toGray() const { 
-        return RGB2GRAY(*this);
-    }
-
-    inline RGB HSV::toRgba() const { 
-        return HSV2RGB(*this);
-    }
 
     // todo add converter<to, from> eventually for cleaner routing
     template<>
@@ -678,37 +659,6 @@ namespace image {
         os << "vec2d[" << vec.x << ", " << vec.y << "]";
         return os;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
