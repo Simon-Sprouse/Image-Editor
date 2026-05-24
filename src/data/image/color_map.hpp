@@ -41,8 +41,8 @@ namespace image {
         }
         HSV frac(int i, int total) { 
             // todo: input validation i <= total
-            float track_pos = (static_cast<float>(i) / total) * N;
-            cout << "track_pos: " << track_pos << endl;
+            float track_pos = (static_cast<float>(i) / (total-1)) * N;
+            // cout << "track_pos: " << track_pos << endl;
             return lut[static_cast<int>(track_pos)];
         }
 
@@ -53,6 +53,7 @@ namespace image {
         int N;
     };
 
+    
 
 
     // todo: move to cpp
@@ -69,8 +70,9 @@ namespace image {
             // todo define multiplication and addition at struct level
             // determine coefficients for blending
             // new_color = (w_0 * color_0) + (w_1 * color_1)
-            float w_0 = static_cast<float>(num_steps - i) / num_steps;
-            float w_1 = 1.0f - w_0;
+            float w_1 = static_cast<float>(i) / (num_steps-1);
+            float w_0 = 1 - w_1;
+            // cout << "w0:" << w_0 << " w1:" << w_1 << endl;
 
             // HSV new_color = (w_0 * color_0) + (w_1 * color_1);
             HSV new_color = HSV(
@@ -89,33 +91,40 @@ namespace image {
     }
 
 
+
+    int getIdxFromXPos(float x_pos, int N) { 
+        int idx = static_cast<int>(x_pos * N);
+        if (idx > N-1) { 
+            idx = N-1;
+        }
+        return idx;
+    }
+
+
     Color_Map::Color_Map(vector<Color_Stop> _stops, int _N) : stops(_stops), N(_N) { 
 
         // todo: input validation, must have at least two stops
-        // todo: are stops already sorted by x_pos? 
 
         lut.reserve(N);
 
-        for (int i = 0; i < stops.size() - 1; i++) { 
-            Color_Stop current_stop = stops.at(i);
-            Color_Stop next_stop = stops.at(i + 1);
+        std::sort(
+            stops.begin(), 
+            stops.end(), 
+            [](Color_Stop lhs, Color_Stop rhs) { return lhs.x_pos < rhs.x_pos; }
+        );
 
-            int starting_pos = static_cast<int>(N * current_stop.x_pos);
 
-            float track_distance = next_stop.x_pos - current_stop.x_pos; // between 0.0 and 1.0
-            int num_elements_for_segment = static_cast<int>(N * track_distance);
-            vector<HSV> lut_elements = lerpMulti(current_stop.color, next_stop.color, num_elements_for_segment);
-
-            std::memcpy(lut.data() + starting_pos, lut_elements.data(), num_elements_for_segment * sizeof(HSV));
-
+        for (int i = 0; i < stops.size()-1; i++) { 
+            int current_idx = getIdxFromXPos(stops.at(i).x_pos, N);
+            int next_idx = getIdxFromXPos(stops.at(i+1).x_pos, N);
+            int num_elements = (next_idx - current_idx) + 1;
+            if (num_elements == 1) { 
+                continue;
+            }
+            vector<HSV> lerp_elements = lerpMulti(stops.at(i).color, stops.at(i+1).color, num_elements);
+            std::memcpy(lut.data() + current_idx, lerp_elements.data(), num_elements * sizeof(HSV));
         }
-
-
-
+        
     } 
-
-
-
-
 
 }
