@@ -19,113 +19,42 @@ namespace workbench {
 
         cout << "hello from color map usage" << endl;
 
-        Color_Stop my_color_stop = Color_Stop{HSV(777, 255, 255), 0.73f};
+        
 
+        HSV color_0(900, 255, 127);
+        HSV color_1(700, 255, 255);
 
+        Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
+        Color_Stop stop_1 = Color_Stop(color_1, 1.0f);
 
-        {
-        HSV c0(900, 255, 127);
-        HSV c1(700, 255, 255);
-
-        std::array<HSV, 100> arr;
-
-        for (int i = 0; i < arr.size(); i++) { 
-            float pct_0 = (float)(arr.size() - i) / arr.size();
-            float pct_1 = (float)i / arr.size();
-
-            cout << "i: " << i << "   p0:" << pct_0 << "   p1:" << pct_1 << endl;
-        }
-
-
-        for (int i = 0; i < arr.size(); i++) { 
-            float pct_0 = (float)(arr.size() - i) / arr.size();
-            float pct_1 = (float)i / arr.size();
-
-            // todo move some of this math into HSV struct
-            HSV new_color = HSV(
-                c0.h * pct_0 + c1.h * pct_1,
-                c0.s * pct_0 + c1.s * pct_1, 
-                c0.v * pct_0 + c1.v * pct_1
-            );
-
-            cout << "i: " << i << " new_hsv: " << new_color << endl;
-
-            arr[i] = new_color;
-
-        }
-
-
-
-        // logger.start("Draw cmap");
-        // Image<RGB> test_color_map(Size(100, 100));
-        // for (int i = 0; i < arr.size(); i++) { 
-        //     draw::line::drawCol(test_color_map, i, arr[i].to<RGB>());
-        // }
-        // logger.stop("Draw cmap", test_color_map);
-
-        }
-
-
-
+        vector<Color_Stop> stops = {stop_0, stop_1};
 
         
-        { 
-
-            logger.start("art piece");
-
-            int border = 20;
-            const int side = 80;
-            Image<RGB> img(Size(1000 + border, 1000 + border), HSV(250, 50, 255).to<RGB>());
-
-            int rows = 1000 / (side+border);
-
-            for (int m = 0; m < rows; m++){
-                for (int k = 0; k < rows; k++) { 
 
 
-                    int h0 = 900 + m*33;
-                    int v0 = 60 + k*6;
-                    HSV c0(h0, 255, v0);
-                    HSV c1(h0 - 300, 255, 255);
-                    std::array<HSV, side> arr;
-                    for (int i = 0; i < arr.size(); i++) { 
-                        float pct_0 = (float)(arr.size() - i) / arr.size();
-                        float pct_1 = (float)i / arr.size();
+        logger.start("Draw cmap - LUT size 7");
+        {
+            Color_Map cmap = Color_Map<7>(stops);
+            Image<RGB> test_img(Size(1000, 1000));
 
-                        // todo move some of this math into HSV struct
-                        HSV new_color = HSV(
-                            c0.h * pct_0 + c1.h * pct_1,
-                            c0.s * pct_0 + c1.s * pct_1, 
-                            c0.v * pct_0 + c1.v * pct_1
-                        );
-
-                        arr[i] = new_color;
-
-                    }
-
-                    for (int i = 0; i < side; i++) { 
-
-                        draw::polygon::drawRect(img, Rect{Point(border + i + (k*(border + side)), border + (m*(border + side))), 1, side}, arr[i].to<RGB>());
-                    }
-                }
-
+            for (int i = 0; i < 1000; i++) { 
+                draw::line::drawCol(test_img, i, cmap.frac(i, 1000).to<RGB>());
             }
 
-
-
-
-
-
-            logger.stop("art piece", img);
+            logger.stop("Draw cmap - LUT size 7", test_img);
         }
-        
 
+        logger.start("Draw cmap - LUT size 777");
+        {
+            Color_Map cmap = Color_Map<777>(stops);
+            Image<RGB> test_img(Size(1000, 1000));
 
+            for (int i = 0; i < 1000; i++) { 
+                draw::line::drawCol(test_img, i, cmap.frac(i, 1000).to<RGB>());
+            }
 
-
-
-
-
+            logger.stop("Draw cmap - LUT size 777", test_img);
+        }
 
 
     }
