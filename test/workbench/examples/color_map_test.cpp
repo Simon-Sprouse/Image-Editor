@@ -1,6 +1,8 @@
 #include "color_map_test.hpp"
 #include "../../../src/data/image/color_map.hpp"
 #include "../../../src/functions/graphics/line.hpp"
+#include "../../../src/functions/graphics/polygon.hpp"
+#include "../../../src/data/shapes/shapes.hpp"
 
 #include "../logger.hpp"
 
@@ -21,9 +23,9 @@ namespace workbench {
 
 
 
-
-        HSV c0(0, 255, 255);
-        HSV c1(1535, 255, 255);
+        {
+        HSV c0(900, 255, 127);
+        HSV c1(700, 255, 255);
 
         std::array<HSV, 100> arr;
 
@@ -54,15 +56,69 @@ namespace workbench {
 
 
 
-        logger.start("Draw cmap");
-        Image<RGB> test_color_map(Size(100, 100));
-        for (int i = 0; i < arr.size(); i++) { 
-            draw::line::drawCol(test_color_map, i, arr[i].to<RGB>());
+        // logger.start("Draw cmap");
+        // Image<RGB> test_color_map(Size(100, 100));
+        // for (int i = 0; i < arr.size(); i++) { 
+        //     draw::line::drawCol(test_color_map, i, arr[i].to<RGB>());
+        // }
+        // logger.stop("Draw cmap", test_color_map);
+
         }
-        logger.stop("Draw cmap", test_color_map);
 
 
 
+
+        
+        { 
+
+            logger.start("art piece");
+
+            int border = 20;
+            const int side = 80;
+            Image<RGB> img(Size(1000 + border, 1000 + border), HSV(250, 50, 255).to<RGB>());
+
+            int rows = 1000 / (side+border);
+
+            for (int m = 0; m < rows; m++){
+                for (int k = 0; k < rows; k++) { 
+
+
+                    int h0 = 900 + m*33;
+                    int v0 = 60 + k*6;
+                    HSV c0(h0, 255, v0);
+                    HSV c1(h0 - 300, 255, 255);
+                    std::array<HSV, side> arr;
+                    for (int i = 0; i < arr.size(); i++) { 
+                        float pct_0 = (float)(arr.size() - i) / arr.size();
+                        float pct_1 = (float)i / arr.size();
+
+                        // todo move some of this math into HSV struct
+                        HSV new_color = HSV(
+                            c0.h * pct_0 + c1.h * pct_1,
+                            c0.s * pct_0 + c1.s * pct_1, 
+                            c0.v * pct_0 + c1.v * pct_1
+                        );
+
+                        arr[i] = new_color;
+
+                    }
+
+                    for (int i = 0; i < side; i++) { 
+
+                        draw::polygon::drawRect(img, Rect{Point(border + i + (k*(border + side)), border + (m*(border + side))), 1, side}, arr[i].to<RGB>());
+                    }
+                }
+
+            }
+
+
+
+
+
+
+            logger.stop("art piece", img);
+        }
+        
 
 
 
