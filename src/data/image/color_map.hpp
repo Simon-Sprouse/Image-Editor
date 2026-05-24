@@ -6,6 +6,8 @@
 #include <array>
 #include <vector>
 #include <cstring> // for std::memcpy
+#include <iostream>
+
 using namespace std;
 
 // todo this namespace and also shapes need to have location re-thought
@@ -23,30 +25,32 @@ namespace image {
     };
     static_assert(sizeof(Color_Stop) == 8);
 
-    template<int N>
     class Color_Map { 
     public: 
 
         // constructors
         // todo Color_Map(vector<HSV> colors) // for equal spacing
-        Color_Map(vector<Color_Stop> _stops);
+        // todo consider constructors that don't pass LUT size
+        Color_Map(vector<Color_Stop> _stops, int _N);
 
         HSV at(int i) { 
-            return color_lut[i]; 
+            return lut[i]; 
         }
         HSV frac(float f) { 
-            return color_lut[static_cast<int>(N * f)]; 
+            return lut[static_cast<int>(N * f)]; 
         }
         HSV frac(int i, int total) { 
             // todo: input validation i <= total
             float track_pos = (static_cast<float>(i) / total) * N;
-            return color_lut[static_cast<int>(track_pos)];
+            cout << "track_pos: " << track_pos << endl;
+            return lut[static_cast<int>(track_pos)];
         }
 
 
 
         vector<Color_Stop> stops;
-        array<HSV, N> color_lut;
+        vector<HSV> lut;
+        int N;
     };
 
 
@@ -85,11 +89,12 @@ namespace image {
     }
 
 
-    template<int N>
-    Color_Map<N>::Color_Map(vector<Color_Stop> _stops) : stops(_stops) { 
+    Color_Map::Color_Map(vector<Color_Stop> _stops, int _N) : stops(_stops), N(_N) { 
 
         // todo: input validation, must have at least two stops
         // todo: are stops already sorted by x_pos? 
+
+        lut.reserve(N);
 
         for (int i = 0; i < stops.size() - 1; i++) { 
             Color_Stop current_stop = stops.at(i);
@@ -101,7 +106,7 @@ namespace image {
             int num_elements_for_segment = static_cast<int>(N * track_distance);
             vector<HSV> lut_elements = lerpMulti(current_stop.color, next_stop.color, num_elements_for_segment);
 
-            std::memcpy(color_lut.data() + starting_pos, lut_elements.data(), num_elements_for_segment * sizeof(HSV));
+            std::memcpy(lut.data() + starting_pos, lut_elements.data(), num_elements_for_segment * sizeof(HSV));
 
         }
 

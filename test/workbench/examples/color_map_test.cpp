@@ -21,40 +21,35 @@ namespace workbench {
 
         
 
-        HSV color_0(900, 255, 127);
-        HSV color_1(700, 255, 255);
+        HSV color_0(700, 200, 255);
+        HSV color_1(900, 150, 200);
+        HSV color_2(1200, 255, 100);
 
         Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
-        Color_Stop stop_1 = Color_Stop(color_1, 1.0f);
+        Color_Stop stop_1 = Color_Stop(color_1, 0.5f);
+        Color_Stop stop_2 = Color_Stop(color_2, 1.0f);
 
-        vector<Color_Stop> stops = {stop_0, stop_1};
+        vector<Color_Stop> stops = {stop_0, stop_1, stop_2};
 
+        int side = 1000;
+        Image<RGB> img(Size(side, side));
+
+
+        string test_base_name = "Draw Color Map - LUT Size: ";
+        int num_iterations = 100;
+        int step = 1;
+        int start = 2;
+        for (int i = start; i < num_iterations; i += step) { 
+            logger.start(test_base_name + to_string(i)); // todo accept multi step tests
+            Color_Map cmap = Color_Map(stops, i);
+            for (int x = 0; x < img.getWidth(); x++) { 
+                draw::line::drawCol(img, x, cmap.frac(x, side).to<RGB>());
+            }
+            logger.stop(test_base_name + to_string(i), img);
+        }
         
 
 
-        logger.start("Draw cmap - LUT size 7");
-        {
-            Color_Map cmap = Color_Map<7>(stops);
-            Image<RGB> test_img(Size(1000, 1000));
-
-            for (int i = 0; i < 1000; i++) { 
-                draw::line::drawCol(test_img, i, cmap.frac(i, 1000).to<RGB>());
-            }
-
-            logger.stop("Draw cmap - LUT size 7", test_img);
-        }
-
-        logger.start("Draw cmap - LUT size 777");
-        {
-            Color_Map cmap = Color_Map<777>(stops);
-            Image<RGB> test_img(Size(1000, 1000));
-
-            for (int i = 0; i < 1000; i++) { 
-                draw::line::drawCol(test_img, i, cmap.frac(i, 1000).to<RGB>());
-            }
-
-            logger.stop("Draw cmap - LUT size 777", test_img);
-        }
 
 
     }
