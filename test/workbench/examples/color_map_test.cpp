@@ -78,8 +78,8 @@ namespace workbench {
 
 
 
-        HSV color_0(1400, 255, 255);
-        HSV color_1(0, 255, 255);
+        HSV color_0(1200, 255, 50);
+        HSV color_1(150, 150, 255);
 
 
         Color_Stop stop_0 = Color_Stop(color_0, 0.0f);

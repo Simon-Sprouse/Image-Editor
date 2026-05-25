@@ -18,6 +18,7 @@ add_executable(mosaic_tiler
     
 
     data/image/pixel.cpp
+    data/image/color_map.cpp
     data/image/io.cpp
 
     pipelines/mosaic/mosaic.cpp
