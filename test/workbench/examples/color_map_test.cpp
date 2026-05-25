@@ -22,17 +22,70 @@ namespace workbench {
         
         // todo test lerp independently
 
-        HSV color_0(0, 200, 50);
-        HSV color_1(50, 255, 150);
-        HSV color_2(100, 255, 200);
-        HSV color_3(150, 100, 255);
+
+        // 1
+        {
+            HSV c_0 = HSV(600, 100, 100);
+            HSV c_1 = HSV(900);
+            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
+            cout << "scenario 1: " << endl;
+            for (auto color : lerp_results) { 
+                cout << color << endl;
+            }
+            cout << endl;
+        }
+        // 2
+        {
+            HSV c_0 = HSV(900);
+            HSV c_1 = HSV(600, 100, 100);
+            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
+            cout << "scenario 2: " << endl;
+            for (auto color : lerp_results) { 
+                cout << color << endl;
+            }
+            cout << endl;
+        }
+        // 3
+        {
+            HSV c_0 = HSV(1400);
+            HSV c_1 = HSV(100);
+            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
+            cout << "scenario 3: " << endl;
+            for (auto color : lerp_results) { 
+                cout << color << endl;
+            }
+            cout << endl;
+        }
+        // 4
+        {
+            HSV c_0 = HSV(100);
+            HSV c_1 = HSV(1400);
+            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
+            cout << "scenario 4: " << endl;
+            for (auto color : lerp_results) { 
+                cout << color << endl;
+            }
+            cout << endl;
+        }
+
+
+
+
+        cout << endl; 
+
+
+
+
+
+
+        HSV color_0(1400, 255, 255);
+        HSV color_1(0, 255, 255);
+
 
         Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
-        Color_Stop stop_1 = Color_Stop(color_1, 0.4f);
-        Color_Stop stop_2 = Color_Stop(color_2, 0.65f);
-        Color_Stop stop_3 = Color_Stop(color_3, 1.0f);
+        Color_Stop stop_1 = Color_Stop(color_1, 1.0f);
 
-        vector<Color_Stop> stops = {stop_0, stop_1, stop_2, stop_3};
+        vector<Color_Stop> stops = {stop_0, stop_1};
 
         int side = 1000;
         Image<RGB> img(Size(side, side));
@@ -45,9 +98,7 @@ namespace workbench {
         int start = 2;
         for (int i = start; i < num_iterations; i += step) { 
 
-            logger.start(cmap_base_name + to_string(i)); // todo accept multi step tests
             Color_Map cmap = Color_Map(stops, i);
-            logger.stop(cmap_base_name + to_string(i)); // todo, non-blocking timers (no keypress)
 
             logger.start(draw_base_name + to_string(i));
             for (int x = 0; x < img.getWidth(); x++) { 
