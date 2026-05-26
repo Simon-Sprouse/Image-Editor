@@ -31,13 +31,13 @@ namespace image {
         // todo consider constructors that don't pass LUT size
         Color_Map(vector<Color_Stop> _stops, int _N);
 
-        HSV at(int i) { 
+        HSV at(int i) const { 
             return lut[i]; 
         }
-        HSV frac(float f) { 
+        HSV frac(float f) const { 
             return lut[static_cast<int>(N * f)]; 
         }
-        HSV frac(int i, int total) { 
+        HSV frac(int i, int total) const { 
             // todo: input validation i <= total
             float track_pos = (static_cast<float>(i) / (total-1)) * N;
             return lut[static_cast<int>(track_pos)];
