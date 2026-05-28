@@ -3,12 +3,14 @@
 #include "../../../src/functions/graphics/line.hpp"
 #include "../../../src/functions/graphics/polygon.hpp"
 #include "../../../src/data/shapes/shapes.hpp"
+#include "../../../src/functions/math/sequence.hpp"
 
 #include "../logger.hpp"
 
 #include <iostream>
 #include <array>
 #include <cstring>
+#include <string>
 
 using namespace std;
 using namespace logger;
@@ -129,17 +131,15 @@ namespace workbench {
 
 
         // art piece
-
-
         {
             
             // define gradient
             int base = 1150;
             int step = 150;
-            HSV color_0(base, 210, 30);   // Deep burnt orange
-            HSV color_1(base + step*1, 240, 60);   // Vivid orange
-            HSV color_2(base + step*2, 210, 180);   // Golden yellow
-            HSV color_3(base + step*4, 100, 240);   // Pink-magenta
+            HSV color_0(base, 210, 30);
+            HSV color_1(base + step*1, 240, 60);   
+            HSV color_2(base + step*2, 210, 180);  
+            HSV color_3(base + step*4, 100, 240);  
             Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
             Color_Stop stop_1 = Color_Stop(color_1, 0.3f);
             Color_Stop stop_2 = Color_Stop(color_2, 0.7f);
@@ -204,10 +204,44 @@ namespace workbench {
 
 
 
+            // test tiling
+            {
                 
 
- 
+                vector<int> intervals = math::sequence::uniformIntervals(0, 10, 4);
+                for (auto element : intervals) { 
+                    cout << element << endl;
+                }
 
+                vector<Point> points = getTileCornersNxN(Size(10, 10), 3);
+                for (const Point& pt : points) { 
+                    cout << pt << endl;
+                }
+
+                RGB color_0 = RGB(255, 0, 0);
+                RGB color_1 = RGB(0, 255, 0);
+                RGB color_2 = RGB(0, 0, 255);
+
+                
+                
+                vector<int> NxN_sizes = {1, 2, 3, 4, 5, 10, 1000};
+
+                for (int size : NxN_sizes) { 
+                    string test_name = "tile_image " + to_string(size) + "x" + to_string(size);
+                    logger.start(test_name);
+
+                    Size tile_size = Size(1000 / size);
+                    Image<RGB> tile_0 = Image<RGB>(tile_size, color_0);
+                    Image<RGB> tile_1 = Image<RGB>(tile_size, color_1);
+                    Image<RGB> tile_2 = Image<RGB>(tile_size, color_2);
+                    vector<Image<RGB>> tile_vector = {tile_0, tile_1, tile_2};
+
+                    Image<RGB> tile_image = makeTileNxN(tile_vector, size);
+
+                    logger.stop(test_name, tile_image);
+                }   
+                
+            }
 
 
 
@@ -216,12 +250,106 @@ namespace workbench {
 
         }
 
+        // better art piece 
+        {
+            logger.start("better art piece");
 
+            vector<Image<RGB>> images_for_base;
+            // 1400 is awesome but doesn't fit the vibe
+            vector<int> color_base_vector = {1010, 1111, 1313, 1212};
+            for (int base : color_base_vector) {
+            
+                // define gradient
+                int step = 150;
+                HSV color_0(base, 210, 30);
+                HSV color_1(base + step*1, 240, 60);   
+                HSV color_2(base + step*2, 210, 180);  
+                HSV color_3(base + step*3, 100, 240);  
+                Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
+                Color_Stop stop_1 = Color_Stop(color_1, 0.3f);
+                Color_Stop stop_2 = Color_Stop(color_2, 0.7f);
+                Color_Stop stop_3 = Color_Stop(color_3, 1.0f);
+                vector<Color_Stop> stops = {stop_0, stop_1, stop_2, stop_3};
+                int num_columns = 9;
+                Color_Map cmap = Color_Map(stops, num_columns);
 
+                // pre-compute tile pieces
+                int original_size = 800;
+                vector<int> N_values = {1, 3, 3, 1};
+                vector<Image<RGB>> finished_tiles;
+                for (int N : N_values) { 
+                    Size tile_size = original_size / N;
+                    Image<RGB> row_img = makeRowImg(tile_size, cmap);
+                    Image<RGB> col_img = makeColumnImg(tile_size, cmap);
+                    vector<Image<RGB>> tile_images({row_img, col_img});
+                    finished_tiles.emplace_back(makeTileCheckerNxN(tile_images, N));
+                }
+                
+                images_for_base.emplace_back(makeTileNxN(finished_tiles, 2));
+            } 
+            Image<RGB> final_canvas = makeTileNxN(images_for_base, 2);
+            logger.stop("better art piece", final_canvas);
+        }
+    }
 
+    Image<RGB> makeTileCheckerNxN(vector<Image<RGB>> tiles, const int N) { 
+        // todo input validation
+        Size tile_size = tiles.at(0).size();
+        Size canvas_size = tile_size * N; // fine because NxN implies square tiles
+        Image<RGB> canvas = Image<RGB>(canvas_size); 
+        
+        vector<Point> points = getTileCornersNxN(canvas_size, N); // tl corners
+        int num_unique_tiles = tiles.size();
 
+        int start_offset = 0;
+        for (int y = 0; y < N; y++) { 
+            int tile_index = start_offset;
+            for (int x = 0; x < N; x++) { 
 
+                Point pt = points.at(y*N + x);
+                copyRegion(tiles.at(tile_index), canvas, pt);
 
+                tile_index++;
+                tile_index %= num_unique_tiles;
+            }
+            start_offset++;
+            start_offset %= num_unique_tiles;
+        }
+
+        return canvas;
+    }
+
+    Image<RGB> makeTileNxN(vector<Image<RGB>> tiles, const int N) { 
+        // todo input validation
+        // todo maybe fill could be used better here? 
+        Size tile_size = tiles.at(0).size();
+        Size canvas_size = tile_size * N; // fine because NxN implies square tiles
+        Image<RGB> canvas = Image<RGB>(canvas_size); 
+        
+        vector<Point> points = getTileCornersNxN(canvas_size, N); // tl corners
+        int tile_idx = 0; // to rotate through tiles
+        int num_unique_tiles = tiles.size();
+        for (const Point& pt : points) { 
+
+            copyRegion(tiles.at(tile_idx), canvas, pt);
+            tile_idx++;
+            tile_idx %= num_unique_tiles;
+        }
+        return canvas;
+    }
+
+    vector<Point> getTileCornersNxN(Size size, const int N) { 
+        // todo input validation
+        vector<Point> output;
+        output.reserve(N*N);
+        vector<int> intervals = math::sequence::uniformIntervals(0, size.width, N+1);
+        intervals.pop_back(); // last point is at far right / bottom border
+        for (int y : intervals) { 
+            for (int x : intervals) { 
+                output.push_back(Point(x, y));
+            }
+        }
+        return output;
     }
 
 

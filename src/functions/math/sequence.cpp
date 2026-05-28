@@ -58,7 +58,7 @@ namespace math::sequence {
 
 
 
-    // evenly spaced intervals 
+    // evenly spaced intervals -- uneven intervals potentially
     vector<int> uniformSamples(int min, int max, int num_elements) { 
 
         if (validateUniformSamples(min, max, num_elements) ==  InputStatus::EMPTY) { return {}; }
@@ -134,6 +134,21 @@ namespace math::sequence {
         }
         output.push_back(max);
         return output;
+    }
+
+
+    // all intervals will be identical except the last one
+    vector<int> uniformIntervals(int min, int max, int num_elements) { 
+        vector<int> output;
+        output.reserve(num_elements);
+        int distance = max - min;
+        int interval = distance / (num_elements-1); // remove leftover fp
+        for (int i = 0; i < num_elements-1; i++) { 
+            output.push_back(i*interval);
+        }
+        output.push_back(max);
+        return output;
+
     }
 
 

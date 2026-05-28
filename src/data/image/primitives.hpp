@@ -89,6 +89,7 @@ namespace image {
 
 
         Size() : width(0), height(0) {}
+        Size(int s) : width(s), height(s) {}
         Size(int w, int h) : width(w), height(h) {}
 
         bool operator==(const Size& other) const {

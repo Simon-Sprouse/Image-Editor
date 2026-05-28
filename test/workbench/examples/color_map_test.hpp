@@ -12,6 +12,9 @@ using namespace logger;
 namespace workbench { 
 
     void colorMapUsage(string image_path, Logger logger);
+    Image<RGB> makeTileCheckerNxN(vector<Image<RGB>> tiles, const int N);
+    Image<RGB> makeTileNxN(vector<Image<RGB>> tiles, const int N);
+    vector<Point> getTileCornersNxN(Size size, const int N);
     Image<RGB> makeColumnImg(Size size, const Color_Map& cmap);
     Image<RGB> makeRowImg(Size size, const Color_Map& cmap);
     Image<RGB> tileChecker4x4(const vector<Image<RGB>> img_vector);

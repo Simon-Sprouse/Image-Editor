@@ -11,6 +11,7 @@ namespace math::sequence {
     vector<int> uniformSamplesBounds(int min, int max, int num_elements);
     vector<int> ratioSamples(int min, int max, double ratio);
     vector<int> randomSamples(int min, int max, int num_elements, uint32_t seed);
+    vector<int> uniformIntervals(int min, int max, int num_elements);
 
 
 }

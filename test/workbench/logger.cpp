@@ -1,5 +1,7 @@
 #include "logger.hpp"
 #include <chrono>
+#include <string>
+#include <sstream>
 
 #include "../../src/data/image/image.hpp"
 #include "../../src/data/image/io.hpp"
@@ -50,6 +52,7 @@ namespace logger {
         " time: " << elapsed.count() << "s " << setw(10) << 
         1.0f / elapsed.count() << " hz"
         << endl;
+        
     }
 
     void Logger::blockCV_() { 
@@ -74,7 +77,11 @@ namespace logger {
         printTime_(task_name);
 
         
-        cv::setWindowTitle(window_name_, task_name);
+        // todo add this to hsv
+        std::ostringstream oss;
+        oss << output.size();
+        string window_title = task_name + "      " + oss.str();
+        cv::setWindowTitle(window_name_, window_title); // window_name_ is really the id todo rename this
         cv::Mat output_mat = io::imageToCvMat(output);
         cv::imshow(window_name_, output_mat);
 
@@ -86,7 +93,15 @@ namespace logger {
             // todo: this is disgusting, fix dir, strip whitespace
             // todo: probably best to invoke from image::io
             // todo: write to console when saving
-            cv::imwrite("../results/" + task_name + ".jpg", output_mat);
+            // todo: template or handle multiple color types
+            auto now = chrono::system_clock::now();
+            auto now_c = chrono::system_clock::to_time_t(now);
+            // cout << "start_time: " << now_c << endl;
+            std::ostringstream clock_ostream; // fuck why is this is backwards'
+            clock_ostream << now_c;
+            string save_filename = task_name + "_" + clock_ostream.str() + ".jpg";
+            io::saveImageFileSystem(output, "../results/" + save_filename);
+            // cv::imwrite("../results/" + task_name + ".jpg", output_mat);
         }
 
 
