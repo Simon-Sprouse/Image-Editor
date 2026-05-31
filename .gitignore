@@ -4,6 +4,7 @@
 todos.txt
 _prompts/**
 notes.txt
+scripts/**/*txt
 
 # Build
 /build/**

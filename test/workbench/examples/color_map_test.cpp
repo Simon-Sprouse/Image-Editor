@@ -81,12 +81,6 @@ namespace workbench {
 
         // DISPLAY some cmaps various LUT sizes
         {
-            // Define CMAP - pre LUT size
-            HSV color_0(1200, 255, 50);
-            HSV color_1(150, 150, 255);
-            Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
-            Color_Stop stop_1 = Color_Stop(color_1, 1.0f);
-            vector<Color_Stop> stops = {stop_0, stop_1};
 
             vector<int> lut_sizes = {2, 3, 5, 10, 25, 50, 100, 500, 1000};
             
@@ -97,10 +91,10 @@ namespace workbench {
                 string test_name = "Draw Cmap Col - LUT Size: " + to_string(lut_size);
                 logger.start(test_name);
                 
-                Color_Map cmap = Color_Map(stops, lut_size);
+                Color_Map cmap = Color_Map(COSMOS_STOPS, lut_size);
                 // todo: image object sould return rect at (0, 0) + dx dy
                 Rect r = Rect{Point(0, 0), col_canvas.getWidth(), col_canvas.getHeight()};
-                draw::polygon::drawCmapCol(col_canvas, r, cmap);
+                draw::polygon::drawCmapCol(col_canvas, r, cmap); // todo scope these consts
 
                 logger.stop(test_name, col_canvas);
             }
@@ -113,7 +107,8 @@ namespace workbench {
                 string test_name = "Draw Cmap Row - LUT Size: " + to_string(lut_size);
                 logger.start(test_name);
                 
-                Color_Map cmap = Color_Map(stops, lut_size);
+                // TODO elegant cmap behavior when num stops is greater than LUT size, needs work
+                Color_Map cmap = Color_Map(VIRIDIS_STOPS, lut_size);
                 // todo: image object sould return rect at (0, 0) + dx dy
                 Rect r = Rect{Point(0, 0), row_canvas.getWidth(), row_canvas.getHeight()};
                 draw::polygon::drawCmapRow(row_canvas, r, cmap);
@@ -123,8 +118,38 @@ namespace workbench {
 
             // todo draw cmap with slope or radial
 
+        }
+
+
+
+        // TEST SOME CONST CMAP's
+        {
+            
+
+            Image<RGB> canvas = Image<RGB>(Size(1000, 100));
+            Rect r = Rect{Point(0, 0), canvas.getWidth(), canvas.getHeight()};
+            string test_base_name = "const cmap: ";
+
+            logger.start(test_base_name + "VIRIDIS");
+            draw::polygon::drawCmapCol(canvas, r, VIRIDIS);
+            logger.stop(test_base_name + "VIRIDIS", canvas);
+
+            logger.start(test_base_name + "COSMOS");
+            draw::polygon::drawCmapCol(canvas, r, COSMOS);
+            logger.stop(test_base_name + "COSMOS", canvas);
 
         }
+
+
+
+
+
+
+
+
+
+
+
         
     }
 

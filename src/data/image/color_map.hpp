@@ -60,5 +60,34 @@ namespace image {
     
 
    
+    // CONSTANTS todo: should these live here? 
+    inline const vector<Color_Stop> VIRIDIS_STOPS = {
+        Color_Stop(HSV(1230, 252, 84), 0.0f),
+		Color_Stop(HSV(1126, 170, 120), 0.111f),
+		Color_Stop(HSV(986, 140, 137), 0.222f),
+		Color_Stop(HSV(872, 167, 142), 0.333f),
+		Color_Stop(HSV(797, 187, 142), 0.444f),
+		Color_Stop(HSV(725, 205, 158), 0.556f),
+		Color_Stop(HSV(645, 181, 183), 0.667f),
+		Color_Stop(HSV(464, 146, 206), 0.778f),
+		Color_Stop(HSV(314, 206, 222), 0.889f),
+		Color_Stop(HSV(229, 218, 253), 1.0f)
+
+    };
+
+    inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS, 1000);
+
+
+
+    inline const vector<Color_Stop> COSMOS_STOPS = {
+        Color_Stop(HSV(1200, 255, 50), 0.0f),
+        Color_Stop(HSV(150, 150, 255), 1.0f)
+    };
+
+    inline const Color_Map COSMOS = Color_Map(COSMOS_STOPS, 1000);
+    
+
+
+    
 
 }
