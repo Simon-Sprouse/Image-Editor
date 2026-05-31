@@ -75,6 +75,7 @@ namespace image {
 
     };
 
+    // todo this breaks sometimes? 
     inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS, 1000);
 
 

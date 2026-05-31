@@ -1,5 +1,6 @@
 #include "tile_test.hpp"
 #include "../../../src/functions/graphics/tile.hpp"
+#include "../../../src/data/image/color_map.hpp"
 
 #include <iostream>
 
@@ -21,26 +22,25 @@ namespace workbench {
         {
 
             // define gradient for tiles (todo using cmap)
-            RGB color_0 = RGB(255, 0, 0);
-            RGB color_1 = RGB(0, 255, 0);
-            RGB color_2 = RGB(0, 0, 255);
-
+            int num_colors = 11;
+            // todo bug seg fault when trying to use the COSMOS map itself
+            Color_Map cmap = Color_Map(image::VIRIDIS_STOPS, 1000);
             
 
             int canvas_size = 1000;
-            vector<int> num_tiles = {1, 2, 3, 4, 5, 10, 1000};
+            vector<int> num_tiles = {1, 2, 3, 4, 5, 10, 50, 100, 1000};
 
             for (int N : num_tiles) { 
                 string test_name = "tile_image " + to_string(N) + "x" + to_string(N);
                 logger.start(test_name);
 
                 // Compute images for each tile type, pre-arragement
-                Size tile_size = Size(canvas_size / N);
-                Image<RGB> tile_0 = Image<RGB>(tile_size, color_0);
-                Image<RGB> tile_1 = Image<RGB>(tile_size, color_1);
-                Image<RGB> tile_2 = Image<RGB>(tile_size, color_2);
-
-                vector<Image<RGB>> tiles_vector = {tile_0, tile_1, tile_2};
+                vector<Image<RGB>> tiles_vector;
+                for (int i = 0; i < num_colors; i++) { 
+                    Size tile_size = Size(canvas_size / N);
+                    cout << "color: " << cmap.frac(i, num_colors).to<RGB>() << endl;
+                    tiles_vector.emplace_back(Image<RGB>(tile_size, cmap.frac(i, num_colors).to<RGB>()));
+                }
 
                 // Arrange tile images in tile pattern
                 Image<RGB> tile_image = draw::tile::makeTileNxN(tiles_vector, N);
