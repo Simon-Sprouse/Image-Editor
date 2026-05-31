@@ -44,7 +44,7 @@ int main() {
 
 
     // todo: config files track everything I'm tempted to comment out
-    app::mainLoop(file_system_image_path, file_system_save_dir);
+    // app::mainLoop(file_system_image_path, file_system_save_dir);
 
    
 

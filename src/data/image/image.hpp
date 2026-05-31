@@ -437,6 +437,11 @@ inline Image<RGB> Image<HSV>::to<RGB>() const {
 
 
 
+// TODO add to image ownership
+// void copyRegion(const Image<RGB>& src_img, Image<RGB>& dst_img, Point tl);
+
+
+
 
 
 }

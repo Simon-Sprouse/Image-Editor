@@ -13,7 +13,7 @@ namespace workbench {
     void conversionUnitTest(string image_path, Logger logger);
     void conversionBenchmark(string image_path, Logger logger);
 
-
+    // todo do these need to be external like this? 
     bool rgbImageCorrectnessTest(const Image<RGB>& test, const cv::Mat& gt, float tolerance = 0.02f);
     bool hsvImageCorrectnessTest(const Image<HSV>& test, const cv::Mat& gt, float tolerance = 0.02f);
 

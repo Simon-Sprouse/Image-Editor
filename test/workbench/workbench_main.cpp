@@ -4,6 +4,8 @@
 #include "examples/functions_workbench.hpp"
 #include "examples/variants_workbench.hpp"
 #include "examples/conversion_test.hpp"
+#include "examples/color_map_test.hpp"
+#include "examples/tile_test.hpp"
 #include "../../src/data/image/io.hpp"
 #include "logger.hpp"
 
@@ -22,16 +24,20 @@ namespace workbench {
     // Some might be commented out for testing purposes
     void runAll(string image_path, Logger& logger) { 
 
-        runIterator(image_path, logger);
-        runRandom(image_path, logger);
-        sequenceVariant(image_path, logger);
-        runPixelate(image_path, logger);
-        runGrid(image_path, logger);
+        // runIterator(image_path, logger);
+        // runRandom(image_path, logger);
+        // sequenceVariant(image_path, logger);
+        // runPixelate(image_path, logger);
+        // runGrid(image_path, logger);
 
 
-        conversionUsage(image_path, logger);
-        conversionUnitTest(image_path, logger);
-        conversionBenchmark(image_path, logger);
+        // conversionUsage(image_path, logger);
+        // conversionUnitTest(image_path, logger);
+        // conversionBenchmark(image_path, logger);
+
+        // todo image path and logger seem to always be passed together at call site. 
+        colorMapUsage(image_path, logger);
+        tileUsage(image_path, logger);
         
     }
 
