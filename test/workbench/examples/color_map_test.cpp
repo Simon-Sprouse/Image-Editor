@@ -79,37 +79,51 @@ namespace workbench {
 
 
 
-        // DISPLAY some cmaps
+        // DISPLAY some cmaps various LUT sizes
         {
+            // Define CMAP - pre LUT size
             HSV color_0(1200, 255, 50);
             HSV color_1(150, 150, 255);
-
-
             Color_Stop stop_0 = Color_Stop(color_0, 0.0f);
             Color_Stop stop_1 = Color_Stop(color_1, 1.0f);
-
             vector<Color_Stop> stops = {stop_0, stop_1};
 
-            int side = 1000;
-            Image<RGB> img(Size(side, side));
+            vector<int> lut_sizes = {2, 3, 5, 10, 25, 50, 100, 500, 1000};
+            
+            // DRAW Cmap Col
+            Image<RGB> col_canvas = Image<RGB>(Size(1000, 100));
+            for (int lut_size : lut_sizes) { 
 
+                string test_name = "Draw Cmap Col - LUT Size: " + to_string(lut_size);
+                logger.start(test_name);
+                
+                Color_Map cmap = Color_Map(stops, lut_size);
+                // todo: image object sould return rect at (0, 0) + dx dy
+                Rect r = Rect{Point(0, 0), col_canvas.getWidth(), col_canvas.getHeight()};
+                draw::polygon::drawCmapCol(col_canvas, r, cmap);
 
-            string cmap_base_name = "Create Color Map - LUT Size: ";
-            string draw_base_name = "Draw Color Map - LUT Size: ";
-            int num_iterations = 3;
-            int step = 3;
-            int start = 2;
-            for (int i = start; i < num_iterations*step; i += step) { 
-
-                Color_Map cmap = Color_Map(stops, i);
-
-                logger.start(draw_base_name + to_string(i));
-                for (int x = 0; x < img.getWidth(); x++) { 
-                    draw::line::drawCol(img, x, cmap.frac(x, side).to<RGB>());
-                }
-                logger.stop(draw_base_name + to_string(i), img);
-                cout << endl;
+                logger.stop(test_name, col_canvas);
             }
+
+
+            // DRAW Cmap Row
+            Image<RGB> row_canvas = Image<RGB>(Size(100, 1000));
+            for (int lut_size : lut_sizes) { 
+
+                string test_name = "Draw Cmap Row - LUT Size: " + to_string(lut_size);
+                logger.start(test_name);
+                
+                Color_Map cmap = Color_Map(stops, lut_size);
+                // todo: image object sould return rect at (0, 0) + dx dy
+                Rect r = Rect{Point(0, 0), row_canvas.getWidth(), row_canvas.getHeight()};
+                draw::polygon::drawCmapRow(row_canvas, r, cmap);
+
+                logger.stop(test_name, row_canvas);
+            }
+
+            // todo draw cmap with slope or radial
+
+
         }
         
     }
@@ -120,25 +134,6 @@ namespace workbench {
 
        
     
-
-
-    // create column image
-    Image<RGB> makeColumnImg(Size size, const Color_Map& cmap) { 
-        Image<RGB> img(size);
-        for (int x = 0; x < size.width; x++) { 
-            draw::line::drawCol(img, x, cmap.frac(x, size.width).to<RGB>());
-        }
-        return img;
-    }
-
-    // todo these could be way more efficient
-    Image<RGB> makeRowImg(Size size, const Color_Map& cmap) { 
-        Image<RGB> img(size);
-        for (int y = 0; y < size.height; y++) { 
-            draw::line::drawRow(img, y, cmap.frac(y, size.height).to<RGB>());
-        }
-        return img;
-    }
 
 
 

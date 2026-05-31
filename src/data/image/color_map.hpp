@@ -39,11 +39,12 @@ namespace image {
         }
         HSV frac(int i, int total) const { 
             // todo: input validation i <= total
-            float track_pos = (static_cast<float>(i) / (total-1)) * N;
+            float track_pos = (static_cast<float>(i) / (total)) * N;
             return lut[static_cast<int>(track_pos)];
         }
 
 
+        // todo maybe store lut as RGB? 
         vector<Color_Stop> stops;
         vector<HSV> lut;
         int N;
@@ -52,9 +53,12 @@ namespace image {
 
     
 
+    // todo rename this
     vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_steps);
     int getIdxFromXPos(float x_pos, int N); // helper for lerpMulti
     
     
+
+   
 
 }

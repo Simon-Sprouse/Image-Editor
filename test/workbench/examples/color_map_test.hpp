@@ -12,6 +12,5 @@ using namespace logger;
 namespace workbench { 
 
     void colorMapUsage(string image_path, Logger logger);
-    Image<RGB> makeColumnImg(Size size, const Color_Map& cmap);
-    Image<RGB> makeRowImg(Size size, const Color_Map& cmap);
+
 }
