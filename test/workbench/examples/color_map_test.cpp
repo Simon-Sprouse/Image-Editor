@@ -23,6 +23,13 @@ namespace workbench {
         cout << "hello from color map usage" << endl;
 
 
+        // cout << "testing HSV subraction operator overload" << endl;
+        // HSV c0 = HSV(1510, 255, 100);
+        // HSV c1 = HSV(1200, 255, 100);
+        // float tolerance = 0.1f;
+        // bool passing = isWithinTolerance(c0, c1, tolerance);
+        // cout << "is within tolerance? : " << passing << endl;
+        // cout << endl;
 
 
 
@@ -198,7 +205,76 @@ namespace workbench {
 
 
 
+    void colorMapUnitTest(string image_path, Logger logger) { 
 
+        cout << "Hello from lerp test" << endl;
+
+        float tolerance = 0.05f;
+
+        // SCENARIO 1
+        HSV c_0 = HSV(600, 0, 0);
+        HSV c_1 = HSV(900, 100, 255);
+
+
+        lerpTest(c_0, c_1, tolerance);
+
+
+
+
+
+    }
+
+
+
+    bool lerpTest(HSV color_0, HSV color_1, float tolerance) { 
+
+        // TEST 1 - distance of 0.0f should produce exactly color_0
+        HSV lerp_result_1 = lerp(color_0, color_1, 0.0f);
+        bool test_1 = isWithinTolerance(lerp_result_1, color_0, tolerance);
+        if (!test_1) { 
+            cout << "test failed: expecting 0.0f distance to produce leftmost color stop" << endl;
+            return false;
+        }
+
+        // TEST 2 - distance of 1.0f should produce exactly color_1
+        HSV lerp_result_2 = lerp(color_0, color_1, 1.0f);
+        bool test_2 = isWithinTolerance(lerp_result_2, color_1, tolerance);
+        if (!test_2) { 
+            cout << "test failed: expecting 1.0f distance to produce rightmost color stop" << endl;
+            return false;
+        }
+
+
+
+        // TEST 3 - multiple steps should all be within the same interval of each other
+        // this logic will be similar to the lerpMultiTest but that's fine
+        int num_steps = 10;
+        float step_size = 1.0f / static_cast<float>(num_steps);
+
+        vector<HSV> test_lerp_vector;
+        test_lerp_vector.reserve(num_steps);
+
+        vector<float> distances = math::sequence::uniformIntervalsUnit(10);
+        for (auto distance : distances) { 
+            HSV lerp_result = lerp(color_0, color_1, distance);
+            test_lerp_vector.push_back(lerp_result);
+        }
+
+        for (int i = 0; i < test_lerp_vector.size() - 1; i++) { 
+            HSV current = test_lerp_vector[i];
+            HSV next = test_lerp_vector[i+1];
+            float adjusted_tolerance = step_size + tolerance; // we already expect <step_size> worth of distance
+            bool test_3 = isWithinTolerance(lerp_result_2, color_1, adjusted_tolerance);
+            if (!test_3) { 
+                cout << "test failed: expecting distance between color steps to be uniform" << endl;
+                return false;
+            }
+        }
+
+
+        return true;
+            
+    }
        
     
 

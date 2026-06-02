@@ -421,6 +421,7 @@ namespace workbench {
         float cv_s_normal = static_cast<float>(gt[1]) / 255.0f;
         float cv_v_normal = static_cast<float>(gt[2]) / 255.0f;
 
+        // todo update all of this to use pixel.hpp functions
         float h_diff = std::abs<float>(test_h_normal - cv_h_normal);
         h_diff = std::min(h_diff, 1.0f - h_diff); // handle potential wrap around
         float s_diff = std::abs<float>(test_s_normal - cv_s_normal);

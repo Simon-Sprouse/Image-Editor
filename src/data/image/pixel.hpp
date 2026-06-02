@@ -59,7 +59,7 @@ namespace image {
         }
 
 
-        // todo shoul this really be abs? 
+        // todo should this really be abs? 
         RGB operator-(const RGB& other) const { 
 
 
@@ -119,12 +119,51 @@ namespace image {
             : h(hue), s(saturation), v(value) {}
 
 
+        HSV operator-(const HSV& other) const;
+        bool operator<(const HSV& other) const;
+
 
         template<typename Px>
         Px to() const;
 
     };
     static_assert(sizeof(HSV) == 4);
+
+
+    inline HSV HSV::operator-(const HSV& other) const { 
+
+        uint16_t track_abs = std::abs(this->h - other.h);
+        uint16_t track_wrap = 1536 - track_abs;
+        uint16_t h_diff = std::min<uint16_t>(track_abs, track_wrap);
+
+        uint8_t s_diff = std::abs(this->s - other.s);
+        uint8_t v_diff = std::abs(this->v - other.v);
+
+        return HSV(h_diff, s_diff, v_diff);
+    }
+
+    inline bool HSV::operator<(const HSV& other) const { 
+        return (this->h < other.h) && (this->s < other.s) && (this->v < other.v);
+    }
+
+    inline bool isWithinTolerance(HSV color_0, HSV color_1, float tolerance) { 
+
+        // todo input validation tolerance [0.0f, 1.0f]
+        // todo h, s, v max consts defined somewhere
+
+        // scale tolerance into real HSV value for lt comp
+        uint16_t max_diff_h = static_cast<uint16_t>(1535 * tolerance); // max drift
+        uint8_t max_diff_s = static_cast<uint8_t>(255 * tolerance);
+        uint8_t max_diff_v = static_cast<uint8_t>(255 * tolerance);
+        HSV max_diff = HSV(max_diff_h, max_diff_s, max_diff_v);
+
+        // is absolute
+        HSV diff = color_1 - color_0;
+
+        bool comp = (diff < max_diff);
+
+        return comp;
+    }
 
 
     struct GRAY { 

@@ -12,5 +12,7 @@ using namespace logger;
 namespace workbench { 
 
     void colorMapUsage(string image_path, Logger logger);
+    void colorMapUnitTest(string image_path, Logger logger);
 
+    bool lerpTest(HSV color_0, HSV color_1, float tolerance);
 }
