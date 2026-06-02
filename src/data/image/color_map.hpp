@@ -53,7 +53,8 @@ namespace image {
 
     
 
-    // todo rename this
+    HSV lerp(HSV color_0, HSV color_1, float distance);
+    // todo rename
     vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_steps);
     int getIdxFromXPos(float x_pos, int N); // helper for lerpMulti
     

@@ -95,6 +95,8 @@ namespace math::sequence {
 
     }
 
+    
+
 
 
     vector<int> ratioSamples(int min, int max, double ratio) { 
@@ -147,6 +149,25 @@ namespace math::sequence {
             output.push_back(i*interval);
         }
         output.push_back(max);
+        return output;
+
+    }
+
+
+    // uniform intervals 0.0 1.0 Unit Interval
+    vector<float> uniformIntervalsUnit(const int num_elements) {
+        // todo input validation must ask for at least two elements
+
+        vector<float> output;
+        output.reserve(num_elements);
+
+        float step = 1.0f / (num_elements - 1); // the -1 is becase we return bounded sequence
+
+        for (int i = 0; i < num_elements; i++) { 
+            output.push_back(static_cast<float>(i) * step);
+        }
+        output.at(output.size()-1) = 1.0f;
+
         return output;
 
     }

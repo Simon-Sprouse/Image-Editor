@@ -34,7 +34,51 @@ namespace image {
     // FREE FUNCTIONS
     // todo: input validation
     // retuns LUT sub-array - not the most space efficient approach
-    inline vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_steps) { 
+
+
+
+    HSV lerp(HSV color_0, HSV color_1, float distance) { 
+        
+        // todo input validation distance is between 0.0 and 1.0 inclusive
+
+        uint16_t h_0 = color_0.h;
+        uint8_t s_0 = color_0.s;
+        uint8_t v_0 = color_0.v;
+
+        uint16_t h_1 = color_1.h;
+        uint8_t s_1 = color_1.s;
+        uint8_t v_1 = color_1.v;
+
+        int track_abs = std::abs(h_1 - h_0);
+        int track_wrap = 1536 - track_abs;
+
+        if (track_wrap < track_abs) { 
+            if (h_0 < h_1) { 
+                h_0 += 1536;
+            }
+            else {
+                h_1 += 1536;
+            }
+        }
+
+        // lerp y = m * x + b
+        float hue_float = static_cast<float>(h_1 - h_0) * distance + h_0;
+        float sat_float = static_cast<float>(s_1 - s_0) * distance + s_0;
+        float val_float = static_cast<float>(v_1 - v_0) * distance + v_0;
+
+        uint16_t h = static_cast<uint16_t>(hue_float) % 1536;
+        uint8_t s = static_cast<uint8_t>(sat_float);
+        uint8_t v = static_cast<uint8_t>(val_float);
+
+        return HSV(h, s, v);
+    }
+
+
+    
+
+
+
+    vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_steps) { 
 
         // universal
         vector<HSV> out;

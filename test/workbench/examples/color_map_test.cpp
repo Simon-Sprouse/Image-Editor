@@ -22,59 +22,101 @@ namespace workbench {
 
         cout << "hello from color map usage" << endl;
 
-        
-        // todo test lerp independently
 
 
-        // 1
+
+
+        // FREE FUNCTION - LERP SINGLE
         {
-            HSV c_0 = HSV(600, 100, 100);
-            HSV c_1 = HSV(900);
-            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
-            cout << "scenario 1: " << endl;
-            for (auto color : lerp_results) { 
-                cout << color << endl;
+            vector<float> distances = math::sequence::uniformIntervalsUnit(7);
+
+            // SCENARIO 1 - Positive Linear
+            {
+                HSV c_0 = HSV(600, 100, 100);
+                HSV c_1 = HSV(900, 255, 0);
+
+                cout << "color 0: " << c_0 << endl;
+                cout << "color 1: " << c_1 << endl;
+
+                for (auto distance : distances) { 
+                    HSV c_lerp = lerp(c_0, c_1, distance);
+                    cout << c_lerp << endl;
+                }
+                cout << endl;
             }
-            cout << endl;
-        }
-        // 2
-        {
-            HSV c_0 = HSV(900);
-            HSV c_1 = HSV(600, 100, 100);
-            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
-            cout << "scenario 2: " << endl;
-            for (auto color : lerp_results) { 
-                cout << color << endl;
+
+            // SCENARIO 2 - Negative Linear
+            {
+                HSV c_0 = HSV(900, 255, 0);
+                HSV c_1 = HSV(600, 100, 100);
+
+                cout << "color 0: " << c_0 << endl;
+                cout << "color 1: " << c_1 << endl;
+
+                for (auto distance : distances) { 
+                    HSV c_lerp = lerp(c_0, c_1, distance);
+                    cout << c_lerp << endl;
+                }
+                cout << endl;
             }
-            cout << endl;
-        }
-        // 3
-        {
-            HSV c_0 = HSV(1400);
-            HSV c_1 = HSV(100);
-            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
-            cout << "scenario 3: " << endl;
-            for (auto color : lerp_results) { 
-                cout << color << endl;
+
+            // SCENARIO 3 - Positive Wrap
+            {
+                
+
+                HSV c_0 = HSV(1400, 255, 0);
+                HSV c_1 = HSV(100, 100, 100);
+
+                cout << "color 0: " << c_0 << endl;
+                cout << "color 1: " << c_1 << endl;
+
+                for (auto distance : distances) { 
+                    HSV c_lerp = lerp(c_0, c_1, distance);
+                    cout << c_lerp << endl;
+                }
+                cout << endl;
             }
-            cout << endl;
-        }
-        // 4
-        {
-            HSV c_0 = HSV(100);
-            HSV c_1 = HSV(1400);
-            vector<HSV> lerp_results = lerpMulti(c_0, c_1, 4);
-            cout << "scenario 4: " << endl;
-            for (auto color : lerp_results) { 
-                cout << color << endl;
+
+            // SCENARIO 4 - Negative Wrap
+            {
+                
+                HSV c_0 = HSV(100, 100, 100);
+                HSV c_1 = HSV(1400, 255, 0);
+
+                cout << "color 0: " << c_0 << endl;
+                cout << "color 1: " << c_1 << endl;
+
+                for (auto distance : distances) { 
+                    HSV c_lerp = lerp(c_0, c_1, distance);
+                    cout << c_lerp << endl;
+                }
+                cout << endl;
             }
-            cout << endl;
+            
+
+            
         }
 
 
 
 
-        cout << endl; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
