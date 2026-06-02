@@ -23,95 +23,40 @@ namespace workbench {
         cout << "hello from color map usage" << endl;
 
 
-        // cout << "testing HSV subraction operator overload" << endl;
-        // HSV c0 = HSV(1510, 255, 100);
-        // HSV c1 = HSV(1200, 255, 100);
-        // float tolerance = 0.1f;
-        // bool passing = isWithinTolerance(c0, c1, tolerance);
-        // cout << "is within tolerance? : " << passing << endl;
-        // cout << endl;
 
+        // ------------------------
+        //      FREE FUNCTIONS
+        // ------------------------
 
-
-        // FREE FUNCTION - LERP SINGLE
+        // LERP SINGLE
         {
-            vector<float> distances = math::sequence::uniformIntervalsUnit(7);
+            HSV c0 = HSV(1400, 255, 0);
+            HSV c1 = HSV(100, 0, 100);
+            float distance = 0.73f;
+            HSV lerp_px = lerp(c0, c1, distance); // todo rename distance as pos
 
-            // SCENARIO 1 - Positive Linear
-            {
-                HSV c_0 = HSV(600, 100, 100);
-                HSV c_1 = HSV(900, 255, 0);
-
-                cout << "color 0: " << c_0 << endl;
-                cout << "color 1: " << c_1 << endl;
-
-                for (auto distance : distances) { 
-                    HSV c_lerp = lerp(c_0, c_1, distance);
-                    cout << c_lerp << endl;
-                }
-                cout << endl;
-            }
-
-            // SCENARIO 2 - Negative Linear
-            {
-                HSV c_0 = HSV(900, 255, 0);
-                HSV c_1 = HSV(600, 100, 100);
-
-                cout << "color 0: " << c_0 << endl;
-                cout << "color 1: " << c_1 << endl;
-
-                for (auto distance : distances) { 
-                    HSV c_lerp = lerp(c_0, c_1, distance);
-                    cout << c_lerp << endl;
-                }
-                cout << endl;
-            }
-
-            // SCENARIO 3 - Positive Wrap
-            {
-                
-
-                HSV c_0 = HSV(1400, 255, 0);
-                HSV c_1 = HSV(100, 100, 100);
-
-                cout << "color 0: " << c_0 << endl;
-                cout << "color 1: " << c_1 << endl;
-
-                for (auto distance : distances) { 
-                    HSV c_lerp = lerp(c_0, c_1, distance);
-                    cout << c_lerp << endl;
-                }
-                cout << endl;
-            }
-
-            // SCENARIO 4 - Negative Wrap
-            {
-                
-                HSV c_0 = HSV(100, 100, 100);
-                HSV c_1 = HSV(1400, 255, 0);
-
-                cout << "color 0: " << c_0 << endl;
-                cout << "color 1: " << c_1 << endl;
-
-                for (auto distance : distances) { 
-                    HSV c_lerp = lerp(c_0, c_1, distance);
-                    cout << c_lerp << endl;
-                }
-                cout << endl;
-            }
-            
-
-            
+            cout << "LERP SINGLE" << endl;
+            cout << "original c0 color: " << c0 << endl;
+            cout << "original c1 color: " << c1 << endl;
+            cout << "lerp (" << distance*100 << "%) color: " << lerp_px << endl;
+            cout << endl;
         }
 
 
+        // LERP MULTI
+        {
+            HSV c0 = HSV(1400, 255, 0);
+            HSV c1 = HSV(100, 0, 100);
+            int num_stops = 11;
+            vector<HSV> lerp_multi_result = lerpMulti(c0, c1, num_stops);
 
+            cout << "LERP MULTI" << endl;
+            for (auto color : lerp_multi_result) { 
+                cout << color << endl;
+            }
+            cout << endl;
 
-
-
-
-
-
+        }
 
 
 
@@ -210,17 +155,30 @@ namespace workbench {
         cout << "Hello from lerp test" << endl;
 
         float tolerance = 0.05f;
+        HSV c_0;
+        HSV c_1;
 
-        // SCENARIO 1
-        HSV c_0 = HSV(600, 0, 0);
-        HSV c_1 = HSV(900, 100, 255);
+        // SCENARIO 1 - Positive Linear
+        c_0 = HSV(600, 0, 0);
+        c_1 = HSV(900, 100, 255);
+        assert(lerpTest(c_0, c_1, tolerance));
 
+        // SCENARIO 2 - Negative Linear
+        c_0 = HSV(900, 100, 255);
+        c_1 = HSV(600, 0, 0);
+        assert(lerpTest(c_0, c_1, tolerance));
 
-        lerpTest(c_0, c_1, tolerance);
+        // SCENARIO 3 - Positive Wrap Around
+        c_0 = HSV(1400, 0, 0);
+        c_1 = HSV(100, 100, 255);
+        assert(lerpTest(c_0, c_1, tolerance));
 
+        // SCENARIO 4 - Negative Wrap Around
+        c_0 = HSV(1400, 0, 0);
+        c_1 = HSV(100, 100, 255);
+        assert(lerpTest(c_0, c_1, tolerance));
 
-
-
+        
 
     }
 
@@ -275,7 +233,8 @@ namespace workbench {
         return true;
             
     }
-       
+
+
     
 
 

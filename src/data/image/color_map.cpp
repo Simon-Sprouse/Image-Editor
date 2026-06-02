@@ -74,51 +74,33 @@ namespace image {
     }
 
 
-    
 
-
-
-    vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_steps) { 
+    vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_stops) { 
 
         // universal
         vector<HSV> out;
-        out.reserve(num_steps);
+        out.reserve(num_stops);
 
-        int distance = std::abs(color_1.h - color_0.h);
-        int distance_wrap = 1536 - distance;
-
-        uint16_t h_0 = color_0.h;
-        uint8_t s_0 = color_0.s;
-        uint8_t v_0 = color_0.v;
-
-        uint16_t h_1 = color_1.h;
-        uint8_t s_1 = color_1.s;
-        uint8_t v_1 = color_1.v;
-
-        if (distance_wrap < distance) { 
-            if (h_0 < h_1) { 
-                h_0 += 1536;
-            }
-            else {
-                h_1 += 1536;
-            }
+        // TODO - this logic was copy pasted from math::sequence to avoid circularity
+        // compute distances along unit vector: 
+        vector<float> distances;
+        distances.reserve(num_stops);
+        float step = 1.0f / (num_stops - 1); // the -1 is becase we return bounded sequence
+        for (int i = 0; i < num_stops; i++) { 
+            distances.push_back(static_cast<float>(i) * step);
         }
+        distances.at(distances.size()-1) = 1.0f;
 
-        float hue_step = static_cast<float>(h_1 - h_0) / (num_steps - 1);
-        float sat_step = static_cast<float>(s_1 - s_0) / (num_steps - 1);
-        float val_step = static_cast<float>(v_1 - v_0) / (num_steps - 1);
 
-        for (int i = 0; i < num_steps; i++) { 
-            HSV new_color = HSV(
-                (static_cast<uint16_t>(h_0 + (hue_step * i)) % 1536),
-                (s_0 + (sat_step * i)), 
-                (v_0 + (val_step * i))
-            );
-            out.push_back(new_color);
+        for (float distance : distances) { 
+            HSV lerp_result = lerp(color_0, color_1, distance);
+            out.push_back(lerp_result);
         }
 
         return out;
     }
+
+
 
     // This function gives LUT index given a float from 0-1. Todo input validation
     int getIdxFromXPos(float x_pos, int N) { 
