@@ -3,43 +3,15 @@
 namespace image { 
 
 
-    // CONSTRUCTORS
-    Color_Map::Color_Map(vector<Color_Stop> _stops, int _N) : stops(_stops), N(_N) { 
-
-        // todo: input validation, must have at least two stops
-
-        lut.reserve(N);
-
-        std::sort(
-            stops.begin(), 
-            stops.end(), 
-            [](Color_Stop lhs, Color_Stop rhs) { return lhs.x_pos < rhs.x_pos; }
-        );
-
-
-        for (int i = 0; i < stops.size()-1; i++) { 
-            int current_idx = getIdxFromXPos(stops.at(i).x_pos, N);
-            int next_idx = getIdxFromXPos(stops.at(i+1).x_pos, N);
-            int num_elements = (next_idx - current_idx) + 1;
-            if (num_elements == 1) { 
-                continue;
-            }
-            vector<HSV> lerp_elements = lerpMulti(stops.at(i).color, stops.at(i+1).color, num_elements);
-            std::memcpy(lut.data() + current_idx, lerp_elements.data(), num_elements * sizeof(HSV));
-        }
-        
-    } 
-
-
     // FREE FUNCTIONS
     // todo: input validation
     // retuns LUT sub-array - not the most space efficient approach
 
 
 
-    HSV lerp(HSV color_0, HSV color_1, float distance) { 
+    HSV lerp(HSV color_0, HSV color_1, float position) { 
         
-        // todo input validation distance is between 0.0 and 1.0 inclusive
+        // todo input validation position is between 0.0 and 1.0 inclusive
 
         uint16_t h_0 = color_0.h;
         uint8_t s_0 = color_0.s;
@@ -62,9 +34,9 @@ namespace image {
         }
 
         // lerp y = m * x + b
-        float hue_float = static_cast<float>(h_1 - h_0) * distance + h_0;
-        float sat_float = static_cast<float>(s_1 - s_0) * distance + s_0;
-        float val_float = static_cast<float>(v_1 - v_0) * distance + v_0;
+        float hue_float = static_cast<float>(h_1 - h_0) * position + h_0;
+        float sat_float = static_cast<float>(s_1 - s_0) * position + s_0;
+        float val_float = static_cast<float>(v_1 - v_0) * position + v_0;
 
         uint16_t h = static_cast<uint16_t>(hue_float) % 1536;
         uint8_t s = static_cast<uint8_t>(sat_float);
@@ -82,6 +54,7 @@ namespace image {
         out.reserve(num_stops);
 
         // TODO - this logic was copy pasted from math::sequence to avoid circularity
+        // TODO - could cache the m calculation for a performance boost rather than calling lerp iteratively
         // compute distances along unit vector: 
         vector<float> distances;
         distances.reserve(num_stops);
@@ -102,14 +75,80 @@ namespace image {
 
 
 
-    // This function gives LUT index given a float from 0-1. Todo input validation
-    int getIdxFromXPos(float x_pos, int N) { 
-        int idx = static_cast<int>(x_pos * N);
-        if (idx > N-1) { 
-            idx = N-1;
-        }
-        return idx;
+
+    // CONSTRUCTORS
+
+    // default constructor
+    Color_Map::Color_Map() { 
+
+        // todo replace with name const
+        stops = {
+            Color_Stop(HSV(0, 255, 255), 0.0f),
+            Color_Stop(HSV(512, 255, 255), 0.33f), 
+            Color_Stop(HSV(1024, 255, 255), 0.66f),
+            Color_Stop(HSV(1535, 255, 255), 1.0f)
+        };
+        
+    } 
+
+
+
+    // METHODS
+    RGB Color_Map::frac(float pos) const { 
+
+        // FIND BOUNDS - two pointer march
+        int lo_idx = 0;
+        int hi_idx = 1;
+        while (pos > stops[hi_idx].x_pos) { 
+            lo_idx++;
+            hi_idx++;
+        }  
+        Color_Stop lo_stop = stops[lo_idx];
+        Color_Stop hi_stop = stops[hi_idx];
+
+
+        // find position on local track
+        float local_track_pos = (pos - lo_stop.x_pos) / (hi_stop.x_pos - lo_stop.x_pos);
+
+        // lerp along local track
+        HSV hsv_out = lerp(lo_stop.color, hi_stop.color, local_track_pos);
+
+
+        // return result as rgb
+        // TODO there might be performance boost from returning as hsv, drawing image as hsv, then doing SIMD conversions
+        return hsv_out.to<RGB>();
     }
+
+    RGB Color_Map::step(int index, int size) const { 
+        float global_track_pos = static_cast<float>(index) / (size - 1);
+        return frac(global_track_pos);
+    }
+
+    Image<RGB> Color_Map::display(Size size) { 
+        Image<RGB> out = Image<RGB>(size);
+        // todo refactor when LUT vector is available
+        // I know this iteration pattern is bad but I'm avoiding pulling functions into data library
+
+        int w = out.getWidth();
+        int h = out.getHeight();
+        for (int x = 0; x < w; x++) { 
+            RGB px = step(x, w);
+            for (int y = 0; y < h; y++) { 
+                out.at(x, y) = px;
+            }
+        }
+
+        return out;
+    }
+
+
+
+
+
+
+
+
+
 
 
 

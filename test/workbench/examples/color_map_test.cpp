@@ -21,7 +21,7 @@ namespace workbench {
     void colorMapUsage(string image_path, Logger logger) {
 
         cout << "hello from color map usage" << endl;
-
+        cout << endl;
 
 
         // ------------------------
@@ -32,13 +32,13 @@ namespace workbench {
         {
             HSV c0 = HSV(1400, 255, 0);
             HSV c1 = HSV(100, 0, 100);
-            float distance = 0.73f;
-            HSV lerp_px = lerp(c0, c1, distance); // todo rename distance as pos
+            float position = 0.73f;
+            HSV lerp_px = lerp(c0, c1, position);
 
             cout << "LERP SINGLE" << endl;
             cout << "original c0 color: " << c0 << endl;
             cout << "original c1 color: " << c1 << endl;
-            cout << "lerp (" << distance*100 << "%) color: " << lerp_px << endl;
+            cout << "lerp (" << position*100 << "%) color: " << lerp_px << endl;
             cout << endl;
         }
 
@@ -59,80 +59,25 @@ namespace workbench {
         }
 
 
+        // Color_Map Object 
+        // This class should, hide free functions, allow stored consts, abstract discrete maps
 
+        // -----------------
+        //   CONSTRUCTORS
+        // -----------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-        // DISPLAY some cmaps various LUT sizes
+        // Default 
         {
+            logger.start("Default constructor");
 
-            vector<int> lut_sizes = {2, 3, 5, 10, 25, 50, 100, 500, 1000};
+
+            // this creates a cmap with HSV rainbow graidient
+            Color_Map cmap; 
+            Image<RGB> display = cmap.display(Size(1000, 100));
             
-            // DRAW Cmap Col
-            Image<RGB> col_canvas = Image<RGB>(Size(1000, 100));
-            for (int lut_size : lut_sizes) { 
-
-                string test_name = "Draw Cmap Col - LUT Size: " + to_string(lut_size);
-                logger.start(test_name);
-                
-                Color_Map cmap = Color_Map(COSMOS_STOPS, lut_size);
-                // todo: image object sould return rect at (0, 0) + dx dy
-                Rect r = Rect{Point(0, 0), col_canvas.getWidth(), col_canvas.getHeight()};
-                draw::polygon::drawCmapCol(col_canvas, r, cmap); // todo scope these consts
-
-                logger.stop(test_name, col_canvas);
-            }
-
-
-            // DRAW Cmap Row
-            Image<RGB> row_canvas = Image<RGB>(Size(100, 1000));
-            for (int lut_size : lut_sizes) { 
-
-                string test_name = "Draw Cmap Row - LUT Size: " + to_string(lut_size);
-                logger.start(test_name);
-                
-                // TODO elegant cmap behavior when num stops is greater than LUT size, needs work
-                Color_Map cmap = Color_Map(VIRIDIS_STOPS, lut_size);
-                // todo: image object sould return rect at (0, 0) + dx dy
-                Rect r = Rect{Point(0, 0), row_canvas.getWidth(), row_canvas.getHeight()};
-                draw::polygon::drawCmapRow(row_canvas, r, cmap);
-
-                logger.stop(test_name, row_canvas);
-            }
-
-            // todo draw cmap with slope or radial
-
+            logger.stop("Default constructor", display); // badly need imshow            
         }
 
-
-
-        // TEST SOME CONST CMAP's
-        {
-            
-
-            Image<RGB> canvas = Image<RGB>(Size(1000, 100));
-            Rect r = Rect{Point(0, 0), canvas.getWidth(), canvas.getHeight()};
-            string test_base_name = "const cmap: ";
-
-            logger.start(test_base_name + "VIRIDIS");
-            draw::polygon::drawCmapCol(canvas, r, VIRIDIS);
-            logger.stop(test_base_name + "VIRIDIS", canvas);
-
-            logger.start(test_base_name + "COSMOS");
-            draw::polygon::drawCmapCol(canvas, r, COSMOS);
-            logger.stop(test_base_name + "COSMOS", canvas);
-
-        }
 
 
 
@@ -152,7 +97,8 @@ namespace workbench {
 
     void colorMapUnitTest(string image_path, Logger logger) { 
 
-        cout << "Hello from lerp test" << endl;
+        cout << "Hello from lerp unit test" << endl;
+        cout << endl;
 
         float tolerance = 0.05f;
         HSV c_0;
@@ -229,6 +175,22 @@ namespace workbench {
             }
         }
 
+
+
+        // TEST 4 - dedicated lerpMulti function (built from lerp) should match the output from Test 3
+        vector<HSV> test_lerp_multi_vector = lerpMulti(color_0, color_1, num_steps);
+        if (test_lerp_vector.size() != test_lerp_multi_vector.size()) { 
+            cout << "test failed: expecting lerpMulti size to match lerp single (called iteratively)" << endl; 
+            return false;
+        }
+
+        for (int i = 0; i < test_lerp_multi_vector.size(); i++) { 
+            bool test_4 = isWithinTolerance(test_lerp_vector[i], test_lerp_multi_vector[i], tolerance);
+            if (!test_4) { 
+                cout << "test failed: expecting lerpMulti to match lerp single (called iteratively)" << endl; 
+                return false;
+            }
+        }
 
         return true;
             

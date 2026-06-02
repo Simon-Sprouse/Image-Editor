@@ -2,6 +2,7 @@
 
 #include "primitives.hpp"
 #include "pixel.hpp"
+#include "image.hpp"
 
 #include <array>
 #include <vector>
@@ -27,33 +28,29 @@ namespace image {
     public: 
 
         // constructors
-        // todo Color_Map(vector<HSV> colors) // for equal spacing
-        // todo consider constructors that don't pass LUT size
-        Color_Map(vector<Color_Stop> _stops, int _N);
+        Color_Map();
+        Color_Map(HSV color_1, HSV color_2);
+        Color_Map(vector<HSV> colors);
+        // todo parallel arrays constructor
+        Color_Map(vector<Color_Stop> stops);
 
-        HSV at(int i) const { 
-            return lut[i]; 
-        }
-        HSV frac(float f) const { 
-            return lut[static_cast<int>(N * f)]; 
-        }
-        HSV frac(int i, int total) const { 
-            // todo: input validation i <= total
-            float track_pos = (static_cast<float>(i) / (total)) * N;
-            return lut[static_cast<int>(track_pos)];
-        }
+        // methods
+        RGB frac(float pos) const;
+        RGB step(int index, int size) const; // designed to work cleanly in a loop size is max + 1
 
+        // visualization
+        Image<RGB> display(Size size);
 
-        // todo maybe store lut as RGB? 
+        // data
         vector<Color_Stop> stops;
-        vector<HSV> lut;
-        int N;
+        // bool isDiscrete
+        // int numDiscreteSteps
 
     };
 
     
 
-    HSV lerp(HSV color_0, HSV color_1, float distance);
+    HSV lerp(HSV color_0, HSV color_1, float position);
     // todo rename
     vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_stops);
     int getIdxFromXPos(float x_pos, int N); // helper for lerpMulti
@@ -77,7 +74,7 @@ namespace image {
     };
 
     // todo this breaks sometimes? 
-    inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS, 1000);
+    // inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS, 1000);
 
 
 
@@ -86,7 +83,7 @@ namespace image {
         Color_Stop(HSV(150, 150, 255), 1.0f)
     };
 
-    inline const Color_Map COSMOS = Color_Map(COSMOS_STOPS, 1000);
+    // inline const Color_Map COSMOS = Color_Map(COSMOS_STOPS, 1000);
     
 
 
