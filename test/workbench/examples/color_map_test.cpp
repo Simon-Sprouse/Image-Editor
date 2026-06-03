@@ -66,20 +66,71 @@ namespace workbench {
         //   CONSTRUCTORS
         // -----------------
 
-        // Default 
+        // Default - HSV fully saturated rainbow gradient
         {
-            logger.start("Default constructor");
 
-
-            // this creates a cmap with HSV rainbow graidient
             Color_Map cmap; 
-            Image<RGB> display = cmap.display(Size(1000, 100));
             
+
+            cout << "DEFAULT CONSTRUCTOR" << endl;
+            logger.start("Default constructor");
+            Image<RGB> display = cmap.display(Size(1000, 100));
             logger.stop("Default constructor", display); // badly need imshow            
         }
 
+        // Two Colors
+        {
+
+            HSV color_1(1200, 255, 50);
+            HSV color_2(200, 100, 255);
+            Color_Map cmap = Color_Map(color_1, color_2);
 
 
+            cout << "TWO COLOR CONSTRUCTOR" << endl;
+            logger.start("Two color constructor");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Two color constructor", display);
+        }
+
+
+        // Vector 
+        { 
+            vector<HSV> colors = {
+                HSV(1200, 255, 50),
+                HSV(1300, 200, 150),
+                HSV(1450, 50, 255)
+            };
+            Color_Map cmap = Color_Map(colors);
+
+
+            cout << "VECTOR CONSTRUCTOR" << endl;
+            logger.start("Vector constructor");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Vector constructor", display);
+        }
+
+        // Struct Vector 
+        { 
+            vector<Color_Stop> color_stops = {
+                Color_Stop(HSV(1230, 252, 84), 0.0f),
+                Color_Stop(HSV(1126, 170, 120), 0.111f),
+                Color_Stop(HSV(986, 140, 137), 0.222f),
+                Color_Stop(HSV(872, 167, 142), 0.333f),
+                Color_Stop(HSV(797, 187, 142), 0.444f),
+                Color_Stop(HSV(725, 205, 158), 0.556f),
+                Color_Stop(HSV(645, 181, 183), 0.667f),
+                Color_Stop(HSV(464, 146, 206), 0.778f),
+                Color_Stop(HSV(314, 206, 222), 0.889f),
+                Color_Stop(HSV(229, 218, 253), 1.0f)
+            };
+            Color_Map cmap = Color_Map(color_stops);
+
+
+            cout << "VECTOR CONSTRUCTOR" << endl;
+            logger.start("Vector constructor");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Vector constructor", display);
+        }
 
 
 

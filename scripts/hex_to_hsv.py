@@ -94,6 +94,7 @@ def main():
     print(hsv_px)
     
     
+    ## TODO this script breaks totally when not run in the root directory. Use os path
     hex_strings_path = "data/viridis_10_hex_strings.txt"
     out_file_path = "data/viridis_output.txt"
     read_hex_strings(hex_strings_path, out_file_path)

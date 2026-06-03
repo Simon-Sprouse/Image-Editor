@@ -91,6 +91,26 @@ namespace image {
         
     } 
 
+    // two color constructor
+    Color_Map::Color_Map(HSV color_1, HSV color_2) { 
+        stops = {
+            Color_Stop(color_1, 0.0f),
+            Color_Stop(color_2, 1.0f)
+        };
+    }
+
+    // vector constructor
+    Color_Map::Color_Map(const vector<HSV>& colors) {
+        stops.reserve(colors.size());
+        for (int i = 0; i < colors.size(); i++) { 
+            float x_pos = static_cast<float>(i) / (colors.size() - 1); // todo getPosFromIdx()
+            stops.emplace_back(Color_Stop(colors[i], x_pos));
+        }
+    }
+
+    // vector struct constructor
+    Color_Map::Color_Map(const vector<Color_Stop>& stops) : stops(stops) { }
+
 
 
     // METHODS

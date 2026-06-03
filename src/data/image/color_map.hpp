@@ -30,9 +30,9 @@ namespace image {
         // constructors
         Color_Map();
         Color_Map(HSV color_1, HSV color_2);
-        Color_Map(vector<HSV> colors);
+        Color_Map(const vector<HSV>& colors);
         // todo parallel arrays constructor
-        Color_Map(vector<Color_Stop> stops);
+        Color_Map(const vector<Color_Stop>& stops);
 
         // methods
         RGB frac(float pos) const;
