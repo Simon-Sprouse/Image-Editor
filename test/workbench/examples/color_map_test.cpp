@@ -75,7 +75,8 @@ namespace workbench {
             cout << "DEFAULT CONSTRUCTOR" << endl;
             logger.start("Default constructor");
             Image<RGB> display = cmap.display(Size(1000, 100));
-            logger.stop("Default constructor", display); // badly need imshow            
+            logger.stop("Default constructor", display); // badly need imshow     
+            cout << endl;       
         }
 
         // Two Colors
@@ -90,6 +91,7 @@ namespace workbench {
             logger.start("Two color constructor");
             Image<RGB> display = cmap.display(Size(1000, 100));
             logger.stop("Two color constructor", display);
+            cout << endl;
         }
 
 
@@ -107,6 +109,7 @@ namespace workbench {
             logger.start("Vector constructor");
             Image<RGB> display = cmap.display(Size(1000, 100));
             logger.stop("Vector constructor", display);
+            cout << endl;
         }
 
         // Struct Vector 
@@ -126,12 +129,55 @@ namespace workbench {
             Color_Map cmap = Color_Map(color_stops);
 
 
-            cout << "VECTOR CONSTRUCTOR" << endl;
-            logger.start("Vector constructor");
+            cout << "STRUCT VECTOR CONSTRUCTOR" << endl;
+            logger.start("Struct Vector constructor");
             Image<RGB> display = cmap.display(Size(1000, 100));
-            logger.stop("Vector constructor", display);
+            logger.stop("Struct Vector constructor", display);
+            cout << endl;
         }
 
+
+        // ------------------
+        //  MEMBER FUNCTIONS
+        // ------------------
+
+        // frac
+        {
+            Color_Map cmap; 
+            float track_pos = 0.21;
+            RGB px = cmap.frac(track_pos);
+
+            cout << "CONTINUOUS INDEX" << endl;
+            cout << "cmap.step(int index, int size)" << endl;
+            cout << "cmap (" << track_pos << "%): " << px << endl;
+            cout << endl;
+        }
+
+        // step
+        {
+            Color_Map cmap; 
+            int index = 6;
+            int size = 7;
+            RGB px = cmap.step(index, size);
+
+            cout << "DISCRETE INDEX" << endl;
+            cout << "cmap.step(int index, int size)" << endl;
+            cout << "cmap (" << index+1 << " of " << size <<  "): " << px << endl;
+            cout << endl;
+        }
+
+        // makeLUT
+        {
+            Color_Map cmap;
+            vector<RGB> LUT = cmap.makeLUT(10);
+
+            cout << "MAKE LUT" << endl;
+            cout <<  "cmap.makeLUT(int num_elements)" << endl;
+            for (auto px : LUT) { 
+                cout << px << endl;
+            }
+            cout << endl;
+        }
 
 
 

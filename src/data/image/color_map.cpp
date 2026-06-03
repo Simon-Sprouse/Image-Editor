@@ -141,8 +141,32 @@ namespace image {
 
     RGB Color_Map::step(int index, int size) const { 
         float global_track_pos = static_cast<float>(index) / (size - 1);
-        return frac(global_track_pos);
+        return this->frac(global_track_pos);
     }
+
+
+    vector<RGB> Color_Map::makeLUT(int num_elements) const { 
+        vector<RGB> out;
+        out.reserve(num_elements);
+        for (int i = 0; i < num_elements; i++) { 
+            out.push_back(this->step(i, num_elements));
+        }
+        return out;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Image<RGB> Color_Map::display(Size size) { 
         Image<RGB> out = Image<RGB>(size);

@@ -37,6 +37,7 @@ namespace image {
         // methods
         RGB frac(float pos) const;
         RGB step(int index, int size) const; // designed to work cleanly in a loop size is max + 1
+        vector<RGB> makeLUT(int num_elements) const;
 
         // visualization
         Image<RGB> display(Size size);
