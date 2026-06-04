@@ -116,6 +116,18 @@ namespace image {
     // METHODS
     RGB Color_Map::frac(float pos) const { 
 
+        // if discrete mode, modify pos to be on a step interval exactly
+        if (this->isDiscrete && this->numDiscreteSteps >= 2) { 
+            int n = this->numDiscreteSteps;
+            // cast the float to a step index
+            int i = static_cast<int>(std::floor(pos * n));
+            // handle edge case where pos=1.0f
+            if (i >= n) { 
+                i = n-1;
+            }
+            pos = static_cast<float>(i) / (n - 1);
+        }
+
         // FIND BOUNDS - two pointer march
         int lo_idx = 0;
         int hi_idx = 1;
@@ -152,6 +164,16 @@ namespace image {
             out.push_back(this->step(i, num_elements));
         }
         return out;
+    }
+
+
+    void Color_Map::setDiscrete(int num_discrete_steps) { 
+        this->isDiscrete = true;
+        this->numDiscreteSteps = num_discrete_steps;
+    }
+
+    void Color_Map::setContinuous() { 
+        this->isDiscrete = false;
     }
 
 

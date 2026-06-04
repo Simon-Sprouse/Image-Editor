@@ -38,14 +38,16 @@ namespace image {
         RGB frac(float pos) const;
         RGB step(int index, int size) const; // designed to work cleanly in a loop size is max + 1
         vector<RGB> makeLUT(int num_elements) const;
+        void setDiscrete(int num_discrete_steps);
+        void setContinuous();
 
         // visualization
         Image<RGB> display(Size size);
 
         // data
         vector<Color_Stop> stops;
-        // bool isDiscrete
-        // int numDiscreteSteps
+        bool isDiscrete;
+        int numDiscreteSteps;
 
     };
 

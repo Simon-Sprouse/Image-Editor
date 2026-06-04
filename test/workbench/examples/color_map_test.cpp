@@ -180,6 +180,36 @@ namespace workbench {
         }
 
 
+        // TOGGLE DISCRETE
+        {
+
+            Color_Map cmap = Color_Map(HSV(1200, 255, 50), HSV(200, 100, 255));
+            cmap.setDiscrete(7);
+
+
+            cout << "DISCRETE MODE" << endl;
+            logger.start("Discrete steps");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Discrete steps", display);
+            cout << endl;
+        }
+
+        // TOGGLE BACK TO CONTINUOUS
+        {
+
+            Color_Map cmap = Color_Map(HSV(1200, 255, 50), HSV(200, 100, 255));
+            cmap.setDiscrete(7);
+            cmap.setContinuous();
+
+
+            cout << "CONTINUOUS MODE" << endl;
+            logger.start("Continuous");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Continuous", display);
+            cout << endl;
+        }
+
+
 
 
 
