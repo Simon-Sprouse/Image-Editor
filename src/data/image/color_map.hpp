@@ -15,14 +15,20 @@ using namespace std;
 // todo this namespace and also shapes need to have location re-thought
 namespace image { 
 
-    // todo template this
+
+    // Free Functions
+    HSV lerp(HSV color_0, HSV color_1, float position);
+    vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_stops);     // todo rename
+
+
     struct Color_Stop { 
-        HSV color;
-        float x_pos; // 0-1
+        HSV color;      // todo template this
+        float x_pos;    // 0-1
 
         Color_Stop(HSV _color, float _x_pos) : color(_color), x_pos(_x_pos) {}
     };
     static_assert(sizeof(Color_Stop) == 8);
+
 
     class Color_Map { 
     public: 
@@ -42,7 +48,7 @@ namespace image {
         void setContinuous();
 
         // visualization
-        Image<RGB> display(Size size);
+        Image<RGB> display(Size size) const;
 
         // data
         vector<Color_Stop> stops;
@@ -53,13 +59,9 @@ namespace image {
 
     
 
-    HSV lerp(HSV color_0, HSV color_1, float position);
-    // todo rename
-    vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_stops);
-    int getIdxFromXPos(float x_pos, int N); // helper for lerpMulti
-    
-    
 
+
+    
    
     // CONSTANTS todo: should these live here? 
     inline const vector<Color_Stop> VIRIDIS_STOPS = {
@@ -77,7 +79,7 @@ namespace image {
     };
 
     // todo this breaks sometimes? 
-    // inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS, 1000);
+    inline const Color_Map VIRIDIS = Color_Map(VIRIDIS_STOPS);
 
 
 
@@ -86,7 +88,7 @@ namespace image {
         Color_Stop(HSV(150, 150, 255), 1.0f)
     };
 
-    // inline const Color_Map COSMOS = Color_Map(COSMOS_STOPS, 1000);
+    inline const Color_Map COSMOS = Color_Map(COSMOS_STOPS);
     
 
 

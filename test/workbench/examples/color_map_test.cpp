@@ -210,7 +210,43 @@ namespace workbench {
         }
 
 
+        // ------------------
+        //   NAMED CONSTS
+        // ------------------
 
+        // NAMED STOPS CONST
+        {
+            Color_Map cmap = Color_Map(VIRIDIS_STOPS);
+            cmap.setDiscrete(7);
+
+            cout << "NAMED CONST STOPS (viridis)" << endl;
+            logger.start("Const stops");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Const stops", display);
+            cout << endl;
+        }
+
+        // NAMED CMAP CONST
+        {
+            Color_Map cmap = COSMOS;
+            cmap.setDiscrete(15);
+
+            cout << "NAMED CONST CMAP (cosmos)" << endl;
+            logger.start("Const Cmap");
+            Image<RGB> display = cmap.display(Size(1000, 100));
+            logger.stop("Const Cmap", display);
+            cout << endl;
+        }
+
+
+
+
+
+
+
+        // TODO: 
+        // I think there's a known bug where color stops are get two lottery tickets in the track bar
+        // I also think I need to mention how the discrete method might clash with step method
 
 
 

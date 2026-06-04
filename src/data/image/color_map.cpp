@@ -81,7 +81,7 @@ namespace image {
     // default constructor
     Color_Map::Color_Map() { 
 
-        // todo replace with name const
+        // todo replace with named const
         stops = {
             Color_Stop(HSV(0, 255, 255), 0.0f),
             Color_Stop(HSV(512, 255, 255), 0.33f), 
@@ -121,7 +121,7 @@ namespace image {
             int n = this->numDiscreteSteps;
             // cast the float to a step index
             int i = static_cast<int>(std::floor(pos * n));
-            // handle edge case where pos=1.0f
+            // handle edge case where pos=1.0f by casting down
             if (i >= n) { 
                 i = n-1;
             }
@@ -178,19 +178,7 @@ namespace image {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    Image<RGB> Color_Map::display(Size size) { 
+    Image<RGB> Color_Map::display(Size size) const { 
         Image<RGB> out = Image<RGB>(size);
         // todo refactor when LUT vector is available
         // I know this iteration pattern is bad but I'm avoiding pulling functions into data library
@@ -206,19 +194,6 @@ namespace image {
 
         return out;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
