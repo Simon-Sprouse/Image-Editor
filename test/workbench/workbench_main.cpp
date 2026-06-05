@@ -37,8 +37,8 @@ namespace workbench {
 
         // todo image path and logger seem to always be passed together at call site. 
         colorMapUsage(image_path, logger);
-        colorMapUnitTest(image_path, logger);
-        // tileUsage(image_path, logger);
+        // colorMapUnitTest(image_path, logger);
+        tileUsage(image_path, logger);
         
     }
 

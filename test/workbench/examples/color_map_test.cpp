@@ -136,6 +136,18 @@ namespace workbench {
             cout << endl;
         }
 
+        // Double Copy Constructor
+        {
+            Color_Map cmap_1 = Color_Map(HSV(0), HSV(255));
+            Color_Map cmap_2 = Color_Map(HSV(1400), HSV(100));
+            float pos = 0.1f;
+            Color_Map new_cmap = Color_Map(cmap_1, cmap_2, pos);
+
+            
+            logger.start("Double copy constructor");
+            logger.stop("Double copy constructor", new_cmap.display(Size(1000, 100)));
+        }
+
 
         // ------------------
         //  MEMBER FUNCTIONS
@@ -169,7 +181,7 @@ namespace workbench {
         // makeLUT
         {
             Color_Map cmap;
-            vector<RGB> LUT = cmap.makeLUT(10);
+            vector<HSV> LUT = cmap.makeLUT(10);
 
             cout << "MAKE LUT" << endl;
             cout <<  "cmap.makeLUT(int num_elements)" << endl;

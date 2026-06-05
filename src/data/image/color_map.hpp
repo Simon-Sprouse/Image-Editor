@@ -20,6 +20,10 @@ namespace image {
     HSV lerp(HSV color_0, HSV color_1, float position);
     vector<HSV> lerpMulti(HSV color_0, HSV color_1, int num_stops);     // todo rename
 
+    // have we taken this too far? 
+    vector<HSV> lerpVector(const vector<HSV>& lut_1, const vector<HSV>& lut_2, float pos);
+
+
 
     struct Color_Stop { 
         HSV color;      // todo template this
@@ -39,11 +43,15 @@ namespace image {
         Color_Map(const vector<HSV>& colors);
         // todo parallel arrays constructor
         Color_Map(const vector<Color_Stop>& stops);
+        Color_Map(const Color_Map& cmap_1, const Color_Map& cmap_2, float pos);
 
         // methods
         RGB frac(float pos) const;
         RGB step(int index, int size) const; // designed to work cleanly in a loop size is max + 1
-        vector<RGB> makeLUT(int num_elements) const;
+        // todo template the makeLUT method for RGB out as well
+        vector<HSV> makeLUT(int num_elements) const;
+
+        // change state
         void setDiscrete(int num_discrete_steps);
         void setContinuous();
 
@@ -52,8 +60,8 @@ namespace image {
 
         // data
         vector<Color_Stop> stops;
-        bool isDiscrete;
-        int numDiscreteSteps;
+        bool isDiscrete = false;
+        int numDiscreteSteps = -1;
 
     };
 
@@ -93,5 +101,20 @@ namespace image {
 
 
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

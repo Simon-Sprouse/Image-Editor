@@ -12,9 +12,6 @@ namespace image {
     // todo: move geometric stuff to shapes and expand on color theory here
 
    
-
-
-
     struct Point { 
 
         int x;
@@ -36,11 +33,18 @@ namespace image {
         }
 
     };
+    static_assert(sizeof(Point)==8);
 
     // Subtraction operator
     inline Point operator-(const Point& a, const Point& b) {
         return Point(a.x - b.x, a.y - b.y);
     }
+
+    struct Pin { 
+        Point pt;
+        int64_t label;
+    };
+    static_assert(sizeof(Pin)==16);
 
 
 

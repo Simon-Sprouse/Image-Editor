@@ -73,6 +73,21 @@ namespace image {
         return out;
     }
 
+    vector<HSV> lerpVector(const vector<HSV>& lut_1, const vector<HSV>& lut_2, float pos) { 
+
+
+        vector<HSV> out;
+        out.reserve(lut_1.size());
+        for (int i = 0; i < lut_1.size(); i++) { 
+            HSV color_1 = lut_1[i];
+            HSV color_2 = lut_2[i];
+            HSV new_color = lerp(color_1, color_2, pos);
+            out.push_back(new_color);
+        }
+
+        return out;
+    }
+
 
 
 
@@ -110,6 +125,21 @@ namespace image {
 
     // vector struct constructor
     Color_Map::Color_Map(const vector<Color_Stop>& stops) : stops(stops) { }
+
+    // double copy constructor
+    Color_Map::Color_Map(const Color_Map& cmap_1, const Color_Map& cmap_2, float pos) { 
+
+        int num_elements = 10; // arbitrary precision threshold
+        vector<HSV> lut_1 = cmap_1.makeLUT(num_elements);
+        vector<HSV> lut_2 = cmap_2.makeLUT(num_elements);
+        vector<HSV> lut_lerp = lerpVector(lut_1, lut_2, pos);
+        
+        stops.reserve(lut_lerp.size());
+        for (int i = 0; i < lut_lerp.size(); i++) { 
+            float x_pos = static_cast<float>(i) / (lut_lerp.size() - 1); // todo getPosFromIdx()
+            stops.emplace_back(Color_Stop(lut_lerp[i], x_pos));
+        }
+    }
 
 
 
@@ -157,11 +187,12 @@ namespace image {
     }
 
 
-    vector<RGB> Color_Map::makeLUT(int num_elements) const { 
-        vector<RGB> out;
+    vector<HSV> Color_Map::makeLUT(int num_elements) const { 
+        vector<HSV> out;
         out.reserve(num_elements);
         for (int i = 0; i < num_elements; i++) { 
-            out.push_back(this->step(i, num_elements));
+            // todo template the step function or handle this better, now this is circular
+            out.push_back(this->step(i, num_elements).to<HSV>());
         }
         return out;
     }
@@ -194,6 +225,12 @@ namespace image {
 
         return out;
     }
+
+
+
+
+
+
 
 
 
